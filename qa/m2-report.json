@@ -1,0 +1,158 @@
+{
+  "milestone": "M2",
+  "date": "2026-10-18",
+  "mode": "offline file:// + opt-in #qa deterministic fixtures",
+  "browser": "Chromium",
+  "results": [
+    {
+      "name": "Normal offline entrypoint / real UI starts game",
+      "pass": true,
+      "details": {
+        "cells": 64,
+        "acts": 3
+      }
+    },
+    {
+      "name": "Normal UI portrait pieces are materially larger",
+      "pass": true,
+      "details": {
+        "width": 98.07965087890625,
+        "height": 105.6588134765625
+      }
+    },
+    {
+      "name": "Normal UI legal move, undo, then mirrored AI phase",
+      "pass": true,
+      "details": {
+        "round": 2
+      }
+    },
+    {
+      "name": "Portrait-mode and overview controls respond",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Guardian and Red Hive can each start the campaign",
+      "pass": true,
+      "details": {
+        "factions": [
+          "g",
+          "r"
+        ]
+      }
+    },
+    {
+      "name": "All five maps initialize for both factions with 16 acts per route",
+      "pass": true,
+      "details": {
+        "maps": 10,
+        "actsPerRoute": 16
+      }
+    },
+    {
+      "name": "Capture swaps the actual character, converts ownership and locks both units",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "First chapter objective advances an act rather than ending the mission",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Act transition does not reset already-used units",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Evacuating the final required unit wins before empty-force defeat",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Garden engineering action costs one action and allows Misa adjacency",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Vacuum damage remains permanent after mission roster sync",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Bridge cannot deliver through an unowned track lock",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Mirror synchronization requires two qualifying round ends",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Losing a synchronization condition resets its counter",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Core stays locked until near-field operation, then can be captured",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Red Hive finale requires broadcast and twelve-round hold",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "AI cannot reuse the only available unit after it acts",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Act, objective counters, and generated-state art survive save restoration",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Mobile page contains its large board in a horizontal viewport",
+      "pass": true,
+      "details": {
+        "width": 390,
+        "body": 390,
+        "pan": 363,
+        "board": 660
+      }
+    },
+    {
+      "name": "Mobile overview fits all eight columns without page overflow",
+      "pass": true,
+      "details": {
+        "width": 390,
+        "body": 390,
+        "board": 362.8125
+      }
+    },
+    {
+      "name": "Packaged game makes no external network requests",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "No browser page errors in targeted checks",
+      "pass": true,
+      "details": null
+    }
+  ],
+  "runtimeErrors": [],
+  "externalRequests": [],
+  "passed": 23,
+  "total": 23,
+  "limitations": [
+    "No full manual campaign playthrough",
+    "No difficulty-balance certification",
+    "Fixtures isolate rules; they do not claim players reached objectives naturally",
+    "No real-time second agent was observed"
+  ]
+}

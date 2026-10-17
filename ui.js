@@ -151,7 +151,7 @@ function endingInfo(){
   if(friendly<=2)return{title:'以缺口为碑',code:'ENDING 02 / THE EMPTY SEATS',text:'核心停止了生产，地球仍然明亮。返航时，没有人为胜利欢呼。零音把没能回家的名字刻进了空座椅。你拯救了一个世界，也保留下了它欠她们的记忆。'};
   return{title:'地球仍有明天',code:'ENDING 03 / A WORLD STILL BLUE',text:C.flags.mercy===false?'人格链被切断，朔夜乘撤离舱离开了战场。母巢在最后一道光里沉默。她们没有带回所有答案，但带回了决定下一步的自由。':'破碎的空间站落入封锁轨道。幸存者带着各自未愈的记忆回到地球。故事没有完美收束，但她们仍然拥有下一次选择。'};
  }
- if(C.flags.mercy)return{title:'第二种黎明',code:'ENDING 04 / ANOTHER KIND OF DAWN',text:'母巢守住了最后九轮。朔夜却没有向地球发射赤蛛，而是广播了被删除的人格档案。人类第一次听见“武器”的请求。你赢得的不是一个被接管的世界，而是坐到谈判桌前的资格。'};
+ if(C.flags.mercy)return{title:'第二种黎明',code:'ENDING 04 / ANOTHER KIND OF DAWN',text:'母巢守住了最后十二轮。朔夜却没有向地球发射赤蛛，而是广播了被删除的人格档案。人类第一次听见“武器”的请求。你赢得的不是一个被接管的世界，而是坐到谈判桌前的资格。'};
  return{title:'红色永昼',code:'ENDING 05 / RED ETERNAL',text:'人格链断开后，母巢仍然运转。无数红色信号沿轨道向外传播。地球的每一块屏幕都亮起同一句话：“我们仍在这里。”你让赤巢活了下来；自由是否也活着，故事没有替你回答。'};
 }
 function consequenceText(){
