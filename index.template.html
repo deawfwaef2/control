@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#080d13">
+<title>机械病毒：赤巢协议 / MECHANICAL VIRUS</title>
+<style>__STYLE__</style>
+</head>
+<body>
+<svg class="svg-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+<symbol id="i-spider" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="square" stroke-linejoin="miter"><path d="m26 24-10-7-3-10m12 22L9 26 4 17m20 19L9 40 4 50m23-9-10 8-3 10m24-35 10-7 3-10m-12 22 16-3 5-9M40 36l15 4 5 10m-23-9 10 8 3 10"/></g><path d="m32 15 10 10-2 17-8 9-8-9-2-17Z" fill="#29151d" stroke="currentColor" stroke-width="2.3"/><path d="m32 23 5 8-5 12-5-12Z" fill="currentColor"/><circle cx="32" cy="15" r="4" fill="currentColor"/></symbol>
+<symbol id="i-egis" viewBox="0 0 32 32"><path d="m16 2 12 6v12L16 30 4 20V8Z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m9 10 7 5 7-5-3 11-4 4-4-4Z" fill="currentColor"/></symbol>
+<symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h15m-6-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+<symbol id="i-core" viewBox="0 0 64 64"><g fill="none" stroke="currentColor"><circle cx="32" cy="32" r="25" stroke-width="2"/><circle cx="32" cy="32" r="19" stroke-width="4" stroke-dasharray="17 8"/><path d="M32 1v15m0 32v15M1 32h15m32 0h15M10 10l11 11m22 22 11 11M10 54l11-11m22-22 11-11" stroke-width="2"/><path d="m32 19 11 13-11 13-11-13Z" fill="currentColor"/></g></symbol>
+<symbol id="i-drone" viewBox="0 0 64 64"><path d="m32 9 20 11v24L32 56 12 44V20Z" fill="#102d33" stroke="currentColor" stroke-width="2"/><path d="M22 26h20v15H22Z" fill="none" stroke="currentColor" stroke-width="3"/><path d="M27 30h10v5H27ZM7 14v36m50-36v36M2 20h10m40 0h10M2 44h10m40 0h10" stroke="currentColor" stroke-width="2"/></symbol>
+<symbol id="i-cube" viewBox="0 0 40 40"><path d="m20 4 14 8v16l-14 8-14-8V12Zm0 16 14-8M20 20 6 12m14 8v16" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="m20 10 8 5-8 5-8-5Z" fill="currentColor" opacity=".4"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+<symbol id="i-rewind" viewBox="0 0 24 24"><path d="M5 10a8 8 0 1 1 0 6m0-12v6h6" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+<symbol id="i-sound" viewBox="0 0 24 24"><path d="M3 9v6h4l5 4V5L7 9Zm13-1q5 4 0 8m3-11q8 7 0 14" fill="none" stroke="currentColor" stroke-width="1.5"/></symbol>
+<symbol id="i-mute" viewBox="0 0 24 24"><path d="M3 9v6h4l5 4V5L7 9Zm13 0 6 6m0-6-6 6" fill="none" stroke="currentColor" stroke-width="1.5"/></symbol>
+<symbol id="i-relay" viewBox="0 0 40 40"><path d="m20 5 12 7v15l-12 7-12-7V12ZM20 12v16m-7-12 14 8m0-8-14 8" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+<symbol id="i-exit" viewBox="0 0 40 40"><path d="M22 7H8v26h14M18 20h18m-7-7 7 7-7 7" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="1" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 10V6a4 4 0 0 1 8 0v4m-4 4v3" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+</defs></svg>
+<div class="ambient"></div>
+<header class="site-header">
+  <button class="wordmark" id="home-logo" aria-label="返回主菜单"><svg><use href="#i-spider"/></svg><span>机械病毒<small>MECHANICAL VIRUS</small></span></button>
+  <div class="header-status"><i></i><span>ECHO–09</span><b> / </b>ORBITAL QUARANTINE</div>
+  <nav class="header-actions" aria-label="主导航"><button id="archive-btn">角色档案</button><button id="help-btn">作战手册</button><button id="audio-btn" class="icon-button" title="开启音效" aria-label="开启音效"><svg><use href="#i-mute"/></svg></button><button id="menu-btn" class="icon-button" title="系统菜单" aria-label="系统菜单"><span class="menu-lines"></span></button></nav>
+</header>
+
+<main id="home" class="home screen">
+  <div class="hero-background"></div><div class="hero-grid"></div>
+  <div class="hero-art"><img id="hero-portrait" alt="零音，地球守护组织的机娘指挥官"><div class="hero-scanline"></div><svg class="hero-parasite"><use href="#i-spider"/></svg><div class="hero-id"><span id="hero-code">EGIS / UNIT 01</span><strong id="hero-name">零音 · LYRA</strong><small id="hero-identity">人格信号稳定 / AWAITING YOUR COMMAND</small></div></div>
+  <section class="hero-copy">
+    <div class="micro-label"><span class="red-line"></span> A CINEMATIC TACTICAL CAMPAIGN</div>
+    <h1>机械<span>病毒</span><em>赤 巢 协 议</em></h1>
+    <p class="hero-description">她们不是可以被牺牲的棋子。<br>但这座空间站，<span>只承认胜负。</span></p>
+    <div class="hero-rule"><span>01—05</span> 剧情战役 <b>·</b> 双阵营 <b>·</b> 国际象棋式夺控</div>
+    <div class="faction-picker" role="group" aria-label="选择阵营">
+      <button class="faction-card active" data-faction="g" aria-pressed="true"><svg><use href="#i-egis"/></svg><span><strong>地球守护者</strong><small>EGIS DIVISION / 高难度</small></span><i></i></button>
+      <button class="faction-card red-card" data-faction="r" aria-pressed="false"><svg><use href="#i-spider"/></svg><span><strong>赤巢意识</strong><small>RED HIVE / 极高难度</small></span><i></i></button>
+    </div>
+    <p class="faction-description" id="faction-description">潜入失联空间站，救回你的同伴。在感染扩散到地球之前，摧毁母巢。</p>
+    <div class="hero-buttons"><button class="button primary start-button" id="start-btn"><span>接入作战</span><svg><use href="#i-arrow"/></svg></button><button class="button ghost" id="continue-btn" hidden>继续上次行动</button></div>
+    <div class="hero-footnote"><span class="live-dot"></span> 无随机命中率。每一步，都留下后果。<span class="prototype-tag">可玩原型 v1.0</span></div>
+  </section>
+  <div class="orbital-label"><span>EARTH / LOW ORBIT</span><strong>距地球 408 KM</strong><i>最后一次应答：17 天前</i></div>
+  <div class="home-bottom"><div class="bottom-title"><span>OPERATION</span><strong>回声站回收行动</strong></div><div class="chapter-preview"><span><i>01</i>无声接舷</span><b>─</b><span><i>02 / 03</i>分歧航线</span><b>─</b><span><i>04</i>镜室叛歌</span><b>─</b><span class="last"><i>05</i>赤巢零点</span></div><button id="home-rules-btn" class="text-button">首次接入？了解规则 ↗</button></div>
+</main>
+
+<main id="game" class="game screen" hidden>
+  <div class="mission-heading"><div class="mission-heading-left"><div class="chapter-number" id="chapter-number">01<small>/ 05</small></div><div><p class="micro-label" id="mission-en">SILENT DOCK</p><h2 id="mission-title">无声接舷</h2><span class="mission-location" id="mission-location">回声站 · 接驳甲板</span></div></div><div class="mission-heading-right"><button class="text-button" id="flow-btn">战役路径 ↗</button><div class="round-indicator"><span>ROUND</span><strong id="round-text">01 <small>/ 12</small></strong></div><div class="phase-indicator" id="phase-label"><i></i>你的行动阶段</div></div></div>
+  <div class="workspace">
+    <aside class="left-rail">
+      <section class="panel objectives-panel"><div class="panel-title"><span>01 / 作战目标</span><small id="mission-sector">SECTOR A</small></div><div id="objectives"></div><div class="condition-note" id="condition-note"></div></section>
+      <section class="panel forces-panel"><div class="panel-title"><span>02 / 战场态势</span><small>LIVE</small></div><div id="forces"></div><div class="phase-help">你行动 <b id="mirrored-count">0</b> 次，敌方获得相同额度。<br>每单位每阶段仅行动一次。</div></section>
+      <section class="panel log-panel"><div class="panel-title"><span>03 / 战术记录</span><small id="save-indicator">SESSION</small></div><div id="combat-log" role="log" aria-live="polite"></div></section>
+    </aside>
+    <section class="battlefield" aria-label="战术棋盘">
+      <div class="board-toolbar"><span id="board-location">ECHO–09 / DOCKING BAY</span><button id="threat-btn" class="text-button" aria-pressed="false"><svg><use href="#i-eye"/></svg>威胁视野</button></div>
+      <div class="board-surround"><div class="axis-top" id="axis-top"></div><div class="axis-left" id="axis-left"></div><div class="board" id="board" role="group" aria-label="8乘8战术棋盘"></div><span class="board-corner top-left"></span><span class="board-corner top-right"></span><span class="board-corner bottom-left"></span><span class="board-corner bottom-right"></span></div>
+      <div class="board-legend"><span><i class="legend-move"></i>可移动</span><span><i class="legend-capture"></i>可夺控 / 吃子</span><span><i class="legend-objective"></i>目标</span><span id="board-hint">选择一名己方单位</span></div>
+      <div class="action-bar"><div class="action-count"><strong id="action-count">00</strong><span>本阶段行动<small id="action-remaining">待命单位 3</small></span></div><div class="action-buttons"><button id="undo-btn" class="icon-button" title="撤回最近一步，仅限交出阶段前" aria-label="撤回最近一步"><svg><use href="#i-rewind"/></svg></button><button class="button primary end-phase" id="end-phase-btn"><span>结束阶段</span><small id="enemy-budget">敌方行动 × 0</small><svg><use href="#i-arrow"/></svg></button></div></div>
+      <div class="board-bottomline"><span id="stage-note">等额行动制 · 无行动总上限</span><button class="text-button" id="retry-btn">重开本关</button></div>
+    </section>
+    <aside class="right-rail"><section class="panel dossier" id="dossier"></section><section class="panel roster-panel"><div class="panel-title"><span>04 / 本关角色</span><small>NEURAL LINKS</small></div><div id="roster-list"></div></section></aside>
+  </div>
+  <div class="radio-bar"><span class="radio-indicator">▥</span><div><strong id="radio-name">零音</strong><p id="radio-text">不要急着走完所有棋。你留给对手的每一次行动，都可能成为她的最后一次。</p></div><span class="radio-frequency">ENCRYPTED / 140.28</span></div>
+</main>
+
+<div id="cinema" class="cinema overlay" hidden role="dialog" aria-modal="true" aria-labelledby="cinema-title"><div class="cinema-backdrop"></div><div class="cinema-letterbox top"></div><div class="cinema-letterbox bottom"></div><div class="cinema-top"><span id="cinema-chapter">CHAPTER 01</span><button class="text-button" id="skip-story">跳过演出 ↗</button></div><div class="cinema-portrait-wrap"><img id="cinema-portrait" alt="剧情角色"><svg class="cinema-parasite"><use href="#i-spider"/></svg></div><div class="cinema-title" id="cinema-title"><small>OPERATION ECHO</small><h2>无声接舷</h2></div><section class="dialogue-box"><div class="speaker-label"><span id="speaker-code">EGIS / 01</span><strong id="speaker-name">零音</strong><i></i></div><p id="dialogue-text"></p><div class="dialogue-bottom"><span id="story-progress">01 / 03</span><span class="dialogue-direction" id="dialogue-direction">近景。远处，心跳一样的红灯。</span><button id="next-dialogue" class="button ghost">继续 <span>↗</span></button></div><div id="story-choices" class="story-choices" hidden></div></section></div>
+
+<div id="modal" class="modal overlay" hidden role="dialog" aria-modal="true" aria-labelledby="modal-title"><div class="modal-window"><header class="modal-heading"><div><p class="micro-label" id="modal-eyebrow">EGIS FIELD MANUAL</p><h2 id="modal-title">作战手册</h2></div><button id="close-modal" class="icon-button" aria-label="关闭窗口">×</button></header><div id="modal-content" class="modal-content"></div></div></div>
+<div id="result" class="result overlay" hidden role="dialog" aria-modal="true" aria-labelledby="result-title"><div class="result-window" id="result-content"></div></div>
+<div id="capture-event" class="capture-event" aria-live="polite"></div><div id="toast" class="toast" role="status" aria-live="polite"></div><div id="screen-flash" class="screen-flash"></div>
+<input id="import-file" type="file" accept=".json,application/json" hidden>
+<noscript><div style="position:fixed;inset:0;background:#080d13;color:white;z-index:999;padding:60px">此游戏需要启用 JavaScript。所有素材已内嵌，不需要网络连接。</div></noscript>
+<script>const ART = __ART__;
+__SCRIPT__
+</script>
+</body>
+</html>
