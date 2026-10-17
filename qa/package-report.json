@@ -1,0 +1,14 @@
+{
+  "date": "2026-10-18",
+  "html_bytes": 3384551,
+  "html_sha256": "22570b3e52e97bf245bbce26840aff50ea62d27d842398efa2b1bd0a0c2c9b53",
+  "zip_bytes": 2474214,
+  "zip_sha256": "e4655ffd6dc0ade7215a9b1c36e433b10b88b56b79795b36c8998ba48a82f0c1",
+  "zip_crc_ok": true,
+  "html_entries_identical": true,
+  "workspace_entry_identical": true,
+  "credential_pattern_matches": 0,
+  "workspace_bytes_before_final_commit": 50207388,
+  "browser_checks_passed": 27,
+  "browser_checks_total": 27
+}

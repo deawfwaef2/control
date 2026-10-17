@@ -21,6 +21,14 @@
       }
     },
     {
+      "name": "Pieces can zoom to 175 percent without overflowing the page",
+      "pass": true,
+      "details": {
+        "baseWidth": 98.07965087890625,
+        "maxWidth": 177.3468017578125
+      }
+    },
+    {
       "name": "Normal UI legal move, undo, then mirrored AI phase",
       "pass": true,
       "details": {
@@ -116,6 +124,23 @@
       "details": null
     },
     {
+      "name": "Real in-battle cinema pauses, cuts to close-up, and resumes the same action budget",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "All eighteen embedded generated/composited art assets decode offline",
+      "pass": true,
+      "details": {
+        "decoded": 18
+      }
+    },
+    {
+      "name": "A legacy stage-less save migrates without losing its roster",
+      "pass": true,
+      "details": null
+    },
+    {
       "name": "Mobile page contains its large board in a horizontal viewport",
       "pass": true,
       "details": {
@@ -147,8 +172,8 @@
   ],
   "runtimeErrors": [],
   "externalRequests": [],
-  "passed": 23,
-  "total": 23,
+  "passed": 27,
+  "total": 27,
   "limitations": [
     "No full manual campaign playthrough",
     "No difficulty-balance certification",
