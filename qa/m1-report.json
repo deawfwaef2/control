@@ -1,0 +1,26 @@
+{
+  "milestone": "M1",
+  "date": "2026-10-18",
+  "browser": "Chromium / Playwright",
+  "mode": "offline file://",
+  "viewport": [
+    1440,
+    1080
+  ],
+  "checks": {
+    "start_and_skip_scene": true,
+    "board_cells": 64,
+    "move_count_after_one_move": "01",
+    "mirrored_ai_returns_round_2": true,
+    "runtime_errors": [],
+    "piece_dimensions_px": [
+      98.08,
+      105.66
+    ]
+  },
+  "limitations": [
+    "Not a full campaign playthrough",
+    "Not a difficulty-balance validation",
+    "Misa infection art is a generated-prop composite"
+  ]
+}
