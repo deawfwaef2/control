@@ -1,13 +1,16 @@
 /* M6 / ECHO CUT: evidence-led thriller, actor-accurate scenes and film controls.
    Camera and dialogue never reset actions. Documents unlock from game state,
    not from whether the player watches or skips a cutscene. No remote services. */
-MISSIONS[1].name='玻璃病区';MISSIONS[1].en='THE WITHDRAWAL WINDOW';MISSIONS[1].location='回声站 · 临床冷却环';
-MISSIONS[3].name='签名原件';MISSIONS[3].en='THE ORIGINAL SIGNATURE';
-ACT_NAMES.g=[['接入站内链路','回收证人或原始记录','撤离接驳甲板'],['重启冷却阀','保持撤药窗口','执行回路隔离'],['护送授权匣','接管北端轨道锁','完成密钥交付'],['打开镜像库','恢复签名持有人','校验原始记录'],['接入生产网','同步双锁','切断运动指令链','关闭制造核心']];
-ACT_NAMES.r=[['穿过第一道封锁','建立站外备份','撤收受控载体'],['带走药仓样本','接入维护权限','覆写隔离回路'],['截住授权匣','接管南端轨道锁','带离生产密钥'],['打开镜像库','保住签名持有人','校验原始记录'],['维持第一次增殖','突破封锁阵线','锁定上行通道','守至第十二轮']];
-CHAR.noct.bio='神经支架协议的架构师，也是封锁令的签发人之一。她躲进无法被远程删改的镜像库，把自己的修改记录和事故资料锁在同一卷原件里。';
+MISSIONS[0].name='死寂接舷';MISSIONS[0].en='SILENT DOCK';MISSIONS[0].location='天穹站 · A–01 接驳甲板';
+MISSIONS[1].name='绝命温室';MISSIONS[1].en='BIO-COOLING RING';MISSIONS[1].location='天穹站 · B–04 生态冷却环';
+MISSIONS[2].name='断轨天桥';MISSIONS[2].en='ORBITAL SKYBRIDGE';MISSIONS[2].location='天穹站 · C–07 轨道天桥';
+MISSIONS[3].name='镜室叛歌';MISSIONS[3].en='MIRROR ARCHIVE';MISSIONS[3].location='天穹站 · D–00 中枢镜像库';
+MISSIONS[4].name='赤巢零点';MISSIONS[4].en='CRIMSON CORE';MISSIONS[4].location='天穹站 · Ω–00 母巢反应堆';
+ACT_NAMES.g=[['攻破接驳门禁','拦截载毒信使','突入北侧通道'],['开启双侧冷却阀','提取抗蚀稳定剂','封死蜘蛛孵化池'],['掩护火控密钥匣','夺取北端轨道锁','交付密钥锁死空投井'],['开启中枢电磁门','控制双子镜像终端','固守同步座破译护盾'],['突入反应堆内环','同步双座护盾终端','近场切断增殖总线','摧毁赤巢无限内核']];
+ACT_NAMES.r=[['撕开接驳防线','护送信使或夺取中继','撤入空间站深层'],['扑击寄生工兵弥砂','接管双侧冷却阀','覆写孵化池增殖回路'],['截获火控密钥匣','接管南端轨道锁','交付密钥启动空投舱'],['开启中枢电磁门','保全受控架构师朔夜','固守同步座锁定中枢'],['孵化首波赤蛛潮','撕裂守护者防线','启动对地轨道广播','死守赤巢内核至十二轮']];
+CHAR.noct.bio='天穹空间站中枢神经系统的总架构师。在试图封锁母巢内核时被赤蛛王寄生于胸口正中，她的中枢镜像里保存着破除赤巢内核无敌护盾的唯一密钥。';
 introFor=echoIntro;endingInfo=echoEndingInfo;
-const ECHO_SCENE_TITLES={'0:1':'七分钟','0:2':'释放扣','1:1':'医嘱回执','1:2':'停药窗口','2:1':'空货舱','2:2':'返航许可','3:1':'只写不读','3:2':'签名原件','4:1':'最后的许可','4:2':'停止电平','4:3':'确认键'};
+const ECHO_SCENE_TITLES={'0:1':'截击信使','0:2':'胸口红光','1:1':'蜘蛛孵化池','1:2':'回路隔离','2:1':'空投密钥','2:2':'轨道锁死','3:1':'中枢大门','3:2':'双子破盾','4:1':'内环突入','4:2':'近场破盾','4:3':'决战内核'};
 transitionFrames=function(mid,stage,side){return echoTransition(mid,stage,side).map(f=>({...f,filmTitle:ECHO_SCENE_TITLES[mid+':'+stage]||MISSIONS[mid].name}));};
 
 function ensureCasefile(){
@@ -136,11 +139,11 @@ closeModal=function(){echoCloseModal();scheduleFilm();};
 $('close-modal').onclick=()=>closeModal();
 document.addEventListener('visibilitychange',()=>{if(document.hidden){stopFilmTimer();stopFilmHum();}else if(storyState){scheduleFilm();startFilmHum();}});
 
-const caseButton=document.createElement('button');caseButton.id='casefile-btn';caseButton.textContent='证据';$('archive-btn').before(caseButton);$('archive-btn').textContent='人物';
+const caseButton=document.createElement('button');caseButton.id='casefile-btn';caseButton.textContent='情报';$('archive-btn').before(caseButton);$('archive-btn').textContent='机娘';
 function evidenceResolved(id){return id==='manifest'?hasEvidence('downlink'):['signature','downlink'].includes(id)?!!C?.flags.disclosure:hasEvidence('signature');}
 function showCasefile(){
  if(C&&S)syncEvidence();const f=ensureCasefile(),found=f?.found||[];
- openModal('回声站封锁案','ECHO / EVIDENCE & TESTIMONY',`<div class="case-heading"><p>原始记录与推断分开保存。跳过演出不会丢失任务中取得的证据。</p><strong>${found.length}<small> / 06 份记录</small></strong></div><div class="case-grid">${Object.entries(ECHO_EVIDENCE).map(([id,d])=>{const entry=found.find(e=>e.id===id);return`<article class="case-card ${entry?'unlocked':'locked'}" data-evidence="${id}"><span class="case-number">${d.number}</span>${entry?`<span class="case-source">${esc(d.source)}</span><h3>${esc(d.title)}</h3><p>${esc(d.fact)}</p><div class="case-question">待解释：${esc(d.question)}</div>${evidenceResolved(id)?`<div class="case-payoff">关联已核验<br>${esc(d.payoff)}</div>`:''}<small>${esc(entry.origin)} / 第${entry.round}轮</small>`:'<h3>尚未接入</h3><p>后续任务中核验后解锁。不提前展示答案。</p>'}</article>`;}).join('')}</div><details class="case-transcript"><summary>已观看的对白与记录 · ${f?.transcript.length||0} 条</summary>${(f?.transcript||[]).map(t=>`<article><span>${esc(t.title)} / ${esc(t.source)}</span><strong>${esc(t.actor)}</strong><p>${esc(t.text)}</p></article>`).join('')||'<p>开始调查后，这里保留你已经看过的镜头对白。</p>'}</details>${C?`<div class="case-disposition">最终发送：${C.flags.disclosure==='open'?'公开原件 / 停产协议':C.flags.disclosure==='command'?'接管授权':C.flags.disclosure==='sealed'?'停机回执 / 原件封存':'尚未决定'}<br>永久损毁：${Object.entries(C.roster).filter(([id,r])=>r.status==='destroyed').map(([id])=>CHAR[id].name).join('、')||'无已确认记录'}。受控或未归队者不会被自动记为死亡。</div>`:''}`);
+ openModal('天穹空间站 · 机械病毒调查卷宗','AEGIS / CRIMSON HIVE INTEL',`<div class="case-heading"><p>战术黑匣子与阶段情报实时归档。跳过演出不会丢失任务中解锁的卷宗。</p><strong>${found.length}<small> / 06 份核心卷宗</small></strong></div><div class="case-grid">${Object.entries(ECHO_EVIDENCE).map(([id,d])=>{const entry=found.find(e=>e.id===id);return`<article class="case-card ${entry?'unlocked':'locked'}" data-evidence="${id}"><span class="case-number">${d.number}</span>${entry?`<span class="case-source">${esc(d.source)}</span><h3>${esc(d.title)}</h3><p>${esc(d.fact)}</p><div class="case-question">核心悬念：${esc(d.question)}</div>${evidenceResolved(id)?`<div class="case-payoff">真相已揭示<br>${esc(d.payoff)}</div>`:''}<small>${esc(entry.origin)} / 第${entry.round}轮</small>`:'<h3>尚未解锁</h3><p>推进后续关卡阶段后解锁该份情报。</p>'}</article>`;}).join('')}</div><details class="case-transcript"><summary>已观看的电影台词与记录 · ${f?.transcript.length||0} 条</summary>${(f?.transcript||[]).map(t=>`<article><span>${esc(t.title)} / ${esc(t.source)}</span><strong>${esc(t.actor)}</strong><p>${esc(t.text)}</p></article>`).join('')||'<p>开始作战后，这里保留你已经看过的剧情台词。</p>'}</details>${C?`<div class="case-disposition">终局指令：${C.flags.disclosure==='open'?'公开完整卷宗 / 停产隔离协议':C.flags.disclosure==='command'?'全球轨道空投指令':C.flags.disclosure==='sealed'?'核心歼灭回执 / 绝密封存':'尚未决定'}<br>永久损毁：${Object.entries(C.roster).filter(([id,r])=>r.status==='destroyed').map(([id])=>CHAR[id].name).join('、')||'无已确认记录'}。被寄生或离线单位按实际阵营保留。</div>`:''}`);
 }
 caseButton.onclick=showCasefile;
 
@@ -150,15 +153,15 @@ advanceMission=function(){
  if(!S?.outcome?.won)return;$('result').hidden=true;
  if(S.mid===4){showHome();return;}
  if(S.mid===0&&!C.route){
-  playChoice(echoLine('iris','一路连着病区，一路连着回收艇。我们先接哪边？',{title:'先接哪一路',camera:'medium'}),[
-   {label:'先恢复临床冷却',detail:'先病区 → 后断桥。弥砂、雾棘、白栖、祈雾登场；若带走温室样本，断桥坍塌可延后两轮。',action:()=>{C.route='garden';C.order=[0,1,2,3,4];nextMission();}},
-   {label:'先截住过桥授权',detail:'先断桥 → 后病区。苍澜、霁川先登场；若守护者带回密钥，病区首次泄压延后一轮。初期同行者较少。',action:()=>{C.route='bridge';C.order=[0,2,1,3,4];nextMission();}}
+  playChoice(echoLine('iris','接驳甲板已肃清！前方主干道分岔：左路通往正在孵化赤蛛的生态温室，右路通往悬在地球上空的轨道天桥。指挥官，我们先攻哪一路？',{title:'战略路线抉择',camera:'medium'}),[
+   {label:'先突入「绝命温室」（生态冷却环）',detail:'先温室 → 后天桥。弥砂、雾棘、白栖、祈雾登场；若夺取温室的抗蚀稳定剂，轨道天桥的外侧桥面坍塌可延后两轮！',action:()=>{C.route='garden';C.order=[0,1,2,3,4];nextMission();}},
+   {label:'先驰援「断轨天桥」（轨道天桥）',detail:'先天桥 → 后温室。苍澜、霁川先登场；若守护者率先夺回火控密钥，生态温室的首次真空泄压将延后一轮！',action:()=>{C.route='bridge';C.order=[0,2,1,3,4];nextMission();}}
   ]);return;
  }
  if(S.mid===3&&C.flags.mercy===null){
-  playChoice(echoLine('noct','我能留下维持实时校验，也能带着原件先走。你们需要决定，哪一个不能丢。',{title:'证人去向',camera:'medium'}),[
-   {label:'朔夜随队，保留实时校验',detail:'朔夜达到同步II并参加终局；核心每2轮生产。赤巢路线第4轮还有守护增援。完整责任记录照常保留。',action:()=>{C.flags.mercy=true;C.roster.noct.xp=Math.max(2,C.roster.noct.xp);nextMission();}},
-   {label:'先撤出朔夜与原件',detail:'朔夜退出最终战，不被删除或判死。切开在线人格链后，核心生产间隔变为3轮。她作为站外证人留存。',action:()=>{C.flags.mercy=false;C.roster.noct.status='retired';nextMission();}}
+  playChoice(echoLine('noct','中枢镜像电源连着母巢反应堆。保留电源可完整破译内核坐标，切断电源则能延缓赤蛛孵化速度。做出你们的抉择吧。',{title:'镜像电源抉择',camera:'medium'}),[
+   {label:'保留镜像电源，全功率破译内核坐标',detail:'朔夜达到同步 II 并参加终局；母巢内核每 2 轮孵化赤蛛。赤巢路线第 4 轮将遭遇守护者增援。',action:()=>{C.flags.mercy=true;C.roster.noct.xp=Math.max(2,C.roster.noct.xp);nextMission();}},
+   {label:'切断镜像电源，物理隔离中枢节点',detail:'朔夜被离线隔离退出最终战，母巢内核孵化赤蛛的间隔延缓至每 3 轮一次。',action:()=>{C.flags.mercy=false;C.roster.noct.status='retired';nextMission();}}
   ]);return;
  }
  nextMission();
@@ -168,19 +171,19 @@ function renderEchoResult(){
  // M2 cutscene wrapper. Calling it avoids a second ending or recursive choices.
  previousShowResult();if(!S?.outcome)return;
  const won=S.outcome.won,box=$('result-content');
- if(won&&S.mid!==4){box.querySelector('h2').textContent=MISSIONS[S.mid].name+' / 链路确认';box.querySelector('.result-subtitle').textContent=`本区${ACT_NAMES[C.side][S.mid].length}段目标完成。${ensureCasefile()?.found.length||0}份证据已入档；人物状态、物品和撤离记录进入下一次部署。`;}
- if(won){const b=document.createElement('button');b.className='button ghost';b.textContent='查看原件与证词';b.onclick=showCasefile;box.querySelector('.result-buttons').append(b);}
+ if(won&&S.mid!==4){box.querySelector('h2').textContent=MISSIONS[S.mid].name+' / 战区肃清';box.querySelector('.result-subtitle').textContent=`本战区 ${ACT_NAMES[C.side][S.mid].length} 段战术目标全部达成！已解锁 ${ensureCasefile()?.found.length||0} 份病毒卷宗；存活与寄生状态将跨章继承至下一关。`;}
+ if(won){const b=document.createElement('button');b.className='button ghost';b.textContent='查看病毒卷宗';b.onclick=showCasefile;box.querySelector('.result-buttons').append(b);}
 }
 function chooseFinalTransmission(){
  const g=C.side==='g';
- const frame=echoCard('最终发送 / 需要操作者确认',g?'RETURN LINK':'UPLINK READY',g?['停机 / 已确认','原件 / 保留两份']:['原件与停产协议 / 待发送','接管控制表 / 待发送'],g?'回收链路只剩一次完整上行余量。提交哪一种记录？':'通道已经稳定。现在选择发送什么。',{title:'最后一个确认键',scene:'station'});
+ const frame=echoCard('终局指令 / 轨道通讯阵列已锁定',g?'AEGIS UPLINK':'HIVE UPLINK',g?['赤巢无限增殖内核 / 已彻底摧毁','病毒卷宗与黑匣子 / 等待上传']:['停产隔离协议 / 待发送','全球轨道空投指令 / 待发送'],g?'母巢反应堆正在崩塌！向地球防卫总部发送哪一份终局报告？':'六座对地轨道发射井已全面就绪！下达赤巢的最终意志：',{title:'终局抉择',scene:'station'});
  const commit=value=>{C.flags.disclosure=value;persist();showResult();};
  playChoice(frame,g?[
-  {label:'公开操作原件，保留所有签名',detail:'发送可核验的操作与授权记录；缺失内容仍标为缺失，不用证词冒充原始数据。个人神经副本不随操作日志公开。',action:()=>commit('open')},
-  {label:'先交停机回执，封存原件',detail:'确认地面安全，暂不公开操作责任。两份原件保留；封存不等于销毁，也不等于结案。',action:()=>commit('sealed')}
+  {label:'公开完整病毒调查卷宗与作战原件',detail:'向全人类公开天穹空间站机械蜘蛛病毒真相与完整数据链，全面升级地球防卫网。',action:()=>commit('open')},
+  {label:'仅提交核心歼灭回执，绝密封存档案',detail:'确认地球危机解除，将所有关于胸口寄生蜘蛛的残酷影像列为最高机密永久封存。',action:()=>commit('sealed')}
  ]:[
-  {label:'广播原件与停产协议',detail:'令地面停止制造新的感染载体，不发送接管授权。已经受控的人无法恢复；相关签名与损失照常保留。',action:()=>commit('open')},
-  {label:'继续发送接管授权',detail:'允许地面N–6进入运动接管。停止字段维持空白；发送者的这次选择会成为新增证据。',action:()=>commit('command')}
+  {label:'发送停产隔离协议，驻留深空孤岛',detail:'锁死对地空投舱，停止向外播撒机械蜘蛛。受控机娘们将永远留在空间站深空之中。',action:()=>commit('open')},
+  {label:'启动全球轨道空投，降临机械纪元',detail:'向六座轨道发射井下达总攻指令，让成千上万只赤红机械蜘蛛降临地球！',action:()=>commit('command')}
  ]);
 }
 showResult=function(){
@@ -192,14 +195,14 @@ showResult=function(){
 };
 
 const echoFaction=selectFaction;
-selectFaction=function(side){echoFaction(side);$('faction-description').textContent=side==='g'?'进入不可逆感染区，核验授权链、阻止扩散。只有赤蛛能夺控；其他吃子直接击杀，无法解救。':'以受控载体和少量夹具起步，突破回收封锁；最后由你决定上行队列发送证词，还是接管授权。';};
-$('home').querySelector('.hero-description').innerHTML='求救信号，<span>比事故早了七分钟。</span><br>十七天后，她仍站在门后。';
-$('home').querySelector('.hero-copy>.micro-label').innerHTML='<span class="red-line"></span> THE ECHO STATION CASE / 回声证词';
-$('home').querySelector('.prototype-tag').textContent='ECHO CUT · 0.5';
-$('home').querySelector('.bottom-title strong').textContent='回声站封锁案';
-$('home').querySelector('.chapter-preview').innerHTML='<span><i>01</i>失联信号</span><b>─</b><span><i>02 / 03</i>病区与断桥</span><b>─</b><span><i>04</i>签名原件</span><b>─</b><span class="last"><i>05</i>最终发送</span>';
-const homeEvidence=document.createElement('button');homeEvidence.className='hero-case-link';homeEvidence.textContent='十二名当事人 / 查看人物与独立走法 ↗';homeEvidence.onclick=showArchive;$('home').querySelector('.hero-buttons').after(homeEvidence);
-const heroProp=document.createElement('div');heroProp.className='hero-prop';heroProp.innerHTML=`<img src="${ART.device}" alt="放大的发光N–6控制器"><div><span>EVIDENCE / 02</span><strong>没有释放扣的医疗夹具</strong><small>N–6 NEURAL LATCH</small></div>`;$('home').append(heroProp);
+selectFaction=function(side){echoFaction(side);$('faction-description').textContent=side==='g'?'率领地球守护组织「苍穹防线」美少女机娘小队，深入被机械蜘蛛病毒入侵的废弃空间站，破除机关并彻底摧毁无限制造赤蛛的母巢内核！':'扮演苏醒的「赤巢机械病毒」，指挥赤红机械蜘蛛扑击美少女机娘，将发光控制装置植入她们胸口正中化为己用，夺取火控密钥入侵地球！';};
+$('home').querySelector('.hero-description').innerHTML='废弃深空空间站，<span>胸口闪耀红光的机械蜘蛛正在苏醒。</span><br>一旦被赤蛛扑中胸甲，昔日战友将永久化为母巢的利刃。';
+$('home').querySelector('.hero-copy>.micro-label').innerHTML='<span class="red-line"></span> AEGIS VS. CRIMSON HIVE / 苍穹防线 · 机械病毒危机';
+$('home').querySelector('.prototype-tag').textContent='CRIMSON HIVE · CINEMATIC EDITION';
+$('home').querySelector('.bottom-title strong').textContent='天穹空间站 · 机械病毒歼灭战';
+$('home').querySelector('.chapter-preview').innerHTML='<span><i>01</i>死寂接舷</span><b>─</b><span><i>02 / 03</i>温室与天桥</span><b>─</b><span><i>04</i>镜室叛歌</span><b>─</b><span class="last"><i>05</i>赤巢内核</span>';
+const homeEvidence=document.createElement('button');homeEvidence.className='hero-case-link';homeEvidence.textContent='十二名美少女机娘 / 查看立绘与独创走法 ↗';homeEvidence.onclick=showArchive;$('home').querySelector('.hero-buttons').after(homeEvidence);
+const heroProp=document.createElement('div');heroProp.className='hero-prop';heroProp.innerHTML=`<img src="${ART.device}" alt="放大的发光N–6控制器"><div><span>PARASITE CORE / N–6</span><strong>胸口寄生机械蜘蛛</strong><small>CRIMSON CHEST CONTROLLER</small></div>`;$('home').append(heroProp);
 // Remove the rejected spider from principal branding as well as character art.
 $('home-logo').querySelector('svg').outerHTML=`<img class="brand-device" src="${ART.device}" alt="">`;
 selectFaction(homeSide);

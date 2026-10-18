@@ -1,232 +1,301 @@
-/* ECHO CUT / authored screenplay. Dialogue, documents and objective briefings
-   are separate channels. This file does not award victories or free actions. */
+/* CRIMSON HIVE / authored sci-fi cyberpunk screenplay.
+   Earth Guardian Mecha Girls vs. The Mechanical Spider Virus in a derelict orbital station.
+   Dialogue, tactical intel records, and objective briefings are separate channels. */
 const ECHO_EVIDENCE={
- signal:{number:'01',title:'早了七分钟的求救',source:'接驳网关 / 原始授时头',fact:'璃雀的求救时间为23:17。站方事故登记为23:24。两份记录的时钟来源不同，不能用“通信延迟”解释先后关系。',question:'事故发生后才有封锁，还是封锁本来就在程序里？',payoff:'镜像库中的隔离宽限值是420秒。所谓事故登记，是升级开始七分钟后才触发的上报。'},
- clamp:{number:'02',title:'没有释放扣的N–6',source:'接舷现场 / 夹具与接口记录',fact:'发光药仓外只有短固定夹，没有患者可操作的释放扣。红灯反映运动总线授权，不是心跳。',question:'医疗支架为什么能拒绝患者终止？',payoff:'“患者终止”被分类为“外部清除”。控制器拒绝停止；发布版已进行永久覆写。断电或拆除也没有恢复人格阵营的通道。'},
- dose:{number:'03',title:'撤药栏为空',source:'临床冷却环 / 医嘱回执',fact:'白栖发出的六次撤药指令都被回覆为“治疗继续”。回执沿用已撤销的医官签章；维护件也删去了旧版撤药触点。',question:'谁批准了从可逆试用到永久覆写的修改？',payoff:'生产版沿用旧签名，却删除了可逆性与停止条件，没有重新送审。零音的签字和朔夜的分类表都在同一份原件里。'},
- manifest:{number:'04',title:'空货舱，生产授权',source:'轨道输送桥 / 方舟匣货签',fact:'货签写“过滤器”，匣中却只有密钥。收货方不是港口，而是六座地面医疗制造端。回收艇被要求先放行货物。',question:'威胁地球的究竟是出站夹具，还是允许地面制造的签名？',payoff:'终局要关掉的不是一艘运输船，而是仍在签发接管授权的生产核心。'},
- signature:{number:'05',title:'两份签字，一段被删的停止条件',source:'镜像库 / 双终端校验原件',fact:'零音签署的是可手动终止的48小时试用。朔夜把患者停止归入远程清除防护。封锁令的两份签名都是真实的，发布的程序却不是原送审版本。',question:'找到负责者之后，是否还保留完整的责任记录？',payoff:'最后的发送队列需要操作者确认；签发人不会自动被替换成“未知操作员”。'},
- downlink:{number:'06',title:'六个等待确认的接收端',source:'赤巢生产区 / 上行握手',fact:'六座地面制造端已握手，等待最终队列。证词、停产协议与接管控制表是不同文件。停止新增制造不能治愈已有感染。',question:'发送原始证词和停产协议，还是让永久接管继续扩散？',payoff:'发送责任会写入记录：发送的是证词、停产表，还是接管授权，不能再混成一种文件。'}
+ signal:{
+  number:'01',
+  title:'提前七分钟的求救电报',
+  source:'A–01 接驳网关 / 先遣队黑匣子',
+  fact:'先遣侦察机娘璃雀在 23:17 发出最高级别机械病毒警报，而空间站主控台直到 23:24 才自动拉响封锁。整整七分钟的空白期里，第一批赤红机械蜘蛛已经顺着通风管爬满了接驳甲板。',
+  question:'为什么空间站防御网没有在病毒入侵的第一时间阻断甲板？',
+  payoff:'中枢镜像库的底层日志证实：赤巢病毒最先攻破了空间站的授时与门禁母线，故意延后七分钟拉响警报，把整支先遣队关死在接驳舱内逐一寄生。'
+ },
+ clamp:{
+  number:'02',
+  title:'胸口正中的赤红机械蜘蛛',
+  source:'A–01 战场扫描 / N–6 型寄生控制装置',
+  fact:'被赤蛛扑中的机娘，胸甲正中央会被八根高强度黑银机械爪死死扣住，猩红结晶体直接刺入胸口核心神经总线，双眼随即亮起刺目的红光。装甲外部没有任何手动拆卸扣。',
+  question:'一旦胸口被植入这枚发着红光的机械蜘蛛，还能把同伴救回来吗？',
+  payoff:'不可逆神经覆写。胸口控制蜘蛛一旦完成锁死，任何强行拔除或击穿都会连同机娘的核心一并引爆。战场上唯一的仁慈，是不要再让下一只赤蛛扑上来。'
+ },
+ dose:{
+  number:'03',
+  title:'生态环里的蜘蛛孵化槽',
+  source:'B–04 生态冷却环 / 培养舱监控记录',
+  fact:'原本用于维持空间站生态循环的冷却环，已被机械病毒改造成高密度赤蛛孵化池。弥砂与白栖尝试注入抗蚀稳定剂，却发现常规电磁脉冲根本无法剥离胸口控制装置。',
+  question:'赤巢病毒究竟靠什么能量在废弃空间站里无限增殖机械蜘蛛？',
+  payoff:'冷却环的所有热能都被抽往最底层的母巢反应堆——那里盘踞着一颗能够吞噬金属与算力、无限制造机械控制蜘蛛的“赤巢内核”。'
+ },
+ manifest:{
+  number:'04',
+  title:'对准地球的空投火控密钥',
+  source:'C–07 轨道天桥 / 方舟运输匣火控芯片',
+  fact:'天桥中央的方舟匣里装载的不是普通物资，而是整座空间站对地轨道空投舱的最高火控密钥。一旦落入赤巢手中，数以万计的机械控制蜘蛛将顺着重力井直接空投向地球各大城市。',
+  question:'赤巢病毒控制空间站的最终目的，只是守住这座孤岛吗？',
+  payoff:'空间站只是它的第一座孵化巢。机械病毒真正的目标是打开轨道空投通道，将全人类与所有地球防卫机娘变成胸口闪耀红光的傀儡军团。'
+ },
+ signature:{
+  number:'05',
+  title:'母巢护盾与双子神经锁',
+  source:'D–00 人格镜像库 / 架构师朔夜的核心日志',
+  fact:'初代架构师朔夜在胸口被赤蛛寄生前，曾用最后权限给母巢反应堆加装了双子电磁护盾锁：只有同时接管两座终端并切断近场链路，才能剥离赤巢内核的无敌护盾。',
+  question:'面对已经被赤蛛控制、却握有内核护盾坐标的朔夜，应当如何抉择？',
+  payoff:'保留镜像电源可获得完整的内核破盾坐标，但被强化的朔夜将现身终局死战；切断电源隔离她则能大幅延缓内核制造赤蛛的速度。'
+ },
+ downlink:{
+  number:'06',
+  title:'六座地球轨道接收井的最后倒计时',
+  source:'Ω–00 母巢反应堆 / 天基上行阵列',
+  fact:'母巢反应堆正下方的六座轨道发射井已完成充能握手。摧毁赤巢内核可彻底终结机械蜘蛛的无限增殖；反之，若赤巢守住阵列完成广播，机械病毒将永久锁死轨道防线。',
+  question:'当这场惨烈的深空战役落幕时，向地球防卫总部发送怎样的终局指令？',
+  payoff:'每一名存活、被寄生或阵亡机娘的名字都将镌刻在终局档案中。你亲手按下的确认键，将决定这座空间站化为守护人类的丰碑，还是赤巢降临的序曲。'
+ }
 };
+
 function echoLine(who,text,options={}){return{who,text,side:'C',camera:'close',kind:'dialogue',scene:SCENE_ART[S?.mid||0],...options};}
 function echoCard(caption,value,rows,text,options={}){return echoLine('iris',text,{camera:'establish',kind:'record',caption,insert:{label:caption,value,rows},...options});}
-function echoProp(who,text,rows=[],options={}){return echoLine(who,text,{kind:'macro',camera:'close',insert:{label:'N–6 / 神经接管器',value:'TREATMENT',rows},...options});}
+function echoProp(who,text,rows=[],options={}){return echoLine(who,text,{kind:'macro',camera:'close',insert:{label:'N–6 / 赤红机械蜘蛛控制装置',value:'PARASITE LOCKED',rows},...options});}
 function echoCrew(side,preferred=[]){
  for(const id of preferred){const u=S?.units.find(u=>u.char===id);if(u&&onBoard(u)&&u.side===side)return id;}
  return S?.units.find(u=>u.char&&onBoard(u)&&u.side===side)?.char||null;
 }
-function echoOrder(text,preferred=[],options={}){const id=echoCrew(C.side,preferred);return id?echoLine(id,text,options):echoCard('战术链路 / 操作预案','LINK',[],text,options);}
+function echoOrder(text,preferred=[],options={}){const id=echoCrew(C.side,preferred);return id?echoLine(id,text,options):echoCard('战术指挥链路 / 作战指令','ORDER',[],text,options);}
 function echoFriendly(id,side=C.side){const u=S?.units.find(u=>u.char===id);return !!u&&!u.dead&&u.side===side;}
 function echoAlive(id,side=C.side){const r=C?.roster[id];return !!r&&r.introduced&&r.status!=='destroyed'&&r.side===side;}
 
 function echoIntro(mid){
  const g=C.side==='g';
  const cold=[
-  echoLine('lark','门锁了。里面的人还在敲门。',{camera:'establish',recorded:true,side:'g',caption:'失联当夜 / 23:17',scene:'station',sound:'knock'}),
-  echoProp('lark','医疗组，这东西没有释放扣。回答我。',['MOTOR BUS / 外部授权','RELEASE / 无手动释放'],{recorded:true,side:'r',caption:'头盔记录 / 画面中断前',scene:'station'}),
-  echoCard('同一次事件 / 两份时间','00:07:00',['23:17:00  先遣队求救','23:24:00  站方事故登记'],'记录在这里中断。',{scene:'station',sound:'cut'})
+  echoLine('lark','这里是先遣侦察员璃雀！天穹空间站已被某种机械病毒入侵……到处都是发着红光的机械蜘蛛！',{camera:'establish',recorded:true,side:'g',caption:'失联当夜 / 23:17 求救黑匣子',scene:'station',sound:'knock'}),
+  echoProp('lark','唔……它在往我胸口装甲里钻！八根机械爪锁死了核心，拔不下来……快走，别来救我！',['CHEST CORE / 胸口正中强制植入','NEURAL BUS / 猩红神经覆写不可逆'],{recorded:true,side:'r',caption:'头盔视觉记录 / 胸口寄生瞬间',scene:'station'}),
+  echoCard('苍穹防线 · 紧急简报','ALERT',['失联坐标 / 天穹回声空间站','入侵威胁 / 赤巢机械蜘蛛病毒'],'先遣队全员失联。一旦空间站的无限增殖内核启动对地空投，机械病毒将吞噬地球。',{scene:'station',sound:'cut'})
  ];
  if(mid===0)return g?[...cold,
-  echoLine('iris','不是延迟。求救比事故登记早了七分钟。',{camera:'establish',caption:'十七天后 / 接驳甲板'}),
-  echoLine('lyra','保留原件。绛刃，看看门锁。'),
-  echoLine('akira','门锁是从我们这边锁上的。',{camera:'medium',axis:'left'}),
-  echoLine('lark','零音。你那份授权，还剩多久？',{side:'r',caption:'现场声道 / 信号不稳定'}),
-  echoLine('lyra','四十八小时。文件保证能够停止——',{axis:'left'}),
-  echoLine('lark','这里已经第十七天了。文件没有让我的手停下来。',{side:'r',sound:'pulse'}),
-  echoOrder('先接入站内链路。不要让赤蛛碰到装甲接口。',['lyra','akira','iris'],{camera:'medium'})
+  echoLine('iris','指挥官，接驳舱门打开了！热成像显示甲板上有大量机械蜘蛛反应，还有……璃雀的识别信号！',{camera:'establish',caption:'第一章 · 死寂接舷 / A–01 甲板'}),
+  echoLine('lyra','全体机娘保持警戒！看她的胸口——那只发着红光的机械蜘蛛已经彻底接管了她的中枢。'),
+  echoLine('akira','可恶，连眼睛都变成猩红色了……零音，我们还能把她胸口的蜘蛛拆下来吗？',{camera:'medium',axis:'left'}),
+  echoLine('lark','别过来……零音姐！我控制不住自己的手……一旦被红蜘蛛扑中胸口，就再也回不去了！',{side:'r',caption:'现场声道 / 神经阻尼杂音'}),
+  echoLine('lyra','听好，任何机娘绝不能被赤蛛近身扑中胸口！普通火力只能将受控者击毁，无法解救。',{axis:'left'}),
+  echoLine('lark','快拦住 H8 通道的载毒信使！它正带着病毒母本去唤醒下层巢穴的机械蜘蛛群！',{side:'r',sound:'pulse'}),
+  echoOrder('第一阶段目标：先占领 D5 接驳中继站打开通路，绝不能让赤蛛贴近我方机娘！',['lyra','akira','iris'],{camera:'medium'})
  ]:[...cold,
-  echoLine('noct','保持静止。我在发送停止指令。',{recorded:true,side:'r',caption:'隔离频道 / 失联当夜'}),
-  echoLine('lark','第六次了。',{recorded:true,side:'r'}),
-  echoCard('停止请求 / 发布版分类表','REJECTED',['REQUEST / 患者终止','CLASS / 外部清除','ACTION / 治疗继续'],'没有新的语音回覆。夹具再次闭锁。',{scene:'station',sound:'latch'}),
-  echoLine('lark','有人接舷。守护组织的识别码。',{camera:'establish',caption:'十七天后 / 接驳甲板'}),
-  echoLine('noct','如果有人来回收设备，先把协议和日志送出站。不要只交摘要。',{recorded:true,side:'r',caption:'预留指令 / 录于封锁期间'}),
-  echoLine('iris','璃雀，把手移开。我们看得见枪。',{side:'g',axis:'left'}),
-  echoLine('lark','我正在试。',{side:'r',sound:'pulse'})
+  echoLine('noct','欢迎来到赤巢的摇篮。当这枚猩红蜘蛛扣紧胸口时，痛苦与犹豫就都消失了。',{recorded:true,side:'r',caption:'赤巢母体频道 / 神经广播'}),
+  echoLine('lark','胸口的红光在跳动……地球守护者的小队已经踏进接驳甲板了。',{recorded:true,side:'r'}),
+  echoCard('赤巢母体 · 猎杀协议','ASSIMILATE',['唯一感染方式 / 赤蛛扑击机娘胸口','战术目标 / 扩大受控机娘军团'],'只有赤红机械蜘蛛能将守护者机娘转化为我方战力；其余攻击将直接摧毁目标。',{scene:'station',sound:'latch'}),
+  echoLine('lark','我看见零音和绛刃了。她们还在试图切断我们的接驳链路。',{camera:'establish',caption:'第一章 · 死寂接舷 / 赤巢视角'}),
+  echoLine('noct','用赤蛛包抄她们的侧翼，把发光的控制装置种在每一名美少女机娘的胸口正中。',{recorded:true,side:'r',caption:'母巢意志 / 战术指令'}),
+  echoLine('iris','警告！前方发现受控的璃雀和赤蛛群，她们正在护送一枚载毒信使冲向 H8！',{side:'g',axis:'left'}),
+  echoLine('lark','来吧，成为我们的一员……让赤巢的红光铺满整座空间站！',{side:'r',sound:'pulse'})
  ];
  if(mid===1)return g?[
-  echoLine('sera','先别开那道门。门后不是隔离仓，是病房。',{camera:'establish',caption:'临床冷却环 / 本地医疗频道'}),
-  echoLine('akira','地图上写的是备用仓库。',{axis:'left'}),
-  echoLine('misa','我按仓库报的修理单。不这样填，备件进不来。',{camera:'medium'}),
-  echoLine('sera','我发了六次撤药指令。六份回执都说：治疗继续。'),
-  echoProp('psalm','第七次别发语音。它把“停止”当成噪声。',['WITHDRAWAL / 空','LAST ORDER / CONTINUE'],{caption:'校准频道 / 截获'}),
-  echoLine('veil','西侧阀门的人别动。阀后面有夹具。',{axis:'left'}),
-  echoLine('misa','先恢复冷却，封住制造回路。已经被覆写的人格不能靠停药恢复。',{camera:'medium'}),
-  echoLine('sera','把每个接口的药量抄到离线记录上。一个数也别省。')
+  echoLine('sera','零音指挥官，请快一点！生态冷却环的防爆门快撑不住了，外面全是机械蜘蛛爬行的声音！',{camera:'establish',caption:'第二章 · 绝命温室 / B–04 生态冷却环'}),
+  echoLine('akira','坚持住，白栖！我们正在突入冷却环——等等，高处有狙击激光！',{axis:'left'}),
+  echoLine('misa','是原安全官雾棘和调律员祈雾！她们两个胸口都被装上了发红光的机械蜘蛛，已经彻底被病毒控制了！',{camera:'medium'}),
+  echoLine('sera','我试过所有神经解毒脉冲，都没法取下那种胸口控制装置……一旦被赤蛛咬住胸甲，人格就会被母巢永久劫持。'),
+  echoProp('psalm','别白费力气了，白栖医生。听，胸口这颗红色心脏跳得多么整齐。',['CHEST IMPLANT / 胸口核心同步率 100%','HOST STATUS / 永久归属赤巢军团'],{caption:'截获敌方频道 / 祈雾'}),
+  echoLine('veil','瞄准镜已锁定。踏入对角火线的猎物，一个都别想活着离开温室。',{axis:'left'}),
+  echoLine('misa','当心！船壳破裂导致周期性真空泄压，闪烁橙色警报的横排会在回合结束时把所有人吸进太空！',{camera:'medium'}),
+  echoLine('sera','先开启东西两侧的冷却阀，掩护弥砂前往培育台提取抗蚀稳定剂，绝不能让病毒继续孵化赤蛛！')
  ]:[
-  echoLine('psalm','控制器在用旧名单找下一具身体。名单里连撤离者都没划掉。',{camera:'establish',caption:'临床冷却环 / 校准频道'}),
-  echoLine('sera','你们要药仓样本可以。别把撤药栏再删一次。',{axis:'left'}),
-  echoProp('misa','病毒不在药液里。看它接受指令的接口。',['DOSE / 沿用上次','REVOCATION LIST / 未查询']),
-  echoLine('lark','接口拒绝了我。它只认维护员的手。'),
-  echoLine('misa','如果要借我的手，就别说这是请求。',{axis:'left'}),
-  echoLine('psalm','先把样本从自动循环里取出来。我需要看原来的停止电平。',{camera:'medium'}),
-  echoLine('sera','别让冷却停下。你们接管的还是一具需要维持的身体。')
+  echoLine('psalm','听见了吗？冷却环里还有两颗没有接入赤巢的心跳——工程师弥砂，还有医官白栖。',{camera:'establish',caption:'第二章 · 绝命温室 / 赤巢猎杀网'}),
+  echoLine('sera','祈雾，雾棘！醒一醒，你们胸口的红蜘蛛正在榨干你们的神经回路！',{axis:'left'}),
+  echoProp('misa','没用的，白栖！那枚机械蜘蛛已经焊死在她们胸甲正中了，快退到防卫哨卫后面！',['TARGET / 脉冲工兵·弥砂','OBJECTIVE / 派遣赤蛛寄生或夺取培育台']),
+  echoLine('lark','母巢需要弥砂的工程权限来加速孵化机械蜘蛛。注意，只能用赤蛛去扑击她，千万别失手杀了她！'),
+  echoLine('misa','想拿我的手去替病毒改造孵化池？做梦！启动周期性真空泄压！',{axis:'left'}),
+  echoLine('psalm','注意脚下的橙色泄压警报带。在真空抽干船舱前，把她们逼进赤蛛的捕食范围！',{camera:'medium'}),
+  echoLine('veil','对角线已由我封锁。只要她们敢迈出掩体，赤蛛就会攀上她们的胸口。')
  ];
  if(mid===2)return[
-  echoLine('vega','锁轨器还接着电。断的是我的返航许可。',{camera:'establish',caption:'轨道输送桥 / 回收艇联络'}),
-  echoLine('june','货签写着过滤器。匣子里没有一件货。'),
-  echoLine(g?'lyra':'lark','只有密钥？',{axis:'left'}),
-  echoLine('june','生产授权。收货的是地面六座医疗工厂。'),
-  echoCard('返航申请 / 三日前','DENIED',['优先项 / 授权匣交付','人员回收 / 等待复核'],'回执没有解释复核何时结束。',{scene:'bridge'}),
-  echoLine('vega','我申请过一次返航。回执说，让货先走。'),
-  echoOrder(g?'现在反过来。先把人的出口打开。':'先截住授权。不能让匣子回到生产线上。',g?['akira','lyra','iris']:['lark','june','psalm'],{camera:'medium'}),
-  echoLine('vega',C.flags.sampleOwner==='g'?'冷却剂起效了。我能把外侧桥再稳住一会儿。':'没有稳定剂。外侧桥每次校验都在掉螺栓。',{camera:'establish'})
+  echoLine('vega','这里是突击艇驾驶员苍澜！轨道天桥外侧结构正在崩塌，下面就是地球大气层！',{camera:'establish',caption:'第三章 · 断轨天桥 / C–07 轨道天桥'}),
+  echoLine('june','看天桥中央的那只方舟运输匣——里面装着空间站对地空投舱的最高火控密钥！'),
+  echoLine(g?'lyra':'lark','对地空投火控密钥？！',{axis:'left'}),
+  echoLine('june','没错！如果赤巢拿到密钥，就能把成千上万只机械控制蜘蛛直接空投到地球各大都市！'),
+  echoCard('轨道天桥 · 坍塌警报','CRITICAL',['核心争夺目标 / 方舟火控密钥','环境高危机制 / 外侧桥面周期坍塌'],'击破或接管运输匣即可夺取密钥。必须先占领对应轨道锁，才能将密钥送入交付口！',{scene:'bridge'}),
+  echoLine('vega','我已经把回收艇顶在天桥北端了！不论付出什么代价，绝不能让病毒把机械蜘蛛投向地球！'),
+  echoOrder(g?'掩护运输匣向北端撤离！同时抢占北端轨道锁，准备接收火控密钥！':'全军突击！截杀运输匣夺取火控密钥，接管南端轨道锁打开对地空投通道！',g?['akira','lyra','iris']:['lark','june','psalm'],{camera:'medium'}),
+  echoLine('vega',C.flags.sampleOwner==='g'?'幸好我们在温室拿到了抗蚀稳定剂，天桥外侧装甲还能多撑两轮！':'糟了，没有温室的抗蚀稳定剂，外侧桥面很快就会坠入地球轨道！',{camera:'establish'})
  ];
  if(mid===3)return[
-  echoLine('ruby','姓名在授权表第一行。签字也在。零音，别先把这一页翻过去。',{camera:'establish',caption:'人格镜像库 / 隔离官录证'}),
-  echoLine('lyra','我签的是限时试用。原件附有手动终止条款。',{axis:'left'}),
-  echoLine('noct','生产版没有重新送审。签名是旧版的，程序不是。'),
-  echoLine('ruby','封锁令呢？两个人的签名都在。也不是伪造。',{axis:'left'}),
-  echoLine('lyra','我们以为病区出现了另一种感染。'),
-  echoLine('noct','我看见他们拔掉支架，才签了封锁。那会毁掉接口。我没有给他们留下停药的出口。'),
-  echoLine('psalm','舱门自检码。两短，一长：门后还有人。璃雀一直在敲这个。',{sound:'knock',camera:'medium'}),
-  echoCard('原件读取 / 双端校验','READ ONLY',['隔离宽限 / 420秒','签名页 / 两份','既有感染 / 不可逆'],'这里没有可以靠一段摘要结案的文件。',{scene:'archive'}),
-  echoOrder('开门。先读两份签名，再把原件的运行状态校验出来。',g?['iris','lyra']:['june','lark'],{camera:'medium'})
+  echoLine('ruby','站住。这里是天穹站中枢镜像库，通往母巢反应堆的最后一道防线。',{camera:'establish',caption:'第四章 · 镜室叛歌 / D–00 中枢神经镜像库'}),
+  echoLine('lyra','隔离官绯律，连你也……还有架构师朔夜！你们胸口正中全都被植入了红色机械蜘蛛！',{axis:'left'}),
+  echoLine('noct','零音，当第一批赤蛛攻破中枢时，我原本想用电磁门把自己和病毒一起封死在这里。'),
+  echoLine('ruby','但赤巢内核的力量超出了想象。它顺着装甲缝隙爬上我们的胸口，用红光改写了我们的效忠对象。',{axis:'left'}),
+  echoLine('lyra','朔夜，母巢反应堆的无限增殖内核究竟要怎么摧毁？一定有破除护盾的办法！'),
+  echoLine('noct','反应堆外围笼罩着绝对护盾。只有打开镜室电磁门，从同步座读取我留下的双子破盾协议，你们才有一线生机。'),
+  echoLine('psalm','但现在的朔夜属于赤巢。谁想读取她的镜像中枢，就得先跨过我们的炮火与刀锋！',{sound:'knock',camera:'medium'}),
+  echoCard('中枢镜像库 · 破盾协议','LOCKED',['第一阶段 / 占领终端开启中央电磁门','决胜阶段 / 同步双终端并固守中央同步座'],'注意：终端控制权必须同时保持两轮轮末结算，一旦中途失守，同步进度将立即归零！',{scene:'archive'}),
+  echoOrder('冲破电磁门！哪怕昔日的同伴挡在面前，也要夺取破除母巢护盾的唯一钥匙！',g?['iris','lyra']:['june','lark'],{camera:'medium'})
  ];
- const noct=C.flags.mercy?echoLine('noct','停止制造不会逆转已有覆写。终止工厂，也不会让我们变回从前。',{recorded:true,caption:'镜像库 / 原始技术记录'}):echoCard('镜像节点 / 电源隔离','OFFLINE',['原件 / 静态副本保留','在线校验 / 已停止','感染阵营 / 未改变'],'镜像电源切断了。朔夜没有恢复；主生产核心仍在工作。',{scene:'reactor'});
+ const noct=C.flags.mercy?echoLine('noct','我的镜像电源仍在线。内核每一次制造赤蛛的脉冲间隙，都会暴露在你们的准星之下——或是成为我猎杀你们的号角。',{recorded:true,caption:'母巢中枢 / 实时神经链路'}):echoCard('镜像节点 / 电源已切断','ISOLATED',['架构师朔夜 / 已离线封存','内核制造速度 / 减缓至每 3 轮一次'],'镜像电源已被强行切断。朔夜不再参战，母巢内核制造赤蛛的频率大幅下降。',{scene:'reactor'});
  return g?[
-  echoLine('iris','六座地面生产端都在等最后一份签名。这里不是装船工位。',{camera:'establish',caption:'赤巢生产区 / 上行链路'}),
-  echoLine('misa','切电以前，先隔离生产指令链。已经寄生的夹具不会因此解除控制。'),
-  echoLine('sera','先阻止地面出现下一例。不要用“停产”冒充“治愈”。',{axis:'left'}),
-  echoLine('lyra','我的签名还在文件上。留着它。不要因为我在这里，就改成未知操作员。'),
+  echoLine('iris','这就是空间站最深处的母巢反应堆……看正北方那颗巨大的猩红核心，它正在源源不断地制造机械蜘蛛！',{camera:'establish',caption:'最终章 · 赤巢零点 / Ω–00 母巢反应堆'}),
+  echoLine('misa','只要那颗“赤巢内核”还在运转，机械蜘蛛就会无限增殖！一旦让它完成对地轨道充能，地球就彻底完了！'),
+  echoLine('sera','那些被植入胸口控制蜘蛛的同伴们正守在内核周围……我们已经没法救回她们，只能正面突围了！',{axis:'left'}),
+  echoLine('lyra','苍穹防线全体机娘听令：今天我们就算流尽最后一滴冷却液，也要把这颗机械病毒内核彻底砸碎！'),
   noct,
-  echoLine('vega','回收艇在外环。这一次，返航申请不再发给这座站。',{camera:'medium'}),
-  echoOrder('把两路读头接上。我们先停掉生产，再处理这份记录。',['lyra','iris','akira'],{camera:'establish'})
+  echoLine('vega','外环回收艇已就位！只要你们同步两座终端、切开近场护盾并击碎E8的赤巢内核，我立刻带幸存者回家！',{camera:'medium'}),
+  echoOrder('决战开始！先夺取外围链路，同步B6与G6双终端破除内核护盾，一举摧毁赤巢内核！',['lyra','iris','akira'],{camera:'establish'})
  ]:[
-  echoLine('psalm','六个地面端口都回答了。它们能收到停产表，也能收到新的控制表。',{camera:'establish',caption:'赤巢生产区 / 上行握手'}),
-  echoLine('lark','先把通道保到能发送的时候。'),
-  echoLine('june','发送前留一份原件。不能到了我们这里，就只剩摘要。',{axis:'left'}),
-  echoLine('sera','别再拿许可当作治愈承诺。你们的覆写没有返回键。',{recorded:true,side:'g',caption:'接入前 / 医疗频道录音'}),
+  echoLine('psalm','母巢反应堆已全面苏醒！六座对地轨道空投井正在等待最后的充能广播！',{camera:'establish',caption:'最终章 · 赤巢零点 / 母巢决战'}),
+  echoLine('lark','地球守护者的残余机娘杀进反应堆了，她们想关闭双终端、摧毁我们的无限增殖内核！'),
+  echoLine('june','内核每数轮就会孵化出新的赤红机械蜘蛛。只要用赤蛛扑向她们的胸口，人类的王牌也会变成赤巢的利刃！',{axis:'left'}),
+  echoLine('sera','住手吧！如果让机械蜘蛛降临地球，千百万人都会变成失去自我的傀儡！',{recorded:true,side:'g',caption:'接入前 / 守护者公共频道'}),
   noct,
-  echoLine('lyra','证词可以谈，接管控制表不行。我会阻断授权。',{recorded:true,side:'g',caption:'接入前 / 守护者最后通告',axis:'left'}),
-  echoOrder('他们开始切链路了。先守住生产区的入口。',['lark','psalm','june'],{camera:'medium'})
+  echoLine('lyra','守护者全员突击！哪怕只剩最后一人，也绝不允许赤巢向地球发射一枚蜘蛛荚舱！',{recorded:true,side:'g',caption:'接入前 / 零音指挥官最后通告',axis:'left'}),
+  echoOrder('撕碎守护者的封锁线，占领上行终端启动对地广播，死守母巢内核直到第十二轮结束！',['lark','psalm','june'],{camera:'medium'})
  ];
 }
 
 function echoTransition(mid,stage,side){
  const g=side==='g';
  if(mid===0&&stage===1)return g?[
-  echoLine('iris','网关恢复。我收到两份授时回复，正好差七分钟。',{camera:'establish'}),
-  echoLine('lyra','哪一份能追到原始时钟？',{axis:'left'}),
-  echoLine('iris','站内那份被重新签过。截住信使，或者从D8中继读出原始授时头。',{kind:'record',insert:{label:'证据01 / 授时头已入档',value:'−07:00',rows:['先遣记录 / 23:17','事故登记 / 23:24']}})
+  echoLine('iris','D5 接驳门禁已攻破！但敌方载毒信使正在全速冲向 H8 逃生口！',{camera:'establish'}),
+  echoLine('lyra','绝不能让它把病毒坐标传给下层巢穴！能追上就击毁它，追不上就立刻占领 D8 中继站强行截断信号！',{axis:'left'}),
+  echoLine('iris','情报已锁定：只要夺下 D8 并拦截信使（或固守 D8 完成信号覆写），就能彻底封死这片甲板！',{kind:'record',insert:{label:'情报01 / 病毒先遣黑匣子',value:'LOCKED',rows:['先遣求救 / 23:17','封锁延迟 / 7分钟空白期']}})
  ]:[
-  echoLine('lark','信使越过第一道灯带。封锁还没跟上。',{camera:'establish'}),
-  echoLine('iris','它在向站外复制。截住它。',{side:'g',axis:'left'}),
-  echoLine('lark','把原始时间也带走。不要再让网关替它授时。',{kind:'record',insert:{label:'证据01 / 授时头已入档',value:'23:17',rows:['目的地 / 站外备份','记录类型 / 原始帧']}})
+  echoLine('lark','第一道封锁线已突破！掩护载毒信使继续向 H8 推进！',{camera:'establish'}),
+  echoLine('iris','她们想把病毒母本送出接驳区，快拦住那个信使！',{side:'g',axis:'left'}),
+  echoLine('lark','同时用赤蛛扑击落单的机娘，或者抢占 D8 中继站建立站外备份！',{kind:'record',insert:{label:'情报01 / 母巢扩张指令',value:'SPREAD',rows:['信使目标 / H8 逃生口','寄生目标 / 守护者机娘']}})
  ];
  if(mid===0&&stage===2)return g?[
-  echoOrder(charter(S,'lark')?.dead?'璃雀停止移动了。记录载体损毁。':'中继切断了。她的枪口没有放下。',['akira','lyra','iris'],{camera:'establish'}),
-  echoLine('iris','外网已经断开，覆写仍在继续。这里没有解除控制的操作。'),
-  echoProp('iris','N–6。它出现在医疗验收单上，不是安保物资。',['批次 / N–6','用途登记 / 神经支架','手动释放 / 缺失'])
+  echoOrder(charter(S,'lark')?.dead?'璃雀倒下了……对不起，我们没能找到拆下胸口蜘蛛的方法。':'信号已截断！但璃雀胸口的红色机械蜘蛛仍在发光，她还在向我们开火！',['akira','lyra','iris'],{camera:'establish'}),
+  echoLine('iris','北侧撤离通道已解锁！大家小心，这种胸口寄生装置一旦锁死就无法逆转，不要恋战！'),
+  echoProp('iris','扫描确认：N–6 型赤红机械蜘蛛直接焊死在胸甲正中央，只能将敌方击毁或迅速撤向北侧出口！',['植入位置 / 胸口正中央装甲','控制状态 / 猩红神经永久劫持','解除方式 / 无（不可解救）'])
  ]:[
-  echoLine('lark','备份出去了。门口还有人在打关门手势。',{camera:'establish'}),
-  echoLine('noct','能动的载体先撤收。不要让自动封锁替你决定谁留下。',{recorded:true,caption:'撤收预案 / 封锁前录音'}),
-  echoCard('甲板撤收 / 两处新通道','OPEN',['北侧撤收门 / 已解锁','离板后 / 本区不可召回'],'通道已经打开。守在门上的夹具不会自行离开。')
+  echoLine('lark','病毒种子已经送出！北侧撤收通道打开了！',{camera:'establish'}),
+  echoLine('noct','将所有受控机娘与赤蛛撤往北侧通道，把这群守护者引向更深处的陷阱。',{recorded:true,caption:'母巢指令 / 战略转移'}),
+  echoCard('甲板撤收 / 北侧通道开启','OPEN',['撤收出口 / C8 与 F8 已解锁','战术规则 / 撤离单位跨章保留'],'迅速将受控机娘送入北侧撤离格完成章节！')
  ];
  if(mid===1&&stage===1)return g?[
-  echoLine('misa','泵在转，停药队列却一个都没少。',{camera:'establish'}),
-  echoLine('sera','回执用的是我的签章。我已经撤销那张证书了。'),
-  echoProp('psalm','它不查撤销表。它只重复最后一次“继续”。',['REVOCATION / BYPASSED','LAST ORDER / CONTINUE'])
+  echoLine('misa','冷却阀已重启！但孵化槽里的机械蜘蛛还在涌出，抗蚀稳定剂就在中央培育台！',{camera:'establish'}),
+  echoLine('sera','白栖明白！掩护弥砂靠近培育台，千万注意脚下闪烁的真空泄压横排！'),
+  echoProp('psalm','你们以为拿到稳定剂，就能救回胸口已经种下红蜘蛛的同伴吗？太天真了。',['CHEST CORE / 猩红脉冲锁定','REVERSAL / 零解救可能'])
  ]:[
-  echoLine('psalm','样本已离开自动循环。病毒在接口层，不在药液里。',{camera:'establish'}),
-  echoLine('misa','那就别毁接口。把维护权限给我。',{axis:'left'}),
-  echoLine('lark','它只认你的手。我的所有请求都被拒绝了。')
+  echoLine('psalm','抗蚀稳定剂已经暴露！绝不能让弥砂毁掉我们的蜘蛛孵化池！',{camera:'establish'}),
+  echoLine('misa','休想靠近培育台！只要我还站着，就绝不会给赤巢调整孵化参数！',{axis:'left'}),
+  echoLine('lark','用赤蛛包抄弥砂，把控制蜘蛛种在她胸口，让她亲手为我们改造培育台！')
  ];
  if(mid===1&&stage===2)return g?[
-  echoLine('misa','冷却稳定。能停止制造药仓了，但不能救回已经覆写的人。',{camera:'establish'}),
-  echoLine('sera','先记录每个接口的药量。我不接受一行“全部正常”。'),
-  echoLine('veil','镜头还开着。你们做的这一遍，我也会留下。',{axis:'left'})
+  echoLine('misa','成功拿到抗蚀稳定剂了！现在只要双阀归属我方，让我或工程单位在 E4/E5 执行回路隔离就能彻底封死孵化池！',{camera:'establish'}),
+  echoLine('sera','干得漂亮！虽然没法逆转已被寄生的同伴，但至少能阻止数千只新赤蛛诞生！'),
+  echoLine('veil','别高兴得太早。在你们完成隔离前，我的狙击线会先洞穿你们的胸甲。',{axis:'left'})
  ]:[
-  echoLine('misa','生产电平已经校准。旧的人格副本不在这个接口里。',{camera:'establish'}),
-  echoLine('lark','我们只改隔离路由。'),
-  echoLine('misa','这句话我留在记录里。',{axis:'left'})
+  echoLine('misa','唔……胸口好烫……红光……已经接入我的工程总线了……',{camera:'establish'}),
+  echoLine('lark','弥砂已归入赤巢！现在占领双阀，让受控的弥砂在培育台旁覆写隔离回路！'),
+  echoLine('misa','遵命，母巢……正在将整座冷却环转化为机械蜘蛛增殖池。',{axis:'left'})
  ];
  if(mid===2&&stage===1)return g?[
-  echoLine('iris','收货地没有港口号。只有六串工厂证书。',{camera:'establish'}),
-  echoLine('june','地面早就能生产N–6。站里只负责签发授权。'),
-  echoLine('vega','北端锁还在拒绝返航。把授权匣送到读头前。',{camera:'medium'})
+  echoLine('iris','火控密钥已锁定！苍澜，天桥外侧的装甲板正在大面积剥落！',{camera:'establish'}),
+  echoLine('june','把密钥交出来！母巢需要用它打开对地空投舱，向地球播撒赤红蜘蛛！'),
+  echoLine('vega','休想！快占领北端轨道锁（C7 或 F7），掩护携带密钥的同伴冲向北侧交付口！',{camera:'medium'})
  ]:[
-  echoLine('june','货签写着替换耗材。它不是第一次出站。',{camera:'establish'}),
-  echoLine('lyra','没有这份密钥，地面端就不能启动生产。',{axis:'left'}),
-  echoLine('lark','那就别让密钥回到原来的链路上。')
+  echoLine('june','已截获方舟火控密钥的坐标！只要打开南端轨道锁，就能把机械蜘蛛大军空投向地球！',{camera:'establish'}),
+  echoLine('lyra','绝不允许你们把病毒投向人类城市！全员死守轨道锁！',{axis:'left'}),
+  echoLine('lark','撕开她们的防线！夺下 C2 或 F2 轨道锁，护送密钥冲进南端交付口！')
  ];
  if(mid===2&&stage===2)return g?[
-  echoLine('vega','北端锁开了。保持它在线，我才能接回携带者。',{camera:'establish'}),
-  echoLine('june','收货签名取到了。下一份原件，在镜像库。'),
-  echoOrder('我看着桥。携带者先过。',['akira','lyra','iris'],{camera:'medium'})
+  echoLine('vega','北端轨道锁已接通！回收舱门完全打开了！',{camera:'establish'}),
+  echoLine('june','可恶，她们要带走火控密钥了——快在桥头截杀携带者！'),
+  echoOrder('最后冲刺！护送携带密钥的单位踏入 D8 或 E8 交付口，彻底锁死对地空投井！',['akira','lyra','iris'],{camera:'medium'})
  ]:[
-  echoLine('lark','南端接受了密钥。能把这份授权带离主网了。',{camera:'establish'}),
-  echoLine('june','别拿新签名覆盖旧的。我已经见过一次。'),
-  echoLine('vega','余下的人走中央道。外侧已经不是桥。',{camera:'medium'})
+  echoLine('lark','南端轨道锁已由赤巢接管！对地空投井正在预热！',{camera:'establish'}),
+  echoLine('june','只要把火控密钥送进 D1 或 E1 交付口，地球的防空网将在瞬间瘫痪！'),
+  echoLine('vega','快拦住她们！绝不能让密钥抵达南端桥头！',{camera:'medium'})
  ];
  if(mid===3&&stage===1)return[
-  echoLine('ruby','镜像库不是坏了。有人把它改成了只写不读。',{camera:'establish'}),
-  echoLine('noct','是我锁的。每次读取，都会触发远程清除申请。'),
-  echoCard('清除申请 / 原始发起类型','PATIENT STOP',['患者终止 → 外部清除','防护动作 → 拒绝请求'],'被挡在门外的，是患者自己的停止指令。',{scene:'archive'})
+  echoLine('ruby','中央电磁门已经打开了。但你们看到的，只会是赤巢不可逆转的真相。',{camera:'establish'}),
+  echoLine('noct','母巢内核把所有受控机娘的胸口装置连成了同一张护盾网。想破除反应堆护盾，就必须读取我的中枢记录。'),
+  echoCard('中枢镜像库 · 电磁门已开启','OPEN',['同步终端 / B5 与 G5','核心要求 / 夺取破盾坐标或保全架构师'],'中央通道已洞开！准备争夺两座镜像终端与中央同步座！',{scene:'archive'})
  ];
  if(mid===3&&stage===2)return[
-  echoLine('noct','生产版分类表是我改的。患者发出的停止，被归进了外部清除。',{camera:'establish'}),
-  echoLine('lyra','我签的附件里，停止权不能被覆盖。你没有送审这个版本。',{axis:'left'}),
-  echoLine('ruby','两份签字都在。把完整文件校验出来，再讨论责任。'),
-  echoLine('noct','保持两路读头稳定。断一次，校验就得重来。',{camera:'medium'})
+  echoLine('noct','双终端已进入同步序列！注意，必须在两座终端同属己方的前提下，派人在中央同步座连续固守两个回合结算！',{camera:'establish'}),
+  echoLine('lyra','只要中途丢掉任意一座终端，或者同步座上的人被击退，破盾校验就会中断归零！',{axis:'left'}),
+  echoLine('ruby','我绝不会让你们轻易完成两轮固守。隔山打牛的炮火已经瞄准中央座了！'),
+  echoLine('noct','守住最后两轮结算，母巢反应堆的大门就会彻底向胜者敞开！',{camera:'medium'})
  ];
  if(mid===4&&stage===1)return g?[
-  echoLine('iris','第一路接上了。地面还没开机，却已经领到了试用许可。',{camera:'establish'}),
-  echoLine('misa','两路读头一起稳定。只切一路，另一边会把它接回去。'),
-  echoLine('sera','让下一条生产线停在感染发生之前。已经发生的，不能撤销。',{axis:'left'})
+  echoLine('iris','外围防线已突破！我们已经切入母巢反应堆的内环阵列了！',{camera:'establish'}),
+  echoLine('misa','看 B6 和 G6 那两座主终端——必须同时接管它们，才能切断赤巢内核的第一层能量罩！'),
+  echoLine('sera','大家当心，内核每隔数轮就会从孵化槽里造出新的赤红蜘蛛，别让它们近身！',{axis:'left'})
  ]:[
-  echoLine('lark','第一批补充夹具上线。封锁线也在往里收。',{camera:'establish'}),
-  echoLine('psalm','不能只守着制造槽。他们在切返回路径。'),
-  echoOrder('先拿下火线，才有地方接上行读头。',['lark','june','ruby'],{camera:'medium'})
+  echoLine('lark','第一批新生赤红蜘蛛已从内核孵化上线！将守护者压制在外环！',{camera:'establish'}),
+  echoLine('psalm','不能只被动防守！突破她们的阵线，向南推进抢占上行链路！'),
+  echoOrder('全军反击！用赤蛛寄生她们的精锐，夺取 B3 与 G3 节点！',['lark','june','ruby'],{camera:'medium'})
  ];
  if(mid===4&&stage===2)return g?[
-  echoLine('misa','外锁同步。剩下运动总线，得在核心旁边断。',{camera:'establish'}),
-  echoLine('noct','制造槽的灭灯间隙接受停产电平。那不是受控者恢复的窗口。'),
-  echoProp('misa','先停掉它。原件照常保留。',['生产终止触点 / 已重接','近场操作 / 等待执行'])
+  echoLine('misa','B6 与 G6 双终端已同步！现在只剩最后一道近场锁——派一名机娘到内核近场区（D7/E7/D6/E6）执行切断操作！',{camera:'establish'}),
+  echoLine('noct','只要切开近场制造总线，赤巢内核的无敌护盾就会彻底瓦解！'),
+  echoProp('misa','准备近场破盾！一旦护盾消失，立刻集火击碎 E8 的赤巢内核！',['内核护盾 / 等待近场切断','最终目标 / 摧毁 E8 赤巢内核'])
  ]:[
-  echoLine('psalm','外向频道还在封锁。我们需要一个能接受本站签名的终端。',{camera:'establish'}),
-  echoLine('lark','拿下一路，接上读头。'),
-  echoLine('june','我在记录。拿到通道，不等于可以改写经过。',{axis:'left'})
+  echoLine('psalm','南侧封锁线已撕开！对地轨道上行阵列就在眼前！',{camera:'establish'}),
+  echoLine('lark','同时控制 B6 与 G6，或者抢占南侧 B3 与 G3 双节点，并在 D4/E4/D5/E5 启动对地广播！'),
+  echoLine('june','只要广播启动并守住母巢内核直到第十二轮结束，赤巢就将迎来永恒的胜利！',{axis:'left'})
  ];
  if(mid===4&&stage===3)return g?[
-  echoLine('misa','近场链切开了。外围夹具还有缓存，别贴着它们走。',{camera:'establish'}),
-  echoOrder('守住读头。我去让制造槽停下来。',['akira','lyra','iris']),
-  echoCard('生产核心 / 最后授权','UNLOCKED',['护盾 / 双终端持续维持','制造槽 / 仍在运转'],'核心不再拒绝停机。现在还差最后一步。',{scene:'reactor'})
+  echoLine('misa','近场制造链已切断！E8 赤巢内核的无敌护盾彻底消失了！',{camera:'establish'}),
+  echoOrder('保持 B6 与 G6 双终端处于我方控制，全员突击 E8，彻底摧毁赤巢内核！',['akira','lyra','iris']),
+  echoCard('赤巢无限增殖内核 / 护盾已破除','VULNERABLE',['破盾前提 / 维持 B6 与 G6 双终端归属守护者','决胜一击 / 攻击并摧毁 E8 赤巢内核'],'最后一步！在机械蜘蛛海淹没我们之前，给 E8 的赤巢内核致命一击！',{scene:'reactor'})
  ]:[
-  echoLine('psalm','上行同步锁住了。最后一段校验还在跑。',{camera:'establish'}),
-  echoLine('june','原件、停产表、控制表都在队列里。发什么，不能再交给默认值。'),
-  echoOrder('等链路稳定。确认键留给我们自己。',['lark','psalm','june'],{camera:'medium'})
+  echoLine('psalm','对地轨道广播已全面激活！六座空投发射井进入最后倒计时！',{camera:'establish'}),
+  echoLine('june','守住 E8 的母巢内核！只要撑过第十二轮结束，或者歼灭所有残余守护者，胜利就属于赤巢！'),
+  echoOrder('筑起最后防线！绝不让任何一名守护者机娘靠近我们的母巢核心！',['lark','psalm','june'],{camera:'medium'})
  ];
- return[echoOrder('链路状态改变。核对新的任务卡。',[],{camera:'establish'})];
+ return[echoOrder('战场态势已更新，请核对最新阶段作战目标！',[],{camera:'establish'})];
 }
 
 function echoEndingInfo(){
  const people=Object.entries(C.roster).filter(([id,r])=>r.introduced&&r.status!=='destroyed'&&r.side===C.side),n=people.length;
  const choice=C.flags.disclosure||(C.side==='r'?(C.flags.mercy?'open':'command'):'sealed');
- if(C.side==='r')return choice==='open'?{title:'停产条件',code:'ENDING / THE STOP CONDITION',text:'上行队列发送了原件与停产表，没有发送接管授权。六个地面制造端停止新增感染；已经受控的人没有恢复。朔夜的修改记录与零音的签字都被保留。阻止下一例，不会改写上一例的结局。'}:{title:'默认继续',code:'ENDING / CONTINUE BY DEFAULT',text:'接管授权进入地面生产端。“停止”字段仍然为空。这一次，空白不是发布时的遗漏，而是发送前作出的选择。新的确认时间，也被霁川的取证程序写进了原件。'};
- if(n<=3)return{title:`返航确认：${n}人`,code:'ENDING / RETURN MANIFEST',text:`制造核心已经停机。战役内仅有${n}名机娘被确认仍属守护者且载体留存。其余个体的受控、未归队或永久损毁状态原样保留，没有统一改写成“任务完成”。${choice==='open'?'公开文件也没有删去这一页。':'这份名单与原件一起进入封存。'}`};
- if(choice==='open'&&C.flags.packetOwner==='g'&&C.flags.liveSignature!==false)return{title:'原件送达',code:'ENDING / ORIGINAL RECEIVED',text:'接驳原始包、医嘱回执、货签与签名页完成交叉校验。地面收到的是完整操作记录，不是设备故障摘要。调查正式接收材料；它没有因此承诺任何人会被原谅。'};
- if(choice==='open')return{title:'未闭合的证据链',code:'ENDING / INCOMPLETE CHAIN',text:'原件已公开，但接驳原始包或可复现的在线校验链未能完整保留。现场证词与可核验日志被分栏保存，缺口没有用推测补齐。停产不等于治愈；调查也没有因此完成。'};
- return{title:'封存件第零号',code:'ENDING / SEALED COPY ZERO',text:'地面收到停机回执，原始记录暂时封存。回执上的“设备故障”没有得到所有人的签字。两份原件的校验值仍然相同；封存没有自动变成销毁，也没有替任何人结案。'};
+ if(C.side==='r')return choice==='open'?{
+  title:'停产条件',
+  code:'ENDING / THE HIVE RESTRAINT',
+  text:'母巢守住了天穹空间站，但在最后的轨道广播中，受控的机娘们选择了发送“停产与隔离协议”而非对地空投指令。地球免于被机械蜘蛛吞噬，而空间站化作一座孤悬深空的钢铁巢穴——胸口闪耀红光的机娘们将永远留在这片星海之中。'
+ }:{
+  title:'默认继续',
+  code:'ENDING / CRIMSON ECLIPSE',
+  text:'随着第十二轮倒计时归零，赤巢母体通过六座轨道发射井向地球全面发送了接管与空投指令。数以万计发着红光的机械控制蜘蛛如流星雨般坠入大气层，一个由赤巢意志统合的机械纪元正式降临。'
+ };
+ if(n<=3)return{
+  title:`返航确认：${n}人`,
+  code:'ENDING / LONE SURVIVORS',
+  text:`赤巢无限增殖内核在烈焰中彻底粉碎，机械蜘蛛海终于停止了蠕动。然而整场惨烈的深空战役过后，仅有 ${n} 名机娘仍保持人类守护者阵营并活着登上返航突击艇。那些胸口亮起红光或长眠于深空的同伴名字，将永远刻在苍穹防线的纪念碑上。`
+ };
+ if(choice==='open'&&C.flags.packetOwner==='g'&&C.flags.liveSignature!==false)return{
+  title:'原件送达',
+  code:'ENDING / AEGIS TRIUMPH · ORIGINAL RECEIVED',
+  text:'赤巢无限增殖内核被彻底摧毁！先遣黑匣子、抗蚀稳定剂、方舟火控密钥与中枢破盾记录全部完整带回地球总部。苍穹防线不仅拯救了人类世界，更凭完整证据链彻底清除了地面潜伏的病毒受体，英雄机娘们迎着黎明凯旋归航！'
+ };
+ if(choice==='open')return{
+  title:'未闭合的证据链',
+  code:'ENDING / BITTERSWEET DAWN',
+  text:'赤巢内核已被成功摧毁，空间站的机械蜘蛛群全面瘫痪，地球危机解除。但部分先遣黑匣子或在线镜像数据在激战中遗失，关于机械病毒最初如何渗透空间站的调查仍将继续。幸存的机娘们望着蔚蓝地球，立誓守护来之不易的和平。'
+ };
+ return{
+  title:'封存件第零号',
+  code:'ENDING / SEALED PROTOCOL ZERO',
+  text:'赤巢内核在爆炸中化为灰烬，天穹空间站被永久爆破封存。零音指挥官向地球防卫总部提交了核心歼灭报告，并将所有关于胸口寄生蜘蛛的残酷影像锁入最高机密档案。危机已在深空中终结，地面上的人们永远不必知晓那场噩梦。'
+ };
 }
+
 function echoEndingFrames(){
- const g=C.side==='g',open=C.flags.disclosure==='open',end=echoEndingInfo();
+ const g=C.side==='g',open=C.flags.disclosure==='open';
  const lost=Object.entries(C.roster).filter(([id,r])=>r.status==='destroyed').map(([id])=>CHAR[id].name);
  if(!g&&!open)return[
-  echoCard('地面生产端 / 发送确认','CONTINUE',['接管授权 / 已发送','患者终止 / 空字段','确认方式 / 主动提交'],'这一次，“继续”不是系统默认。',{scene:'reactor',sound:'latch'}),
-  echoAlive('june')?echoLine('june','新文件存了两份。旧的也还在。',{scene:'archive',remote:true}):echoCard('自动取证程序 / 只写追加','APPENDED',['原始文件 / 保留','新授权 / 另建记录'],'新的发送时间已经写入原件。',{scene:'archive'}),
-  echoProp('psalm','校验通过。',['GROUND LINK / 06 ONLINE','TREATMENT / CONTINUE'],{kind:'macro',scene:'reactor',caption:'生产回执 / 非人工语音',systemVoice:true,sound:'pulse'})
+  echoCard('轨道空投阵列 / 全面发射','CONTINUE',['对地空投井 / 06 座全部开启','赤红机械蜘蛛荚舱 / 正在突入大气层','母巢指令 / 全面接管地球防卫网'],'成千上万枚发着红光的机械蜘蛛划破夜空，向着蔚蓝的地球倾泻而下。',{scene:'reactor',sound:'latch'}),
+  echoAlive('june')?echoLine('june','轨道轨迹已全部锁定。很快，地面上所有的姐妹都会在胸口戴上这枚美丽的红宝石。',{scene:'archive',remote:true}):echoCard('母巢自动广播 / 全球覆盖','EXPANDING',['近地轨道 / 已占领','地面防线 / 正在同化'],'没有任何防空火力能阻挡赤巢的降临。',{scene:'archive'}),
+  echoProp('psalm','听啊，整颗星球的心跳，都和我们胸口的红光同步了。',['EARTH UPLINK / 06 ONLINE','CRIMSON HIVE / ETERNAL'],{kind:'macro',scene:'reactor',caption:'赤巢母体 / 终局共鸣',systemVoice:true,sound:'pulse'})
  ];
  if(!g)return[
-  echoCard('地面生产端 / 文件收讫','RECEIVED',['停产协议 / 已发送','接管控制表 / 未发送','既有感染 / 无法恢复'],'六个端口停止接收新的接管生产任务。',{scene:'station'}),
-  echoAlive('noct')?echoLine('noct',C.flags.mercy?'我会说明每一条改过的分类。原件不用等我同意才公开。':'原件的静态副本还在。隔离不会删掉我的修改记录。',{scene:'archive',remote:true}):echoCard('原件 / 签名页保留','NO REDACTION',['签发人 / 原样保留','缺席者 / 按实际状态记录'],'没有签名被替换成未知操作员。',{scene:'archive'}),
-  echoAlive('psalm')?echoLine('psalm','生产线停了。胸口的灯没有灭。不要把这两件事写成一件。',{scene:'garden',remote:true}):echoCard('校准记录 / 停止声道','STOP',['新增制造 / 停止','已有覆写 / 不可逆'],'停产回执没有填写任何一名患者已经获救。',{scene:'garden'}),
-  echoCard('地面生产线 / 最后一槽','HALTED',['自检码 / 两短，一长','本批次制造 / 未执行'],'两短，一长。随后，没有新的夹具落进收集槽。',{scene:'station',kind:'exit',sound:'knock'})
+  echoCard('母巢广播队列 / 停产隔离协议','RECEIVED',['对地空投井 / 已锁死关闭','无限增殖内核 / 停止向外扩张','在站受控机娘 / 永久驻留深空'],'六座轨道发射井在最后一刻停止了空投。赤巢保住了空间站，却放过了脚下的地球。',{scene:'station'}),
+  echoAlive('noct')?echoLine('noct',C.flags.mercy?'我们守住了自己的栖身之地，但没有必要把地球也变成地狱。让人类留在蓝天下吧。':'即使在离线封存前，我也把最后一道防火墙留在了地球轨道外。',{scene:'archive',remote:true}):echoCard('空间站外环 / 自我封锁','ISOLATED',['轨道高度 / 推升至深空','对地通道 / 永久物理熔断'],'天穹空间站脱离近地轨道，化作深空中的寂静孤岛。',{scene:'archive'}),
+  echoAlive('psalm')?echoLine('psalm','胸口的红光还在闪烁，但至少……我们不用再向地面上的姐妹举起武器了。',{scene:'garden',remote:true}):echoCard('赤巢频段 / 静默守望','SILENT',['新增寄生 / 已终止','受控机娘 / 留守空间站'],'机械蜘蛛群退回了反应堆深处。',{scene:'garden'}),
+  echoCard('天穹回声站 / 外环气闸','HALTED',['自检信号 / 两短，一长','轨道状态 / 永久静默'],'两短，一长。在冰冷的星海深处，胸口闪耀红光的少女们闭上了眼睛。',{scene:'station',kind:'exit',sound:'knock'})
  ];
  return[
-  echoCard(open?'地面接收回执 / 原件':'地面接收回执 / 封存','RECEIVED',[open?'提交类型 / 操作原件':'提交类型 / 停机摘要',C.flags.packetOwner==='g'?'接驳原始包 / 可核验':'接驳原始包 / 尚缺'],'第一份回覆不是慰问，是要求补交校验值。',{scene:'station'}),
-  echoAlive('iris','g')?echoLine('iris',open?'两份原件都在。没有省略任何签字页。':'回执只写设备故障。我没有在这四个字下面签名。',{scene:'bridge',remote:true}):echoCard('离线审计副本 / 校验一致','COPY 02',['副本一 / 保留','副本二 / 保留'],'缺席者的取证记录没有被删除。',{scene:'bridge'}),
-  echoAlive('lyra','g')?echoLine('lyra',open?'把我的停职申请附在后面。先交病人的记录。':'封存条款没有销毁授权。把这句也写进回执。',{scene:'station',remote:true}):echoCard('现场签发人 / 真实状态','ON RECORD',['签名页 / 保留','人员状态 / 按战役实况登记'],'未到场，不会被填写成免责。',{scene:'station'}),
-  echoCard('回收清单 / 不省略空缺',lost.length?'INCOMPLETE':'CONFIRMED',[`永久损毁 / ${lost.join('、')||'无'}`,'受控与未归队 / 另栏保留'],lost.length?'回收单没有把这些名字折到背面。':'回收单逐项核对。没有用一个总数代替个体状态。',{scene:'station'}),
-  echoCard('回收艇 / 舱门内侧','OPEN',['舱门 / 由内侧解锁','自检码 / 两短，一长'],'这一次，门由里面打开。',{scene:'station',kind:'exit',sound:'knock'})
+  echoCard(open?'苍穹防线总部 / 凯旋回执':'苍穹防线总部 / 绝密封存','RECEIVED',[open?'提交类型 / 完整破译档案与病毒样本':'提交类型 / 核心歼灭与S级封存令',C.flags.packetOwner==='g'?'先遣黑匣子 / 已完整回收':'先遣黑匣子 / 激战中损毁'],'随着E8赤巢内核轰然崩塌，遍布空间站的机械蜘蛛在同一瞬间熄灭了红光。',{scene:'station'}),
+  echoAlive('iris','g')?echoLine('iris',open?'全部作战日志与病毒母本分析已上传总部！地球防卫网已经针对赤蛛完成了全面升级！':'封存指令已确认。天穹空间站的残骸将由轨道炮彻底汽化，绝不留下一只活体蜘蛛。',{scene:'bridge',remote:true}):echoCard('战术通信黑匣子 / 自动归档','SAVED',['核心爆破画面 / 已确认','病毒扩散风险 / 归零'],'最后一段遥测信号确认：赤巢内核已彻底灰飞烟灭。',{scene:'bridge'}),
+  echoAlive('lyra','g')?echoLine('lyra',open?'任务完成了。看着脚下万家灯火的地球……我们没有辜负苍穹防线的誓言。':'把牺牲与受控姐妹的铭牌收好。这场深空噩梦，由我们亲手画上句号。',{scene:'station',remote:true}):echoCard('指挥官铭牌 / 战果确认','VICTORY',['赤巢无限增殖内核 / 已彻底摧毁','地球轨道威胁 / 完全解除'],'即便指挥官倒在了黎明前，她开辟的道路依然通向胜利。',{scene:'station'}),
+  echoCard('返航突击艇 · 人员清点',lost.length?'MEMORIAL':'ALL CLEAR',[`光荣阵亡 / ${lost.join('、')||'无'}`,'被寄生者与失踪者 / 镌刻于星海纪念碑'],lost.length?'每一名未能返航的机娘名字，都化作了守护人类夜空的星辰。':'幸存的机娘们互相搀扶着走入突击艇，蔚蓝的地球就在舷窗前方。',{scene:'station'}),
+  echoCard('返航突击艇 / 推进器点火','OPEN',['舱门状态 / 锁定返航','目标航向 / 地球家园'],'突击艇脱离燃烧的空间站，向着蔚蓝色的地球家园全速返航。',{scene:'station',kind:'exit',sound:'knock'})
  ];
 }

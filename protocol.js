@@ -1,9 +1,9 @@
 /* M7 irreversible capture law. The engine is authoritative for both AI and player.
    No purification, revival, disarm-to-rescue, or reverse faction conversion. */
-ACT_NAMES.g[0]=['接入静默甲板','截取原始授时','撤离封锁甲板'];
-ACT_NAMES.g[3]=['开启镜像读口','取出双份签名','守住校验窗口'];
-ACT_NAMES.r[3]=['打开镜室','保全受控校验员','维持镜像写入'];
-ACT_NAMES.g[4][2]='近场切断生产链';
+ACT_NAMES.g[0]=['攻破接驳门禁','截获病毒信使','突入北侧通道'];
+ACT_NAMES.g[3]=['开启中枢电磁门','夺取双子镜像终端','固守同步座破译护盾'];
+ACT_NAMES.r[3]=['开启中枢电磁门','保全受控架构师朔夜','固守同步座锁定中枢'];
+ACT_NAMES.g[4][2]='近场切断增殖总线';
 
 const protocolBoard=renderBoard;
 renderBoard=function(){
@@ -39,10 +39,10 @@ const protocolAdvance=advanceMission;
 advanceMission=function(){
  if(!S?.outcome?.won||S.mid!==3||C.flags.mercy!==null){protocolAdvance();return;}
  const g=C.side==='g',noct=C.roster.noct;
- const frame=echoCard('镜像库 / 电源去向','LIVE STATE',['原始签名页 / 已读取','在线校验 / 仍在运行','感染 / 不可逆'],'拿走文件，不等于保留了它运行时的状态。镜像电源还要不要留？',{title:'留电，还是断电',scene:'archive'});
+ const frame=echoCard('中枢镜像库 / 破盾抉择','CORE LINK',['破盾协议 / 已读取','母巢内核 / 正在加速孵化赤蛛','胸口寄生状态 / 不可逆'],'中枢镜像电源直接连着母巢反应堆。要保留镜像在线以获取完整破盾脉冲，还是立刻切断电源延缓赤蛛孵化？',{title:'留电破译，还是断电封锁',scene:'archive'});
  playChoice(frame,[
-  {label:'保留在线状态，取得完整校验链',detail:`保留可复现的运行态证据，核心仍每2轮生产。${g?'存活的朔夜仍是赤巢敌人，会强化后出现在终章。':'存活的朔夜强化并继续参战，但第4轮会有守护增援。'}已死亡者不会复活。`,action:()=>{C.flags.mercy=true;C.flags.liveSignature=true;if(noct.status==='active')noct.xp=Math.max(2,noct.xp);nextMission();}},
-  {label:'切断电源，隔离镜像节点',detail:'核心生产间隔改为3轮；朔夜若存活则被封存在离线节点，不参加终章，阵营不变且没有获救。静态签名页保留，但失去可复现的在线校验链。',action:()=>{C.flags.mercy=false;C.flags.liveSignature=false;if(noct.status==='active')noct.status='retired';nextMission();}}
+  {label:'保留镜像电源，全功率破译内核坐标',detail:`保留可复现的在线破译链，母巢内核维持每 2 轮孵化赤蛛。${g?'存活的朔夜仍是赤巢强敌，将升至同步 II 在终章迎战。':'存活的朔夜升至同步 II 继续参战，但第 4 轮将遭遇守护者精锐增援。'}已阵亡者不会复活。`,action:()=>{C.flags.mercy=true;C.flags.liveSignature=true;if(noct.status==='active')noct.xp=Math.max(2,noct.xp);nextMission();}},
+  {label:'切断镜像电源，物理隔离中枢节点',detail:'母巢内核的赤蛛孵化间隔延缓至每 3 轮一次；存活的朔夜将被封存在离线镜室中不再参战（阵营不变且无法解救）。静态破盾坐标保留，但失去在线破译链。',action:()=>{C.flags.mercy=false;C.flags.liveSignature=false;if(noct.status==='active')noct.status='retired';nextMission();}}
  ]);
 };
 
