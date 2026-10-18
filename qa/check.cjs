@@ -7,12 +7,12 @@ const fs=require('fs'),path=require('path'),assert=require('assert/strict');
 let pw;try{pw=require('playwright')}catch(e){pw=require(process.env.PLAYWRIGHT_PACKAGE||'/tmp/control-qa/node_modules/playwright')}
 const ROOT=path.resolve(__dirname,'..'),url=require('url').pathToFileURL(path.join(ROOT,'index.html')).href;
 const results=[],runtimeErrors=[],networkRequests=[];let browser;
-async function recycleBrowser(){if(browser)await browser.close();browser=await pw.chromium.launch({headless:true,args:['--no-sandbox']});}
+async function recycleBrowser(){if(browser)await browser.close();browser=await pw.chromium.launch({headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});}
 async function check(name,fn){try{const details=await fn();results.push({name,pass:true,details:details||null});console.log('PASS',name)}catch(e){results.push({name,pass:false,error:e.message});console.error('FAIL',name,e.message)}}
 async function newPage(viewport={width:1440,height:1080}){const c=await browser.newContext({viewport,reducedMotion:'reduce'}),p=await c.newPage();p.on('pageerror',e=>runtimeErrors.push(e.message));p.on('crash',()=>runtimeErrors.push('Browser renderer crashed: '+p.url()));p.on('request',r=>{if(/^https?:/.test(r.url()))networkRequests.push(r.url())});return p;}
 async function fixture(p,id,side,mutate){await p.evaluate(({id,side})=>{const q=window.__MV_QA__;q.mission(id,side);const f=q.snapshot();q.load(f.c,f.s)}, {id,side});if(mutate)await p.evaluate(mutate);}
 (async()=>{
- browser=await pw.chromium.launch({headless:true,args:['--no-sandbox']});
+ browser=await pw.chromium.launch({headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
  const normal=await newPage();await normal.goto(url);
  await check('Normal offline entrypoint / real UI starts game',async()=>{await normal.locator('#start-btn').click();assert.equal(await normal.locator('#cinema').isVisible(),true);await normal.locator('#skip-story').click();assert.equal(await normal.locator('.cell').count(),64);assert.equal(await normal.locator('.stage-pill').count(),3);return{cells:64,acts:3};});
  await check('Normal UI portrait pieces are materially larger',async()=>{const box=await normal.locator('[data-x="2"][data-y="7"] .token').boundingBox();assert.ok(box.width>=85&&box.height>=90);return{width:box.width,height:box.height};});

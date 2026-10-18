@@ -1,5 +1,5 @@
 {
-  "html_sha256": "898bed0f241ad65d32d6451922665f6b8fd51225d3638ea13d7625f3aab37f7b",
+  "html_sha256": "4304b1b7d50aa38a44df4d8a93c8ef0a09f41d1ed414212bd8cc08e754cd7877",
   "milestone": "M8",
   "date": "2026-10-18",
   "mode": "offline file:// + opt-in #qa deterministic fixtures",
@@ -17,16 +17,16 @@
       "name": "Normal UI portrait pieces are materially larger",
       "pass": true,
       "details": {
-        "width": 94.6334228515625,
-        "height": 98.03125
+        "width": 94.59375,
+        "height": 102.484375
       }
     },
     {
       "name": "Pieces can zoom to 175 percent without overflowing the page",
       "pass": true,
       "details": {
-        "baseWidth": 94.6334228515625,
-        "maxWidth": 176.3421630859375
+        "baseWidth": 94.59375,
+        "maxWidth": 173.34375
       }
     },
     {
@@ -316,7 +316,7 @@
       "name": "Both rewritten routes introduce all eighteen actors and separate scenes from objective cards",
       "pass": true,
       "details": {
-        "openingFramesAcrossBothRoutes": 72,
+        "openingFramesAcrossBothRoutes": 75,
         "actors": 18
       }
     },
@@ -391,7 +391,7 @@
       "details": {
         "track": "cyberpunk-city",
         "duration": 142.61328125,
-        "outputRMS": 0.014125653363337737
+        "outputRMS": 0.014247159581042404
       }
     },
     {
@@ -400,7 +400,7 @@
       "details": {
         "track": "irregular",
         "duration": 196.36359375,
-        "outputRMS": 0.11064482157543477
+        "outputRMS": 0.0781796416078702
       }
     },
     {

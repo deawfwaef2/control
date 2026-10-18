@@ -1,13 +1,11 @@
-#!/usr/bin/env python3
-"""Generate clean and darkened high-glow infected WebP portraits for all 18 Mecha-Girls.
-Infected state darkens the character figure markedly so the glowing red chest-center
-mechanical spider and glowing red eyes pop with dramatic chiaroscuro contrast.
+"""Generate and composite natural, high-precision 2D anime controlled portraits.
+Preserves crisp facial features while rendering:
+1. Luminous crimson anime irises at the exact pixel-verified iris coordinates (with catchlight).
+2. The RE5-style glowing red mechanical spider anchored dead-center on the chest armor.
 """
-from __future__ import annotations
-
+from pathlib import Path
 import json
 import math
-from pathlib import Path
 from PIL import Image, ImageChops, ImageDraw, ImageEnhance, ImageFilter
 
 ROOT = Path(__file__).resolve().parent
@@ -15,173 +13,168 @@ ASSETS = ROOT / "assets"
 SPEC_PATH = ROOT / "art-neon.json"
 
 
-def load_spec() -> dict:
-    return json.loads(SPEC_PATH.read_text(encoding="utf-8"))
-
-
-def find_perspective_coeffs(src_pts, dst_pts):
-    matrix = []
-    rhs = []
-    for (x, y), (u, v) in zip(dst_pts, src_pts):
-        matrix.append([x, y, 1, 0, 0, 0, -u * x, -u * y])
-        matrix.append([0, 0, 0, x, y, 1, -v * x, -v * y])
-        rhs.extend([u, v])
-    n = 8
-    for i in range(n):
-        pivot = max(range(i, n), key=lambda r: abs(matrix[r][i]))
-        matrix[i], matrix[pivot] = matrix[pivot], matrix[i]
-        rhs[i], rhs[pivot] = rhs[pivot], rhs[i]
-        div = matrix[i][i]
-        for j in range(i, n):
-            matrix[i][j] /= div
-        rhs[i] /= div
-        for r in range(n):
-            if r != i:
-                factor = matrix[r][i]
-                for j in range(i, n):
-                    matrix[r][j] -= factor * matrix[i][j]
-                rhs[r] -= factor * rhs[i]
-    return rhs
-
-
-def remove_dark_backdrop(img: Image.Image) -> Image.Image:
-    rgba = img.convert("RGBA")
-    px = rgba.load()
+def remove_dark_backdrop(rgba: Image.Image) -> Image.Image:
+    """Convert the dark background of device.webp into clean alpha."""
+    out = Image.new("RGBA", rgba.size)
+    src = rgba.load()
+    dst = out.load()
     w, h = rgba.size
     for y in range(h):
         for x in range(w):
-            r, g, b, a = px[x, y]
+            r, g, b, a = src[x, y]
             lum = max(r, g, b)
-            red_bias = r - max(g, b)
-            if lum < 24 and red_bias < 12:
-                px[x, y] = (r, g, b, 0)
-            elif lum < 52 and red_bias < 18:
-                alpha = int((lum - 24) / 28 * a)
-                px[x, y] = (r, g, b, max(0, min(a, alpha)))
-    return rgba
+            red_dom = max(0, r - max(g, b))
+            edge_dx = min(x, w - 1 - x) / max(1.0, w * 0.12)
+            edge_dy = min(y, h - 1 - y) / max(1.0, h * 0.12)
+            edge = min(1.0, edge_dx, edge_dy)
+            if lum < 22 and red_dom < 12:
+                alpha = 0
+            elif lum < 56 and red_dom < 24:
+                alpha = int((lum - 22) / 34.0 * 210 * edge)
+            else:
+                alpha = int(min(255, max(lum * 2.2, 185 + red_dom)) * edge)
+            dst[x, y] = (r, g, b, max(0, min(255, alpha)))
+    return out
 
 
-def quad_center(quad):
-    return (
-        sum(p[0] for p in quad) / 4.0,
-        sum(p[1] for p in quad) / 4.0,
-    )
+def add_eye_emission(base_rgba: Image.Image, eyes) -> Image.Image:
+    """Recolor each anime iris at its exact (x, y, rx, ry) into luminous crimson with a crisp white catchlight."""
+    w, h = base_rgba.size
+    out = base_rgba.copy()
+    pix = out.load()
+
+    # Subtle crimson iris sheen strictly inside the eye socket
+    sheen = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    sd = ImageDraw.Draw(sheen)
+    for x, y, rx, ry in eyes:
+        sd.ellipse(
+            (x - rx * 0.95, y - ry * 0.85, x + rx * 0.95, y + ry * 0.85),
+            fill=(255, 18, 48, 175),
+        )
+    sheen = sheen.filter(ImageFilter.GaussianBlur(radius=2.2))
+    out = Image.alpha_composite(out, sheen)
+    pix = out.load()
+
+    for x, y, rx, ry in eyes:
+        irx = max(8.0, float(rx) * 1.05)
+        iry = max(7.0, float(ry) * 1.05)
+        x0 = max(0, int(x - irx - 2))
+        x1 = min(w - 1, int(x + irx + 2))
+        y0 = max(0, int(y - iry - 2))
+        y1 = min(h - 1, int(y + iry + 2))
+        for py in range(y0, y1 + 1):
+            for px in range(x0, x1 + 1):
+                dx = (px - x) / irx
+                dy = (py - y) / iry
+                d2 = dx * dx + dy * dy
+                if d2 > 1.0:
+                    continue
+                dist = math.sqrt(d2)
+                r, g, b, a = pix[px, py]
+                # Strength smoothly tapers at the outer edge of the iris
+                wgt = (1.0 - dist) ** 0.55
+                # Inner ruby ring vs darker crimson pupil center
+                if dist < 0.34:
+                    tr, tg, tb = 225, 14, 34
+                else:
+                    tr, tg, tb = 255, 22, 48
+                nr = int(r * (1.0 - wgt * 0.88) + tr * (wgt * 0.88))
+                ng = int(g * (1.0 - wgt * 0.86) + tg * (wgt * 0.86))
+                nb = int(b * (1.0 - wgt * 0.86) + tb * (wgt * 0.86))
+                pix[px, py] = (
+                    max(0, min(255, nr)),
+                    max(0, min(255, ng)),
+                    max(0, min(255, nb)),
+                    255,
+                )
+
+    # Crisp anime catchlight + lower crimson crescent inside each iris
+    hi = ImageDraw.Draw(out)
+    for x, y, rx, ry in eyes:
+        hx = x - rx * 0.32
+        hy = y - ry * 0.30
+        hi.ellipse((hx - 2.2, hy - 1.8, hx + 2.2, hy + 1.8), fill=(255, 245, 248, 245))
+        hi.ellipse((x - rx * 0.35, y + ry * 0.15, x + rx * 0.35, y + ry * 0.52), fill=(255, 85, 110, 185))
+
+    return out
 
 
-def draw_chest_veins(size, quad) -> Image.Image:
-    layer = Image.new("RGBA", size, (0, 0, 0, 0))
-    draw = ImageDraw.Draw(layer)
-    cx, cy = quad_center(quad)
-    w = max(p[0] for p in quad) - min(p[0] for p in quad)
-    h = max(p[1] for p in quad) - min(p[1] for p in quad)
-    rays = [
-        (-0.68, -0.58), (-0.34, -0.78), (0.34, -0.78), (0.68, -0.58),
-        (-0.85, -0.14), (0.85, -0.14), (-0.70, 0.44), (0.70, 0.44),
-        (-0.28, 0.82), (0.28, 0.82), (0.0, -0.88), (0.0, 0.88),
-    ]
-    for dx, dy in rays:
-        p1 = (cx + dx * w * 0.16, cy + dy * h * 0.16)
-        p2 = (cx + dx * w * 0.44 + dy * 10, cy + dy * h * 0.42 - dx * 8)
-        p3 = (cx + dx * w * 0.72, cy + dy * h * 0.68)
-        draw.line([p1, p2, p3], fill=(255, 28, 56, 215), width=5)
-        draw.line([p1, p2, p3], fill=(255, 190, 200, 155), width=2)
-    return layer.filter(ImageFilter.GaussianBlur(1.5))
+def make_infected(clean_img: Image.Image, device_rgba: Image.Image, cfg: dict) -> Image.Image:
+    w, h = clean_img.size
+    # Keep facial features crisp and attractive with subtle dark-ambient atmosphere
+    darkened = ImageEnhance.Brightness(clean_img).enhance(0.76)
+    darkened = ImageEnhance.Color(darkened).enhance(0.84)
+    darkened = ImageEnhance.Contrast(darkened).enhance(1.06)
+    base = darkened.convert("RGBA")
 
-
-def draw_red_eyes(size, eyes) -> Image.Image:
-    glow = Image.new("RGBA", size, (0, 0, 0, 0))
-    core = Image.new("RGBA", size, (0, 0, 0, 0))
-    flare = Image.new("RGBA", size, (0, 0, 0, 0))
-    gdraw = ImageDraw.Draw(glow)
-    cdraw = ImageDraw.Draw(core)
-    fdraw = ImageDraw.Draw(flare)
-    for x, y, ew, eh in eyes:
-        gdraw.ellipse((x - ew * 2.4, y - eh * 2.2, x + ew * 2.4, y + eh * 2.2), fill=(255, 12, 38, 235))
-        gdraw.ellipse((x - ew * 1.4, y - eh * 1.3, x + ew * 1.4, y + eh * 1.3), fill=(255, 60, 85, 255))
-        fdraw.line([(x - ew * 2.6, y), (x + ew * 2.6, y)], fill=(255, 95, 120, 210), width=3)
-        cdraw.ellipse((x - ew * 0.78, y - eh * 0.68, x + ew * 0.78, y + eh * 0.68), fill=(255, 95, 115, 255))
-        cdraw.ellipse((x - ew * 0.38, y - eh * 0.36, x + ew * 0.38, y + eh * 0.36), fill=(255, 245, 248, 255))
-    glow = glow.filter(ImageFilter.GaussianBlur(9))
-    flare = flare.filter(ImageFilter.GaussianBlur(2.5))
-    core = core.filter(ImageFilter.GaussianBlur(1.0))
-    return Image.alpha_composite(Image.alpha_composite(glow, flare), core)
-
-
-def warp_device(device_img: Image.Image, canvas_size, quad) -> Image.Image:
-    src = [(0, 0), (device_img.width, 0), (device_img.width, device_img.height), (0, device_img.height)]
-    coeffs = find_perspective_coeffs(src, [tuple(p) for p in quad])
-    return device_img.transform(canvas_size, Image.Transform.PERSPECTIVE, coeffs, Image.Resampling.BICUBIC)
-
-
-def make_infected(clean: Image.Image, device_img: Image.Image, cfg: dict) -> Image.Image:
-    w, h = clean.size
-    # Darken the character figure substantially ("显得人物更暗一点") so the glowing
-    # chest-center spider and glowing red eyes pop dramatically against the dark silhouette.
-    desat = ImageEnhance.Color(clean).enhance(0.45)
-    base = ImageEnhance.Brightness(desat).enhance(0.48)
-    base = ImageEnhance.Contrast(base).enhance(1.22).convert("RGBA")
-
-    # Deep cold-cyberpunk shadow wash + dark vignette, with a bright crimson point-light
-    # radiating strictly from the chest-center spider device.
     quad = cfg["device_quad"]
-    cx, cy = quad_center(quad)
-    qw = max(p[0] for p in quad) - min(p[0] for p in quad)
-    qh = max(p[1] for p in quad) - min(p[1] for p in quad)
+    xs = [p[0] for p in quad]
+    ys = [p[1] for p in quad]
+    x0, x1 = int(min(xs)), int(max(xs))
+    y0, y1 = int(min(ys)), int(max(ys))
+    cx = (x0 + x1) // 2
+    cy = (y0 + y1) // 2
+    bw = max(40, x1 - x0)
+    bh = max(40, y1 - y0)
 
-    # Darken outer portrait further while illuminating chest area with eerie red bounce light
-    dark_mask = Image.new("RGBA", (w, h), (4, 6, 14, 115))
-    light_cut = ImageDraw.Draw(dark_mask)
-    light_cut.ellipse((cx - qw * 0.95, cy - qh * 0.85, cx + qw * 0.95, cy + qh * 0.85), fill=(28, 4, 10, 45))
-    dark_mask = dark_mask.filter(ImageFilter.GaussianBlur(36))
-    base = Image.alpha_composite(base, dark_mask)
+    # Subtle contact shadow under the chest spider
+    shadow = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    sd = ImageDraw.Draw(shadow)
+    sd.ellipse(
+        (cx - int(bw * 0.44), cy - int(bh * 0.42), cx + int(bw * 0.44), cy + int(bh * 0.44)),
+        fill=(6, 2, 5, 145),
+    )
+    shadow = shadow.filter(ImageFilter.GaussianBlur(radius=14))
+    base = Image.alpha_composite(base, shadow)
 
-    # Intense red bloom radiating from the chest-center spider
+    # Focused ruby glow around the spider's central core on the chest
     chest_glow = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-    gdraw = ImageDraw.Draw(chest_glow)
-    gdraw.ellipse((cx - qw * 0.88, cy - qh * 0.82, cx + qw * 0.88, cy + qh * 0.82), fill=(255, 10, 36, 165))
-    gdraw.ellipse((cx - qw * 0.52, cy - qh * 0.50, cx + qw * 0.52, cy + qh * 0.50), fill=(255, 48, 72, 225))
-    chest_glow = chest_glow.filter(ImageFilter.GaussianBlur(26))
+    gd = ImageDraw.Draw(chest_glow)
+    gd.ellipse(
+        (cx - int(bw * 0.38), cy - int(bh * 0.36), cx + int(bw * 0.38), cy + int(bh * 0.36)),
+        fill=(255, 22, 56, 95),
+    )
+    gd.ellipse(
+        (cx - int(bw * 0.18), cy - int(bh * 0.18), cx + int(bw * 0.18), cy + int(bh * 0.18)),
+        fill=(255, 65, 95, 140),
+    )
+    chest_glow = chest_glow.filter(ImageFilter.GaussianBlur(radius=16))
     base = Image.alpha_composite(base, chest_glow)
 
-    veins = draw_chest_veins((w, h), quad)
-    base = Image.alpha_composite(base, veins)
+    # Paste the mechanical spider dead-center on the chest
+    dev_resized = device_rgba.resize((bw, bh), Image.Resampling.LANCZOS)
+    dev_layer = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    dev_layer.paste(dev_resized, (x0, y0), dev_resized)
+    base = Image.alpha_composite(base, dev_layer)
 
-    warped = warp_device(device_img, (w, h), quad)
-    alpha = warped.split()[3]
-    shadow = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-    shadow_alpha = alpha.filter(ImageFilter.GaussianBlur(8))
-    shadow.putalpha(ImageEnhance.Brightness(shadow_alpha).enhance(0.92))
-    base = Image.alpha_composite(base, ImageChops.offset(shadow, 0, 6))
-    base = Image.alpha_composite(base, warped)
+    # Bright ruby core highlight at the center of the spider carapace
+    core_hi = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    cd = ImageDraw.Draw(core_hi)
+    cr = max(9, int(min(bw, bh) * 0.085))
+    cd.ellipse((cx - cr * 1.7, cy - cr * 1.7, cx + cr * 1.7, cy + cr * 1.7), fill=(255, 35, 68, 130))
+    cd.ellipse((cx - cr * 0.75, cy - cr * 0.75, cx + cr * 0.75, cy + cr * 0.75), fill=(255, 225, 235, 215))
+    core_hi = core_hi.filter(ImageFilter.GaussianBlur(radius=3.2))
+    base = Image.alpha_composite(base, core_hi)
 
-    # Super-bright glowing ruby core dead-center on the spider + specular energy rings
-    core_bloom = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-    cdraw = ImageDraw.Draw(core_bloom)
-    cdraw.ellipse((cx - qw * 0.24, cy - qh * 0.22, cx + qw * 0.24, cy + qh * 0.22), fill=(255, 30, 58, 235))
-    cdraw.ellipse((cx - qw * 0.12, cy - qh * 0.11, cx + qw * 0.12, cy + qh * 0.11), fill=(255, 165, 180, 255))
-    cdraw.ellipse((cx - qw * 0.055, cy - qh * 0.055, cx + qw * 0.055, cy + qh * 0.055), fill=(255, 250, 252, 255))
-    core_bloom = core_bloom.filter(ImageFilter.GaussianBlur(6))
-    base = Image.alpha_composite(base, core_bloom)
-
-    eyes = draw_red_eyes((w, h), cfg["eyes"])
-    base = Image.alpha_composite(base, eyes)
+    # Recolor the exact irises to glowing crimson
+    base = add_eye_emission(base, cfg["eyes"])
     return base.convert("RGB")
 
 
 def main():
-    spec = load_spec()
+    spec = json.loads(SPEC_PATH.read_text(encoding="utf-8"))
     device_path = ASSETS / "device.webp"
     device_raw = Image.open(device_path).convert("RGBA")
     device_clean = remove_dark_backdrop(device_raw)
-    device_clean = ImageEnhance.Contrast(device_clean).enhance(1.28)
-    device_clean = ImageEnhance.Brightness(device_clean).enhance(1.12)
+    device_clean = ImageEnhance.Contrast(device_clean).enhance(1.22)
+    device_clean = ImageEnhance.Brightness(device_clean).enhance(1.08)
 
     for char_id, cfg in spec["portraits"].items():
         clean_path = ASSETS / f"{char_id}.webp"
         out_path = ASSETS / f"{char_id}_infected.webp"
         clean_img = Image.open(clean_path).convert("RGB")
         infected = make_infected(clean_img, device_clean, cfg)
-        infected.save(out_path, "WEBP", quality=90, method=6)
+        infected.save(out_path, "WEBP", quality=80, method=6)
         print(f"composited {out_path.name} ({infected.size[0]}x{infected.size[1]})")
 
 
