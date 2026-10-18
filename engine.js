@@ -1,7 +1,7 @@
 function newCampaign(side){
  runId++; busy=false; selected=null; undoStack=[];
  C={version:1,side,step:0,order:[0,1,2,3,4],route:null,roster:{},flags:{packetOwner:null,sampleOwner:null,keyOwner:null,mercy:null},history:[],stats:{moves:0,enemyMoves:0,conversions:0,rescues:0,losses:0},finished:false};
- for(const id of Object.keys(CHAR)) C.roster[id]={side:['lyra','akira','misa'].includes(id)?'g':'r',status:'active',xp:0,introduced:false};
+ for(const id of Object.keys(CHAR)) C.roster[id]={side:CHAR[id].origin||(['lyra','akira','misa'].includes(id)?'g':'r'),status:'active',xp:0,introduced:false};
  openMission(0,true);
 }
 function unitAt(s,x,y){return s.units.find(u=>onBoard(u)&&u.x===x&&u.y===y);}
@@ -23,7 +23,7 @@ function spawn(s,kind,side,x,y,char=null,uid=null){
 }
 function makeMission(id){
  const s={mid:id,round:1,phase:'player',spent:0,aiBudget:0,aiDone:0,limit:MISSIONS[id].limit,holdTarget:9,units:[],walls:[],voids:[],doors:[],relays:[],loot:[],exits:[{x:7,y:0,side:'r'},{x:0,y:7,side:'g'}],delivery:[],logs:[],serial:1,flags:{conversionsG:[],conversionsR:[],courierEscaped:false,delivered:null,gatesOpen:false,survived:false},counts:{g:0,r:0},captureSeen:{},events:[],outcome:null,lastMove:null,collapsed:false,collapseAt:C.flags.sampleOwner==='g'?6:4,ventStart:C.flags.keyOwner==='g'?4:3,spawnEvery:C.flags.mercy===false?3:2};
- const reveal=id===0?['lyra','akira','lark']:id===1?['misa','veil']:id===3?['noct']:[];
+ const reveal=[...(id===0?['lyra','akira','lark']:id===1?['misa','veil']:id===3?['noct']:[]),...Object.entries(EXTRA_CAST).filter(([cid,d])=>d.debut===id||C.history.some(h=>h.mid===d.debut)).map(([cid])=>cid)];
  reveal.forEach(cid=>C.roster[cid].introduced=true);
  if(id===0){s.walls=['3,3','4,3','3,4','4,4'];s.relays=[{x:3,y:0,owner:null,name:'中继站'}];}
  if(id===1){s.walls=['2,2','5,2','2,5','5,5'];s.relays=[{x:1,y:1,owner:null,name:'西冷却阀'},{x:6,y:1,owner:null,name:'东冷却阀'}];s.loot.push({id:'sample',name:'温室样本',x:4,y:3,carrier:null,side:null,lost:false});}
@@ -72,6 +72,12 @@ function legalMoves(s,u,mode='move'){
   case'knight':leaps(KNIGHT);if(level)leaps(DIAG.map(([x,y])=>[2*x,2*y]));break;
   case'bishop':rays(DIAG,7);if(level)leaps(DIR4);break;
   case'camel':leaps(CAMEL);if(level)leaps(DIR4);break;
+  case'nightrider':for(const[dx,dy]of KNIGHT)for(let n=1;n<=(level?3:2);n++){const x=u.x+dx*n,y=u.y+dy*n;if(blocked(s,x,y)||!add(x,y))break;}break;
+  case'medic':for(const[dx,dy]of DIR4)for(let n=1;n<=(level?2:1);n++){const x=u.x+dx*n,y=u.y+dy*n;if(blocked(s,x,y)||unitAt(s,x,y))break;add(x,y,false,true);}for(const[dx,dy]of DIAG)add(u.x+dx,u.y+dy,true,false);break;
+  case'pilot':leaps(DIR8);if(level)rays(DIR4,2);break;
+  case'cannon':for(const[dx,dy]of DIR4){let screen=false;for(let n=1;n<=(level?7:4);n++){const x=u.x+dx*n,y=u.y+dy*n;if(blocked(s,x,y))break;const t=unitAt(s,x,y);if(!screen){if(t)screen=true;else add(x,y,false,true);}else{add(x,y,true,false);if(t)break;}}}break;
+  case'zebra':leaps([[3,2],[3,-2],[-3,2],[-3,-2],[2,3],[2,-3],[-2,3],[-2,-3]]);if(level)leaps(DIAG);break;
+  case'gryphon':for(const[dx,dy]of DIAG){const bx=u.x+dx,by=u.y+dy;if(blocked(s,bx,by)||!add(bx,by))continue;for(const[ax,ay]of [[dx,0],[0,dy]])for(let n=1;n<=(level?3:2);n++){const x=bx+ax*n,y=by+ay*n;if(blocked(s,x,y)||!add(x,y))break;}}break;
   case'engineer':for(const[dx,dy]of DIR4){add(u.x+dx,u.y+dy,false,true);add(u.x+dx*2,u.y+dy*2,true,false);if(friendlyAdjacent(s,u,'lark'))add(u.x+dx*3,u.y+dy*3,true,false);}if(level)leaps(DIAG);break;
  }
  return out;

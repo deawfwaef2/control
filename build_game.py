@@ -8,8 +8,8 @@ import base64, json, os, subprocess, tempfile, zipfile, io
 ROOT = Path(__file__).resolve().parent
 art = {p.stem: 'data:image/webp;base64,' + base64.b64encode(p.read_bytes()).decode('ascii')
        for p in sorted((ROOT/'assets').glob('*.webp'))}
-css = '\n'.join((ROOT/f).read_text(encoding='utf-8') for f in ('style.css','cinematic.css') if (ROOT/f).exists())
-files = ['data.js','engine.js','ui.js','presentation.js','campaign.js']
+css = '\n'.join((ROOT/f).read_text(encoding='utf-8') for f in ('style.css','cinematic.css','screenplay.css') if (ROOT/f).exists())
+files = ['data.js','cast.js','engine.js','ui.js','presentation.js','campaign.js','ensemble.js','screenplay.js']
 js = '\n\n'.join((ROOT/f).read_text(encoding='utf-8') for f in files if (ROOT/f).exists())
 script = '(function(){\n' + js + '\n})();'
 # Do not replace the last playable artifact with syntactically invalid work.

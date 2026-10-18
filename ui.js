@@ -176,6 +176,7 @@ function showResult(){
 /* Local saves are optional. Opaque-origin file previews may deny localStorage;
    the game continues in memory and downloadable/importable JSON remains available. */
 function snapshotValid(c,s){
+ migrateCast(c);
  if(!c||!s||!['g','r'].includes(c.side)||!Number.isInteger(c.step)||c.step<0||c.step>4||!Array.isArray(c.order)||c.order.length!==5||[...c.order].sort().join(',')!=='0,1,2,3,4')return false;
  if(!c.roster||Object.keys(CHAR).some(id=>!c.roster[id]||!['g','r'].includes(c.roster[id].side)||!['active','destroyed','retired'].includes(c.roster[id].status)))return false;
  if(!Number.isInteger(s.mid)||s.mid<0||s.mid>4||!Number.isInteger(s.round)||s.round<1||s.round>99||!['player','over'].includes(s.phase)||!Array.isArray(s.units)||s.units.length>64)return false;
