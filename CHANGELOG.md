@@ -1,75 +1,18 @@
-# 阶段交付记录
+# Changelog
 
-所有阶段都先保存可玩的 HTML，再检查、提交和推送。发布状态以真实 Git 远端为准。
+## M11 — Grand 3D On-Board Theater, 18 Dynamic Mecha-Girls, 15 Sub-Stages & Procedural Story Variations (2026-10-18)
 
-## M10 / FULL 12-GIRL ANIME ROSTER & UPPER-CHEST SPIDER CALIBRATION
-- **全部 12 名机娘 100% 统一为二次元日漫美少女机娘立绘**：补齐新生成绛刃（`akira`）、雾棘（`veil`）、弥砂（`misa`）三张二次元日漫美少女机娘半身立绘，替换原本保留的 3 张早期半写实旧图（解决旧图中绛刃装置偏在领口右侧、雾棘装置落在披风下摆被裁切、弥砂双手遮挡胸口的问题），实现 12/12 全员新绘日漫机娘立绘。
-- **胸口正中间（胸骨/胸甲正中）位置上移校准与 UI 裁切修正**：将全部 12 名机娘的红蜘蛛控制装置坐标从偏下的肋骨/腹部（`y=720..845`）统一上移至解剖学**胸口正中间**（`y=415..805` 胸甲中央区域），并在 `cinematic.css` 中加高图鉴卡立绘视窗（`.archive-photo { height: 295px }`）与优化 3D 棋子边框光泽，确保在棋盘棋子、右侧档案卡、十二人图鉴与全屏立绘中，胸口正中的发光红蜘蛛与红眼均完整清晰可见。
-- **清理底层残留旧文案**：同步更新 `data.js`（初始 6 名机娘的个人简介与选中台词）、`campaign.js`（真空泄压与天桥崩塌警报台词）、`ensemble.js`（十二人图鉴弹窗说明）、`protocol.js` 与 `presentation.js`，确保游戏内所有角落的台词与文案 100% 统一为科幻赛博空间站对抗赤巢机械蜘蛛病毒叙事。
+- **Expanded Roster to 18 2D Anime Mecha-Girls**: Added 6 brand-new mecha-girls (`astra` 星枢, `kuro` 玄羽, `celia` 圣歌, `nyx` 绯夜, `echo` 回音, `sola` 阳炎) with 6 new distinct chess-variant movements (`lancer`, `phantom`, `paladin`, `valkyrie`, `quantum`, `striker`), bringing the full roster to 18 characters (`42` embedded WebP art assets).
+- **Darkened Infected Silhouette + High-Glow Chest-Center Spider**: Updated `neon_art.py` and live shaders so controlled/infected characters are markedly darkened while the chest-center mechanical spider device and glowing red eyes radiate intense crimson light (`36/36` eye emission checks pass).
+- **60FPS Live2D-Style Dynamic Character Engine (`LiveRig`)**: Added real-time 60FPS 2.5D skeletal mesh breathing, head/hair sway, blinking, and animated chest-spider leg twitching & core pulsing across Cinema, Dossier, Archive, and Board Tokens.
+- **On-Board 3D Theater & Large Main-Story Typography**: Overhauled `#cinema` so story cutscenes play directly over the live 3D tactical board and 3D orbital space panorama with camera tilt/focus spotlights, on-board 3D VFX (`laser-sweep`, `spider-pulse`, `railgun-strike`, `holo-scan`), and enlarged high-contrast movie subtitles (`clamp(22px, 2.15vw, 30px)`).
+- **3D Sci-Fi Tactical Board Terrain**: Replaced flat cells with sculpted 3D armored deck plating, 3D extruded blast walls, deep-space chasms, holographic relay beacons, airlock extraction pads, and pulsing plasma hazard grates across 6 sector themes.
+- **15 Playable Sub-Stages & 3 Branching Routes + Procedural Story Director**: Added `SUB_OPERATIONS` (`OP 1-1` through `OP 5-2`), an interactive Star-Map modal (`#starmap-btn`), rich persona dossiers (`PERSONA`), and randomized run-to-run story variations (`#random-story-btn`).
 
-## M9 / CRIMSON HIVE CINEMATIC EDITION (剧情与二次元机娘立绘重构)
-- **重写全剧本与世界观文案（解决“剧情胡言乱语”反馈）**：彻底废除早期晦涩零碎的“撤药回执/修理单/过滤器货签”公文谜语对白，全面重写 `screenplay-data.js`、`screenplay.js`、`cast.js`、`protocol.js` 与 `STORY.md`，回归热血高张力的**科幻赛博朋克：地球守护组织「苍穹防线」美少女机娘调查废弃天穹空间站 vs. 「赤巢机械蜘蛛病毒」无限增殖内核**主线。
-- **重绘二次元日漫美少女机娘半身立绘（解决“人物画风不喜欢”反馈）**：新生成 9 张高质量日系二次元美少女机娘半身立绘（零音、珀弦、璃雀、白栖、祈雾、苍澜、绯律、霁川、朔夜），替换原扁平美式卡通及背对镜头的立绘；连同绛刃、雾棘、弥砂共 12 名机娘全部统一为精致日系二次元机娘画风。
-- **生化危机 5 风格胸口机械蜘蛛正中植入（解决“有些装置不在胸口”反馈）**：新生成八足黑银机械爪+猩红发光结晶核心的赤红机械蜘蛛控制装置（`device.webp`），重新精确标定全部 12 名机娘的胸口正中央透视四点坐标与双瞳发光坐标（`art-neon.json`），确保每一名受控机娘的发光红蜘蛛装置都严丝合缝位于**胸口正中央**，双眼同步亮起猩红光芒。
+## M10 — Upper-Chest Device Calibration & 3D Board Token Framing (2026-10-18)
 
-## M8 / NEON CUT 0.7
-- 九张日系赛璐璐斜侧/回身立绘换入游戏；绛刃、雾棘、弥砂保留原斜侧底图，不冒称全部重绘。
-- 新生成更明显的发光N–6，十二人控制态统一透视贴合装置与红色发光眼睛；侧身大者只显示合理可见部分，不把装置贴背上。
-- 内嵌PeriTune的Irregular与Cyberpunk_City完整循环版，遵守CC BY4.0署名；无网络音乐请求。
-- 首次真实交互后启声；独立音乐/音效开关与音量、总静音、混音面板、交叉淡化、演出压低、后台暂停。
-- 移动、击杀、寄生等实际动作驱动不同音效；静音改为短淡出后精确归零。
-- 85/85专项检查通过，包含真实音频输出RMS、两首解码/循环、分轨静音、实际动作音效、设置保存、移动端和发光像素。
-- HTML约11MiB，30图片+2首BGM全部内嵌；音乐署名也随ZIP附带。没有专业配音或完整动画制作。
+- Calibrated upper-chest `device_quad` placement and 3D wargame token framing across all 12 initial portraits.
 
-## M7 / IRON RULE 0.6
-- 用户明确取消解救：仅红蜘蛛吃机娘永久感染；普通机娘及其他装置吃子一律击杀。
-- 实际引擎与AI模拟共用新规则；按钮/格子分别标明“永久寄生”与“击杀”。
-- 接舷提供D8原始授时头读取；守护者镜像库不再要求解救或保有朔夜。
-- 镜像电源/隔离选择不改变角色阵营，不复活死者；结局停产不治愈已受控者。
-- 72/72专项检查通过，新增18项覆盖击杀、不可逆寄生、AI、死亡继承和任务可达性。
-- 新日系立绘与BGM尚在接入；本检查点不提前宣称打包完成。
+## M9 — 2D Anime Mecha-Girl Overhaul & Sci-Fi Spider Virus Storyline (2026-10-18)
 
-## M6 / ECHO CUT 0.5
-- 重写双阵营五章开场、所有任务段落转折、关键警告、证人选择与条件终幕。
-- 六份证据链、证据档案、对白记录，按真实任务进度解锁，跳过演出不影响证据或行动。
-- 终章发送内容分支、存档恢复与六类条件结局；朔夜撤离仍影响部署和生产间隔。
-- 新镜头界面、文件插镜、N–6 物件特写、上一镜、自动放映、可选程序音效及独立任务卡。
-- 修复死者被其他演员代说、陈旧阵营立绘、旧结算面板拦截最终选择的问题；电影短标题不再使用过长任务名。
-- 十二人图鉴可查看完整立绘、逐人切换状态；不改变战役。修复图鉴状态标签被渐变遮住。
-- 54/54 离线专项检查通过；新增 14 项叙事/镜头/图鉴检查。没有完整人工通关或平衡认证。
-
-## M5 / a092949
-- 十二名可参战成年角色，十二种独立走法；新增珀弦、白栖、苍澜、绯律、霁川、祈雾。
-- 分章出场、旧六人存档迁移、真实阵营与损毁继承、只读图鉴切换。
-- 30 张内嵌美术；40/40 专项检查通过。
-
-## M4 / c0c8562
-- 长腿大蜘蛛替换为紧凑卵形红色控制器、黑银底座和三对短固定爪。
-- 璃雀、弥砂、朔夜控制态完整生成编辑；其余旧角色从干净底图合成新装置。
-- 27/27 原有离线检查通过。
-
-## M3 / da59832 / Director Build 0.3
-- 棋子 100%—175% 缩放与全局总览。
-- 战中演出恢复检查，清理穿透画面的旧教学弹窗。
-- 立绘边缘融合，制作备注改为游戏内频道信息。
-- 27 项离线/规则/视口检查通过；ZIP 与 HTML 一致性检查。
-
-## M2 / c791fe9
-- 五章、每路线 16 段目标。
-- 撤收、双阀轮末稳定、轨道锁、同步座守护、近场断链、广播。
-- 阶段转换与环境警告演出、最终条件终幕。
-- 不重置行动次数、不复制角色；新援本阶段锁定。
-
-## M1 / 30b24fd
-- 大棋盘与单侧角色档案。
-- 四幅场景、旧机械控制器、五张感染立绘重绘，弥砂当时使用生成装置合成。此后由 M4 替换。
-- 单文件离线打包、可直接游玩 ZIP。
-
-## M0 / da5efe8
-- 从空仓库建立第一份可玩的离线基线。
-- 建立追加式 handoff 和协作约束。
-
-## 尚未完成
-- 整个双阵营战役的人工通关与玩家平衡验证。
-- 专业配音、完整人物动画或预录电影。
-- 除璃雀、弥砂、朔夜外，其余九人控制态目前是新生成装置与底图合成，非完整生成重绘。
+- Generated 12 2D Japanese anime mecha-girl portraits and rewrote the campaign around the Aegis Line vs. Crimson Hive spider virus conflict.

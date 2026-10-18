@@ -79,8 +79,8 @@ async function fixture(p,id,side,mutate){await p.evaluate(({id,side})=>{const q=
   await p.locator('#skip-story').click();await p.locator('#cinema').waitFor({state:'hidden'});await p.waitForFunction(()=>!document.getElementById('end-phase-btn').disabled);f=await p.evaluate(()=>window.__MV_QA__.snapshot());assert.equal(f.s.spent,1);assert.equal(f.s.units.find(u=>u.char==='lyra').used,true);
   await p.locator('#end-phase-btn').click();await p.waitForFunction(()=>document.getElementById('round-text').textContent.includes('02'),null,{timeout:30000});
  });
- await check('All thirty embedded generated/composited art assets decode offline',async()=>{
-  const decoded=await p.evaluate(async()=>Promise.all(Object.entries(ART).map(([name,src])=>new Promise(resolve=>{const img=new Image();img.onload=()=>resolve({name,ok:img.naturalWidth>0});img.onerror=()=>resolve({name,ok:false});img.src=src;}))));assert.equal(decoded.length,30);assert.ok(decoded.every(i=>i.ok));return{decoded:decoded.length};
+ await check('All forty-two embedded generated/composited art assets decode offline',async()=>{
+  const decoded=await p.evaluate(async()=>Promise.all(Object.entries(ART).map(([name,src])=>new Promise(resolve=>{const img=new Image();img.onload=()=>resolve({name,ok:img.naturalWidth>0});img.onerror=()=>resolve({name,ok:false});img.src=src;}))));assert.equal(decoded.length,42);assert.ok(decoded.every(i=>i.ok));return{decoded:decoded.length};
  });
  await check('A legacy stage-less save migrates without losing its roster',async()=>{
   await fixture(p,1,'g',()=>{const q=window.__MV_QA__,f=q.snapshot();q.load(f.c,f.s);const saved=q.save();delete saved.s.quest;delete saved.checkpoint.s.quest;saved.s.ventStart=3;q.restore(saved);});const f=await p.evaluate(()=>window.__MV_QA__.snapshot());assert.equal(f.s.quest.version,2);assert.equal(f.s.quest.stage,0);assert.equal(f.s.mid,1);assert.equal(f.c.roster.lyra.status,'active');

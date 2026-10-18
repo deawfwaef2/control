@@ -30,7 +30,7 @@ function makeMission(id){
  if(id===2){for(let y=2;y<=5;y++)for(const x of [0,1,6,7])s.voids.push(key(x,y));s.walls=['1,1','6,1'];s.delivery=[{x:3,y:0,side:'g'},{x:4,y:0,side:'g'},{x:3,y:7,side:'r'},{x:4,y:7,side:'r'}];}
  if(id===3){s.walls=['3,2','3,3','4,3','4,4'];s.doors=['3,3','4,3'];s.relays=[{x:1,y:3,owner:null,name:'西镜像终端'},{x:6,y:3,owner:null,name:'东镜像终端'}];}
  if(id===4){s.walls=['2,3','5,3','3,5','4,5'];s.relays=[{x:1,y:2,owner:C.flags.packetOwner==='g'?'g':null,name:'西护盾终端'},{x:6,y:2,owner:null,name:'东护盾终端'}];}
- const formations=id===2?{g:[[2,7],[5,7],[2,6],[5,6],[1,7],[6,7]],r:[[5,1],[2,0],[6,1],[1,0],[4,1],[3,1]]}:{g:[[2,7],[5,7],[1,6],[6,6],[3,7],[4,7]],r:[[5,1],[2,0],[6,1],[1,0],[4,1],[3,1]]};
+ const formations=id===2?{g:[[2,7],[5,7],[2,6],[5,6],[1,7],[6,7],[3,7],[4,7],[1,6],[6,6]],r:[[5,1],[2,0],[6,1],[1,0],[4,1],[3,1],[3,0],[4,0],[6,0],[1,1]]}:{g:[[2,7],[5,7],[1,6],[6,6],[3,7],[4,7],[0,6],[7,6],[1,7],[6,7]],r:[[5,1],[2,0],[6,1],[1,0],[4,1],[3,1],[0,1],[7,1],[5,0],[3,0]]};
  for(const side of ['g','r']){
   let i=0;for(const [cid,rec]of Object.entries(C.roster))if(rec.introduced&&rec.status==='active'&&rec.side===side){const p=formations[side][i++]||[side==='g'?1:6,side==='g'?7:0];spawn(s,'mech',side,p[0],p[1],cid);}
  }
@@ -79,6 +79,12 @@ function legalMoves(s,u,mode='move'){
   case'zebra':leaps([[3,2],[3,-2],[-3,2],[-3,-2],[2,3],[2,-3],[-2,3],[-2,-3]]);if(level)leaps(DIAG);break;
   case'gryphon':for(const[dx,dy]of DIAG){const bx=u.x+dx,by=u.y+dy;if(blocked(s,bx,by)||!add(bx,by))continue;for(const[ax,ay]of [[dx,0],[0,dy]])for(let n=1;n<=(level?3:2);n++){const x=bx+ax*n,y=by+ay*n;if(blocked(s,x,y)||!add(x,y))break;}}break;
   case'engineer':for(const[dx,dy]of DIR4){add(u.x+dx,u.y+dy,false,true);add(u.x+dx*2,u.y+dy*2,true,false);if(friendlyAdjacent(s,u,'lark'))add(u.x+dx*3,u.y+dy*3,true,false);}if(level)leaps(DIAG);break;
+  case'phantom':for(const[dx,dy]of DIAG){add(u.x+dx,u.y+dy);add(u.x+dx*2,u.y+dy*2);if(level)add(u.x+dx*3,u.y+dy*3);}leaps(DIR4);break;
+  case'striker':leaps(DIR8);for(const[dx,dy]of DIR4){add(u.x+dx*2,u.y+dy*2,true,false);if(level)add(u.x+dx*3,u.y+dy*3,true,false);}if(level)for(const[dx,dy]of DIAG)add(u.x+dx*2,u.y+dy*2,true,false);break;
+  case'paladin':rays(DIR4,2);leaps([[2,1],[-2,1],[2,-1],[-2,-1]]);if(level)leaps(DIAG);break;
+  case'valkyrie':rays(DIAG,level?5:3);for(const[dx,dy]of DIR4)add(u.x+dx*2,u.y+dy*2);break;
+  case'lancer':for(const[dx,dy]of DIR4){for(let n=1;n<=2;n++){const x=u.x+dx*n,y=u.y+dy*n;if(blocked(s,x,y)||unitAt(s,x,y))break;add(x,y,false,true);}for(let n=1;n<=(level?5:3)+(friendlyAdjacent(s,u,'echo')?1:0);n++){const x=u.x+dx*n,y=u.y+dy*n;if(blocked(s,x,y))break;const t=unitAt(s,x,y);add(x,y,true,false);if(t)break;}}break;
+  case'quantum':rays(DIAG,2);for(const[dx,dy]of DIR8)add(u.x+dx*2,u.y+dy*2);if(level)for(const[dx,dy]of DIR4)add(u.x+dx*3,u.y+dy*3);break;
  }
  return out;
 }

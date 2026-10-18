@@ -4,7 +4,7 @@
     1024
   ],
   "device": "device.webp",
-  "new_generated_portraits": 12,
+  "new_generated_portraits": 18,
   "retained_angled_portraits": [],
   "controlled_variants": "composited from 12 2D Japanese anime mecha-girl portraits, generated RE5-style mechanical spider chest device on chest center and glowing red eye emission",
   "portraits": {
@@ -434,6 +434,222 @@
         [
           486,
           302,
+          16,
+          13
+        ]
+      ],
+      "device_partly_occluded_by_side_pose": false
+    },
+    "astra": {
+      "base": "new generated Japanese anime mecha girl bust portrait",
+      "device_quad": [
+        [
+          225,
+          390
+        ],
+        [
+          445,
+          390
+        ],
+        [
+          440,
+          640
+        ],
+        [
+          220,
+          640
+        ]
+      ],
+      "eyes": [
+        [
+          312,
+          250,
+          16,
+          13
+        ],
+        [
+          395,
+          244,
+          16,
+          13
+        ]
+      ],
+      "device_partly_occluded_by_side_pose": false
+    },
+    "kuro": {
+      "base": "new generated Japanese anime mecha girl bust portrait",
+      "device_quad": [
+        [
+          245,
+          535
+        ],
+        [
+          465,
+          535
+        ],
+        [
+          460,
+          785
+        ],
+        [
+          240,
+          785
+        ]
+      ],
+      "eyes": [
+        [
+          278,
+          302,
+          16,
+          13
+        ],
+        [
+          392,
+          292,
+          16,
+          13
+        ]
+      ],
+      "device_partly_occluded_by_side_pose": false
+    },
+    "celia": {
+      "base": "new generated Japanese anime mecha girl bust portrait",
+      "device_quad": [
+        [
+          235,
+          425
+        ],
+        [
+          455,
+          425
+        ],
+        [
+          450,
+          675
+        ],
+        [
+          230,
+          675
+        ]
+      ],
+      "eyes": [
+        [
+          304,
+          260,
+          16,
+          13
+        ],
+        [
+          406,
+          254,
+          16,
+          13
+        ]
+      ],
+      "device_partly_occluded_by_side_pose": false
+    },
+    "nyx": {
+      "base": "new generated Japanese anime mecha girl bust portrait",
+      "device_quad": [
+        [
+          275,
+          515
+        ],
+        [
+          495,
+          515
+        ],
+        [
+          490,
+          765
+        ],
+        [
+          270,
+          765
+        ]
+      ],
+      "eyes": [
+        [
+          382,
+          300,
+          16,
+          13
+        ],
+        [
+          468,
+          306,
+          16,
+          13
+        ]
+      ],
+      "device_partly_occluded_by_side_pose": false
+    },
+    "echo": {
+      "base": "new generated Japanese anime mecha girl bust portrait",
+      "device_quad": [
+        [
+          245,
+          490
+        ],
+        [
+          465,
+          490
+        ],
+        [
+          460,
+          740
+        ],
+        [
+          240,
+          740
+        ]
+      ],
+      "eyes": [
+        [
+          288,
+          286,
+          16,
+          13
+        ],
+        [
+          408,
+          278,
+          16,
+          13
+        ]
+      ],
+      "device_partly_occluded_by_side_pose": false
+    },
+    "sola": {
+      "base": "new generated Japanese anime mecha girl bust portrait",
+      "device_quad": [
+        [
+          255,
+          475
+        ],
+        [
+          475,
+          475
+        ],
+        [
+          470,
+          725
+        ],
+        [
+          250,
+          725
+        ]
+      ],
+      "eyes": [
+        [
+          352,
+          286,
+          16,
+          13
+        ],
+        [
+          442,
+          278,
           16,
           13
         ]
