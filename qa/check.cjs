@@ -7,6 +7,7 @@ const fs=require('fs'),path=require('path'),assert=require('assert/strict');
 let pw;try{pw=require('playwright')}catch(e){pw=require(process.env.PLAYWRIGHT_PACKAGE||'/tmp/control-qa/node_modules/playwright')}
 const ROOT=path.resolve(__dirname,'..'),url=require('url').pathToFileURL(path.join(ROOT,'index.html')).href;
 const results=[],runtimeErrors=[],networkRequests=[];let browser;
+async function recycleBrowser(){if(browser)await browser.close();browser=await pw.chromium.launch({headless:true,args:['--no-sandbox']});}
 async function check(name,fn){try{const details=await fn();results.push({name,pass:true,details:details||null});console.log('PASS',name)}catch(e){results.push({name,pass:false,error:e.message});console.error('FAIL',name,e.message)}}
 async function newPage(viewport={width:1440,height:1080}){const c=await browser.newContext({viewport,reducedMotion:'reduce'}),p=await c.newPage();p.on('pageerror',e=>runtimeErrors.push(e.message));p.on('crash',()=>runtimeErrors.push('Browser renderer crashed: '+p.url()));p.on('request',r=>{if(/^https?:/.test(r.url()))networkRequests.push(r.url())});return p;}
 async function fixture(p,id,side,mutate){await p.evaluate(({id,side})=>{const q=window.__MV_QA__;q.mission(id,side);const f=q.snapshot();q.load(f.c,f.s)}, {id,side});if(mutate)await p.evaluate(mutate);}
@@ -87,13 +88,14 @@ async function fixture(p,id,side,mutate){await p.evaluate(({id,side})=>{const q=
  await require('./ensemble-tests.cjs')({p,check,assert});
  await require('./protocol-tests.cjs')({p,check,assert});
  await require('./screenplay-tests.cjs')({p,check,assert,newPage,url});
+ await require('./audio-tests.cjs')({check,assert,newPage,url,recycleBrowser});
  const mobile=await newPage({width:390,height:844});await mobile.goto(url+'#qa');
  await check('Mobile page contains its large board in a horizontal viewport',async()=>{await mobile.evaluate(()=>window.__MV_QA__.start('g'));const metrics=await mobile.evaluate(()=>({width:innerWidth,body:document.documentElement.scrollWidth,pan:document.querySelector('.board-pan').clientWidth,board:document.querySelector('.board-surround').getBoundingClientRect().width}));assert.ok(metrics.body<=metrics.width+2);assert.ok(metrics.board>=650&&metrics.pan<metrics.board);return metrics;});
  await check('Mobile overview fits all eight columns without page overflow',async()=>{await mobile.locator('#overview-btn').click();const metrics=await mobile.evaluate(()=>({width:innerWidth,body:document.documentElement.scrollWidth,board:document.querySelector('.board-surround').getBoundingClientRect().width}));assert.ok(metrics.body<=metrics.width+2);assert.ok(metrics.board<=390);return metrics;});
  await check('Packaged game makes no external network requests',async()=>{assert.deepEqual(networkRequests,[]);});
  await check('No browser page errors in targeted checks',async()=>{assert.deepEqual(runtimeErrors,[]);});
- const report={html_sha256:require('crypto').createHash('sha256').update(fs.readFileSync(path.join(ROOT,'index.html'))).digest('hex'),milestone:'M7',date:'2026-10-18',mode:'offline file:// + opt-in #qa deterministic fixtures',browser:'Chromium',results,runtimeErrors,externalRequests:networkRequests,passed:results.filter(r=>r.pass).length,total:results.length,limitations:['No full manual campaign playthrough','No difficulty-balance certification','Fixtures isolate rules; they do not claim players reached objectives naturally','No real-time second agent was observed']};
- fs.writeFileSync(path.join(ROOT,'qa','m7-report.json'),JSON.stringify(report,null,2));
+ const report={html_sha256:require('crypto').createHash('sha256').update(fs.readFileSync(path.join(ROOT,'index.html'))).digest('hex'),milestone:'M8',date:'2026-10-18',mode:'offline file:// + opt-in #qa deterministic fixtures',browser:'Chromium',results,runtimeErrors,externalRequests:networkRequests,passed:results.filter(r=>r.pass).length,total:results.length,limitations:['No full manual campaign playthrough','No difficulty-balance certification','Fixtures isolate rules; they do not claim players reached objectives naturally','No real-time second agent was observed']};
+ fs.writeFileSync(path.join(ROOT,'qa','m8-report.json'),JSON.stringify(report,null,2));
  await mobile.screenshot({path:'/tmp/control-m2-mobile.png',fullPage:true});
  console.log(`RESULT ${report.passed}/${report.total}`);await browser.close();process.exitCode=report.passed===report.total?0:1;
 })().catch(async e=>{console.error(e);if(browser)await browser.close();process.exitCode=1});

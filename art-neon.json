@@ -1,0 +1,448 @@
+{
+  "canvas": [
+    768,
+    1024
+  ],
+  "device": "device.webp",
+  "new_generated_portraits": 9,
+  "retained_angled_portraits": [
+    "akira",
+    "veil",
+    "misa"
+  ],
+  "controlled_variants": "composited from clean portraits, generated luminous device and eye light effects",
+  "portraits": {
+    "lyra": {
+      "base": "new generated Japanese cel-anime redraw",
+      "device_quad": [
+        [
+          247,
+          552
+        ],
+        [
+          403,
+          561
+        ],
+        [
+          387,
+          798
+        ],
+        [
+          229,
+          783
+        ]
+      ],
+      "eyes": [
+        [
+          297,
+          300,
+          13,
+          8
+        ],
+        [
+          395,
+          286,
+          14,
+          9
+        ]
+      ],
+      "device_partly_occluded_by_side_pose": false
+    },
+    "iris": {
+      "base": "new generated Japanese cel-anime redraw",
+      "device_quad": [
+        [
+          402,
+          568
+        ],
+        [
+          548,
+          600
+        ],
+        [
+          546,
+          813
+        ],
+        [
+          393,
+          778
+        ]
+      ],
+      "eyes": [
+        [
+          429,
+          309,
+          10,
+          9
+        ],
+        [
+          507,
+          314,
+          7,
+          8
+        ]
+      ],
+      "device_partly_occluded_by_side_pose": false
+    },
+    "sera": {
+      "base": "new generated Japanese cel-anime redraw",
+      "device_quad": [
+        [
+          240.2,
+          533.4
+        ],
+        [
+          400.6,
+          542.8
+        ],
+        [
+          378.2,
+          764.6
+        ],
+        [
+          221.3,
+          743.4
+        ]
+      ],
+      "eyes": [
+        [
+          303.9,
+          264.3,
+          8.3,
+          7.1
+        ],
+        [
+          380.6,
+          258.4,
+          9.4,
+          7.1
+        ]
+      ],
+      "device_partly_occluded_by_side_pose": false
+    },
+    "vega": {
+      "base": "new generated Japanese cel-anime redraw",
+      "device_quad": [
+        [
+          325.0,
+          550.0
+        ],
+        [
+          474.6,
+          566.5
+        ],
+        [
+          461.4,
+          787.6
+        ],
+        [
+          303.0,
+          770.0
+        ]
+      ],
+      "eyes": [
+        [
+          326.1,
+          279.4,
+          7.7,
+          5.5
+        ],
+        [
+          416.3,
+          272.8,
+          9.9,
+          6.6
+        ]
+      ],
+      "device_partly_occluded_by_side_pose": false
+    },
+    "ruby": {
+      "base": "new generated Japanese cel-anime redraw",
+      "device_quad": [
+        [
+          187.5,
+          528.0
+        ],
+        [
+          334.9,
+          546.7
+        ],
+        [
+          316.2,
+          764.5
+        ],
+        [
+          162.2,
+          739.2
+        ]
+      ],
+      "eyes": [
+        [
+          248.0,
+          279.4,
+          6.6,
+          5.5
+        ],
+        [
+          321.7,
+          265.1,
+          9.9,
+          7.7
+        ]
+      ],
+      "device_partly_occluded_by_side_pose": false
+    },
+    "june": {
+      "base": "new generated Japanese cel-anime redraw",
+      "device_quad": [
+        [
+          277.9,
+          527.5
+        ],
+        [
+          431.3,
+          541.6
+        ],
+        [
+          412.4,
+          755.2
+        ],
+        [
+          256.7,
+          741.0
+        ]
+      ],
+      "eyes": [
+        [
+          314.5,
+          270.2,
+          7.1,
+          5.9
+        ],
+        [
+          395.9,
+          259.6,
+          9.4,
+          7.1
+        ]
+      ],
+      "device_partly_occluded_by_side_pose": false
+    },
+    "psalm": {
+      "base": "new generated Japanese cel-anime redraw",
+      "device_quad": [
+        [
+          542.2,
+          564.0
+        ],
+        [
+          572.9,
+          578.2
+        ],
+        [
+          564.7,
+          705.6
+        ],
+        [
+          537.5,
+          695.0
+        ]
+      ],
+      "eyes": [
+        [
+          393.6,
+          257.2,
+          10.6,
+          9.4
+        ],
+        [
+          484.4,
+          260.8,
+          9.4,
+          9.4
+        ]
+      ],
+      "device_partly_occluded_by_side_pose": true
+    },
+    "lark": {
+      "base": "new generated Japanese cel-anime redraw",
+      "device_quad": [
+        [
+          612.1,
+          497.2
+        ],
+        [
+          650.6,
+          515.9
+        ],
+        [
+          657.2,
+          691.9
+        ],
+        [
+          605.5,
+          688.6
+        ]
+      ],
+      "eyes": [
+        [
+          506.5,
+          286.0,
+          11.0,
+          6.6
+        ],
+        [
+          591.2,
+          283.8,
+          6.6,
+          5.5
+        ]
+      ],
+      "device_partly_occluded_by_side_pose": true
+    },
+    "noct": {
+      "base": "new generated Japanese cel-anime redraw",
+      "device_quad": [
+        [
+          234,
+          566
+        ],
+        [
+          367,
+          582
+        ],
+        [
+          347,
+          784
+        ],
+        [
+          210,
+          765
+        ]
+      ],
+      "eyes": [
+        [
+          272,
+          343,
+          7,
+          6
+        ],
+        [
+          342,
+          335,
+          9,
+          7
+        ]
+      ],
+      "device_partly_occluded_by_side_pose": false
+    },
+    "akira": {
+      "base": "retained angled original",
+      "device_quad": [
+        [
+          417,
+          640
+        ],
+        [
+          570,
+          664
+        ],
+        [
+          592,
+          865
+        ],
+        [
+          434,
+          841
+        ]
+      ],
+      "eyes": [
+        [
+          423,
+          355,
+          10,
+          5
+        ],
+        [
+          519,
+          362,
+          8,
+          5
+        ]
+      ],
+      "device_partly_occluded_by_side_pose": false
+    },
+    "veil": {
+      "base": "retained angled original",
+      "device_quad": [
+        [
+          248,
+          686
+        ],
+        [
+          385,
+          649
+        ],
+        [
+          435,
+          852
+        ],
+        [
+          288,
+          894
+        ]
+      ],
+      "eyes": [
+        [
+          243,
+          306,
+          8,
+          5
+        ],
+        [
+          361,
+          279,
+          10,
+          6
+        ]
+      ],
+      "device_partly_occluded_by_side_pose": false
+    },
+    "misa": {
+      "base": "retained angled original",
+      "device_quad": [
+        [
+          313,
+          588
+        ],
+        [
+          462,
+          614
+        ],
+        [
+          448,
+          817
+        ],
+        [
+          294,
+          788
+        ]
+      ],
+      "eyes": [
+        [
+          356,
+          272,
+          11,
+          6
+        ],
+        [
+          470,
+          301,
+          10,
+          6
+        ]
+      ],
+      "device_partly_occluded_by_side_pose": false
+    }
+  }
+}

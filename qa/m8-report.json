@@ -1,0 +1,505 @@
+{
+  "html_sha256": "c89cb7b7d41bb4cf054415839b3fa11720924916099ad59d36ce308e99da88a5",
+  "milestone": "M8",
+  "date": "2026-10-18",
+  "mode": "offline file:// + opt-in #qa deterministic fixtures",
+  "browser": "Chromium",
+  "results": [
+    {
+      "name": "Normal offline entrypoint / real UI starts game",
+      "pass": true,
+      "details": {
+        "cells": 64,
+        "acts": 3
+      }
+    },
+    {
+      "name": "Normal UI portrait pieces are materially larger",
+      "pass": true,
+      "details": {
+        "width": 98.07965087890625,
+        "height": 105.6588134765625
+      }
+    },
+    {
+      "name": "Pieces can zoom to 175 percent without overflowing the page",
+      "pass": true,
+      "details": {
+        "baseWidth": 98.07965087890625,
+        "maxWidth": 177.3468017578125
+      }
+    },
+    {
+      "name": "Normal UI legal move, undo, then mirrored AI phase",
+      "pass": true,
+      "details": {
+        "round": 2
+      }
+    },
+    {
+      "name": "Portrait-mode and overview controls respond",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Guardian and Red Hive can each start the campaign",
+      "pass": true,
+      "details": {
+        "factions": [
+          "g",
+          "r"
+        ]
+      }
+    },
+    {
+      "name": "All five maps initialize for both factions with 16 acts per route",
+      "pass": true,
+      "details": {
+        "maps": 10,
+        "actsPerRoute": 16
+      }
+    },
+    {
+      "name": "Red spider capture swaps the real character, converts ownership and locks both units",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "First chapter objective advances an act rather than ending the mission",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Act transition does not reset already-used units",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Evacuating the final required unit wins before empty-force defeat",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Garden engineering action costs one action and allows Misa adjacency",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Vacuum damage remains permanent after mission roster sync",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Bridge cannot deliver through an unowned track lock",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Mirror synchronization requires two qualifying round ends",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Losing a synchronization condition resets its counter",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Core stays locked until near-field operation, then can be captured",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Red Hive finale requires broadcast and twelve-round hold",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "AI cannot reuse the only available unit after it acts",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Act, objective counters, and generated-state art survive save restoration",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Real in-battle cinema pauses, cuts to close-up, and resumes the same action budget",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "All thirty embedded generated/composited art assets decode offline",
+      "pass": true,
+      "details": {
+        "decoded": 30
+      }
+    },
+    {
+      "name": "A legacy stage-less save migrates without losing its roster",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Twelve adult characters have twelve distinct movement definitions",
+      "pass": true,
+      "details": {
+        "characters": 12,
+        "distinctMovements": 12
+      }
+    },
+    {
+      "name": "Scripted normal chapter deployments reveal 4, 8, 10, 12 and 12 characters",
+      "pass": true,
+      "details": {
+        "counts": [
+          4,
+          8,
+          10,
+          12,
+          12
+        ]
+      }
+    },
+    {
+      "name": "Iris repeats one knight vector and cannot jump past an occupied landing",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Sera separates orthogonal movement from diagonal captures",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Vega has eight king steps; upgraded long steps cannot cross a wall",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Ruby cannon requires exactly one screen and does not move beyond it",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "A wall cannot be used as a cannon screen",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "June uses 3 by 2 leaps, not ordinary knight leaps",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Psalm bends after one diagonal step and cannot pass a blocked corner",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "A new character infected by a red spider stays locked and controlled after restore",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Legacy six-person saves migrate without resetting allegiance or experience",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Chapter redeployment does not resurrect dead characters or reset converted new characters",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Twelve-entry gallery switches portrait states without changing the campaign",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Guardian mecha kill instead of infecting or rescuing",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Controlled mecha kill instead of infecting or rescuing",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Guardian drones kill instead of infecting or rescuing",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Red sentinels kill instead of infecting or rescuing",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Couriers kill instead of infecting or rescuing",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Transport capsules kill instead of infecting or rescuing",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "A non-red spider fixture kill instead of infecting or rescuing",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "A red spider permanently infects once and a later ordinary hit kills the host",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "A red spider destroys non-character machinery rather than converting it",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "AI hypothetical captures use the same lethal law without mutating the board",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "AI prefers a real spider infection over a mecha-only kill when both are available",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Killed characters stay dead through save restore and the next chapter",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Guardian dock remains completable without rescue or the escaped courier packet",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Guardian archive uses any friendly sync operator and never requires Noct conversion",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "A dead Noct cannot soft-lock Guardian archive or be resurrected by the isolation choice",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Killing the required infection target immediately fails the Red garden mission",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Red archive still requires its living controlled Noct",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Manual and capture tiles disclose lethal versus irreversible-infection outcomes",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Full-frame cast artwork can switch control states without changing a save",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Both rewritten routes introduce all twelve actors and separate scenes from objective cards",
+      "pass": true,
+      "details": {
+        "openingFramesAcrossBothRoutes": 83,
+        "actors": 12
+      }
+    },
+    {
+      "name": "A dead actor keeps her own identity and is explicitly an archived recording",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Cinematic portrait ownership follows current units, not stale pre-battle roster entries",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Evidence unlocks from a stage transition even when the cinema is skipped",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Uncollected evidence stays locked and early evidence does not reveal its later payoff",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Case evidence survives save restoration and is rolled back by chapter retry",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Reverse route introduces bridge crew first and medical crew on the following chapter",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Isolating Noct retains her Red allegiance, removes her from the finale and slows production",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "An undecided final transmission survives save restore; choosing it changes the ending without extra actions",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Red Hive can publish the stopping protocol or deliberately send takeover commands",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Automatic projection pauses on a task card; previous-shot and skip preserve action state",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Real-time camera animation, typewriter, macro prop and optional sound run without reduced-motion shortcuts",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Mobile cinematic controls and final-choice buttons stay inside the viewport",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Audio stays dormant until a trusted user gesture",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "The real Start button enables an audible embedded looping BGM",
+      "pass": true,
+      "details": {
+        "track": "cyberpunk-city",
+        "duration": 142.61328125,
+        "outputRMS": 0.014480536940224904
+      }
+    },
+    {
+      "name": "Battle music crossfades to the second offline track without duplicate looping sources",
+      "pass": true,
+      "details": {
+        "track": "irregular",
+        "duration": 196.36359375,
+        "outputRMS": 0.10855080779295159
+      }
+    },
+    {
+      "name": "Master mute silences actual output and does not change the battle",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Music can be muted independently while a real board move still makes sound",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Actual lethal capture triggers the impact cue, not the infection cue",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Actual red-spider takeover triggers the distinct neural-infection cue",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Effect mute and both volume sliders are independent of game state",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "The visibility-event handler suspends audio and resumes it without altering the board",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "Mute and volume preferences survive reload without unsolicited sound",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "The mobile mixer remains usable without horizontal overflow",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "All twelve controlled portraits have registered red eye emission and distinct chest-state images",
+      "pass": true,
+      "details": {
+        "controlledPortraits": 12,
+        "newDrawnBases": 9,
+        "retainedBases": 3
+      }
+    },
+    {
+      "name": "The generated luminous controller has transparent edges rather than an opaque pasted rectangle",
+      "pass": true,
+      "details": {
+        "w": 620,
+        "h": 897,
+        "corner": 0,
+        "center": 255
+      }
+    },
+    {
+      "name": "Mobile page contains its large board in a horizontal viewport",
+      "pass": true,
+      "details": {
+        "width": 390,
+        "body": 390,
+        "pan": 363,
+        "board": 660
+      }
+    },
+    {
+      "name": "Mobile overview fits all eight columns without page overflow",
+      "pass": true,
+      "details": {
+        "width": 390,
+        "body": 390,
+        "board": 362.8125
+      }
+    },
+    {
+      "name": "Packaged game makes no external network requests",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "No browser page errors in targeted checks",
+      "pass": true,
+      "details": null
+    }
+  ],
+  "runtimeErrors": [],
+  "externalRequests": [],
+  "passed": 85,
+  "total": 85,
+  "limitations": [
+    "No full manual campaign playthrough",
+    "No difficulty-balance certification",
+    "Fixtures isolate rules; they do not claim players reached objectives naturally",
+    "No real-time second agent was observed"
+  ]
+}

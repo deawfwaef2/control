@@ -61,7 +61,7 @@ storySpeaker=function(frame){
 
 const cinema=$('cinema');
 const insert=document.createElement('div');insert.id='film-insert';insert.className='film-insert';insert.hidden=true;cinema.querySelector('.dialogue-box').before(insert);
-const macro=document.createElement('img');macro.id='film-prop';macro.className='film-prop';macro.src=ART.device;macro.alt='N–6：红色半透明卵形药仓、黑银底座与六个短固定爪';macro.hidden=true;cinema.querySelector('.dialogue-box').before(macro);
+const macro=document.createElement('img');macro.id='film-prop';macro.className='film-prop';macro.src=ART.device;macro.alt='N–6：发光红色神经核心、黑银底座与短金属固定夹';macro.hidden=true;cinema.querySelector('.dialogue-box').before(macro);
 const texture=document.createElement('div');texture.className='film-texture';texture.setAttribute('aria-hidden','true');cinema.prepend(texture);
 const doors=document.createElement('div');doors.className='film-doors';doors.innerHTML='<i></i><i></i>';doors.setAttribute('aria-hidden','true');cinema.querySelector('.dialogue-box').before(doors);
 const controls=document.createElement('div');controls.className='film-controls';controls.innerHTML='<button id="film-prev" title="回看上一镜">← 上一镜</button><button id="film-auto" aria-pressed="false">自动放映</button><button id="film-sound" aria-pressed="false">声音关闭</button><button id="film-brief" aria-expanded="false">任务卡</button>';
@@ -199,7 +199,7 @@ $('home').querySelector('.prototype-tag').textContent='ECHO CUT · 0.5';
 $('home').querySelector('.bottom-title strong').textContent='回声站封锁案';
 $('home').querySelector('.chapter-preview').innerHTML='<span><i>01</i>失联信号</span><b>─</b><span><i>02 / 03</i>病区与断桥</span><b>─</b><span><i>04</i>签名原件</span><b>─</b><span class="last"><i>05</i>最终发送</span>';
 const homeEvidence=document.createElement('button');homeEvidence.className='hero-case-link';homeEvidence.textContent='十二名当事人 / 查看人物与独立走法 ↗';homeEvidence.onclick=showArchive;$('home').querySelector('.hero-buttons').after(homeEvidence);
-const heroProp=document.createElement('div');heroProp.className='hero-prop';heroProp.innerHTML=`<img src="${ART.device}" alt="新版紧凑N–6控制器"><div><span>EVIDENCE / 02</span><strong>没有释放扣的医疗夹具</strong><small>N–6 NEURAL LATCH</small></div>`;$('home').append(heroProp);
+const heroProp=document.createElement('div');heroProp.className='hero-prop';heroProp.innerHTML=`<img src="${ART.device}" alt="放大的发光N–6控制器"><div><span>EVIDENCE / 02</span><strong>没有释放扣的医疗夹具</strong><small>N–6 NEURAL LATCH</small></div>`;$('home').append(heroProp);
 // Remove the rejected spider from principal branding as well as character art.
 $('home-logo').querySelector('svg').outerHTML=`<img class="brand-device" src="${ART.device}" alt="">`;
 selectFaction(homeSide);

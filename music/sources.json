@@ -1,0 +1,68 @@
+{
+  "verified_date": "2026-10-18",
+  "license_policy": "https://peritune.com/about/",
+  "tracks": [
+    {
+      "id": "irregular",
+      "title": "Irregular",
+      "artist": "PeriTune",
+      "published": "2020-02-28",
+      "source_page": "https://peritune.com/blog/2020/02/28/irregular/",
+      "source_loop_package": "https://peritune.com/loop/PerituneMaterial_Irregular_loop.zip",
+      "license": "CC BY 4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "file": "music/irregular.mp3",
+      "sha256": "9463fad35f451deb47496eeb96f7286fe33f08b5a86a6b45f2f5d245f2548679",
+      "encoding": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "sample_rate": "44100",
+            "channels": 2,
+            "side_data_list": [
+              {}
+            ]
+          }
+        ],
+        "format": {
+          "duration": "196.414694",
+          "size": "2750214",
+          "bit_rate": "112016"
+        }
+      },
+      "modifications": "Author loop version transcoded to 112 kbps MP3, stereo 44.1 kHz; no melodic edits"
+    },
+    {
+      "id": "cyberpunk-city",
+      "title": "Cyberpunk_City",
+      "artist": "PeriTune",
+      "published": "2020-05-22",
+      "source_page": "https://peritune.com/blog/2020/05/22/cyberpunk_city/",
+      "source_loop_package": "https://peritune.com/loop/PerituneMaterial_CyberPunk_City_loop.zip",
+      "license": "CC BY 4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "file": "music/cyberpunk-city.mp3",
+      "sha256": "ff3850e3aaad6e070d2ba0cf58f27c38098b20530b98298ee303e3eea0f37142",
+      "encoding": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "sample_rate": "44100",
+            "channels": 2,
+            "side_data_list": [
+              {}
+            ]
+          }
+        ],
+        "format": {
+          "duration": "142.654694",
+          "size": "1997574",
+          "bit_rate": "112022"
+        }
+      },
+      "modifications": "Author loop version transcoded to 112 kbps MP3, stereo 44.1 kHz; no melodic edits"
+    }
+  ]
+}
