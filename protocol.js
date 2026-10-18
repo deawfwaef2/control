@@ -22,13 +22,13 @@ renderDossier=function(){
  const text=parasite?'仅赤蛛能永久感染机娘。寄生换位后，本阶段双方锁定；没有解救。':'吃到敌方单位直接击杀。机娘、哨卫、信使都不能感染，也不能解救受控者。';
  $('dossier').querySelector('.dossier-controls')?.insertAdjacentHTML('beforebegin',`<p class="capture-law ${parasite?'infect':''}"><b>${parasite?'唯一感染执行器':'致命吃子'}</b>${text}</p>`);
 };
-radioForCapture=function(ev){if(ev.converted)radio(ev.converted.name,'N–6 运动总线覆写完成。阵营永久接入赤巢。');};
+radioForCapture=function(ev){if(ev.converted)radio(ev.converted.name,'胸口正中的机械蜘蛛红光暴涨，她的双眸瞬间转为猩红：“神经链路已被赤巢覆写……服从母巢指令。”');};
 function combatCutIn(target,mode){
  clearTimeout(eventTimer);const box=$('capture-event'),infect=mode==='infect';
  box.className='capture-event cinema-capture '+(infect?'r':'lethal');
  const image=target.char?portraitSource(target.char,infect?'r':target.side):target.kind==='core'?ART.reactor:ART.device;
  const face=target.char||['spider','courier','core'].includes(target.kind)?`<img src="${image}" alt="">`:svg(KINDS[target.kind]?.icon||'drone','kill-machine');
- box.innerHTML=`<div class="capture-face">${face}</div><div class="capture-copy"><span>${infect?'NEURAL OVERWRITE / IRREVERSIBLE':'TARGET ELIMINATED / NO CONVERSION'}</span><strong>${infect?'永久寄生':'击杀'} · ${esc(target.name)}</strong><small>${infect?'装置与眼部同步亮红。无法解救。':'载体永久损毁，不会转换阵营。'}</small><em>${infect?'刚被寄生单位本阶段锁定':'死亡状态跨章保留'}</em></div>`;
+ box.innerHTML=`<div class="capture-face">${face}</div><div class="capture-copy"><span>${infect?'NEURAL OVERWRITE / IRREVERSIBLE':'TARGET ELIMINATED / NO CONVERSION'}</span><strong>${infect?'永久寄生':'击杀'} · ${esc(target.name)}</strong><small>${infect?'红蜘蛛已锁死胸口正中，双眸同步亮红，无法解救。':'载体永久损毁，不会转换阵营。'}</small><em>${infect?'刚被寄生单位本阶段锁定':'死亡状态跨章保留'}</em></div>`;
  requestAnimationFrame(()=>box.classList.add('show'));eventTimer=setTimeout(()=>box.classList.remove('show'),2000);
  if(!reducedMotion){$('board').classList.remove('shake');requestAnimationFrame(()=>$('board').classList.add('shake'));setTimeout(()=>$('board').classList.remove('shake'),320);}
 }

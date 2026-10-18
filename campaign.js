@@ -132,9 +132,9 @@ async function updateDirector(reason){
  }
  if(reason==='round'){
   let warning=null;
-  if(S.mid===1&&S.round===S.ventStart&&!q.warnings.includes('vent'))warning={id:'vent',who:'misa',text:'供压在掉。橙色警戒排将在本轮末泄压。先把人移走，再讨论样本。',title:'玻璃破裂之前'};
-  if(S.mid===2&&S.round===S.collapseAt-1&&!q.warnings.includes('bridge'))warning={id:'bridge',who:'akira',text:`外侧桥面还剩一轮。第 ${S.collapseAt} 轮结束时，C、F 列的中段会彻底断开。先保住携带者与交付口，不要留在外段等锁。`,title:'桥下，是地球'};
-  if(warning){q.warnings.push(warning.id);directorBusy=true;busy=true;persist();await directorScene([{who:warning.who,side:C.side,text:warning.text,camera:'establish',shot:'声音收窄。环境危险不是意外，而是提前公开的选择。'}],warning.title);directorBusy=false;if(token!==runId)return;busy=false;render();persist();}
+  if(S.mid===1&&S.round===S.ventStart&&!q.warnings.includes('vent'))warning={id:'vent',who:'misa',text:'警报！生态冷却环气压急速跌落，橙色闪烁横排将在本轮末触发真空泄压！立刻把所有单位撤离警戒排，被卷进真空就彻底毁了！',title:'真空泄压警报'};
+  if(S.mid===2&&S.round===S.collapseAt-1&&!q.warnings.includes('bridge'))warning={id:'bridge',who:'akira',text:`外侧天桥承重极限只剩最后一轮！第 ${S.collapseAt} 轮结束时，C、F 列中段桥面将永久坍塌坠入地球轨道！立刻掩护密钥携带者走中央主桥！`,title:'天桥崩塌倒计时'};
+  if(warning){q.warnings.push(warning.id);directorBusy=true;busy=true;persist();await directorScene([{who:warning.who,side:C.side,text:warning.text,camera:'establish',shot:'警报红灯沿甲板闪烁。环境危机倒计时已在战术网格上公开锁定。'}],warning.title);directorBusy=false;if(token!==runId)return;busy=false;render();persist();}
  }
 }
 const originalPerform=performMove;

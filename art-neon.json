@@ -4,46 +4,42 @@
     1024
   ],
   "device": "device.webp",
-  "new_generated_portraits": 9,
-  "retained_angled_portraits": [
-    "akira",
-    "veil",
-    "misa"
-  ],
-  "controlled_variants": "composited from clean portraits, generated RE5-style mechanical spider chest device and glowing red eye emission",
+  "new_generated_portraits": 12,
+  "retained_angled_portraits": [],
+  "controlled_variants": "composited from 12 2D Japanese anime mecha-girl portraits, generated RE5-style mechanical spider chest device on chest center and glowing red eye emission",
   "portraits": {
     "lyra": {
       "base": "new generated Japanese anime mecha girl bust portrait",
       "device_quad": [
         [
-          235,
-          595
+          225,
+          425
         ],
         [
-          455,
-          595
+          445,
+          425
         ],
         [
-          450,
-          845
+          440,
+          675
         ],
         [
-          230,
-          845
+          220,
+          675
         ]
       ],
       "eyes": [
         [
-          282,
-          326,
-          15,
-          12
+          295,
+          218,
+          16,
+          13
         ],
         [
-          420,
-          315,
-          15,
-          12
+          405,
+          208,
+          16,
+          13
         ]
       ],
       "device_partly_occluded_by_side_pose": false
@@ -52,34 +48,34 @@
       "base": "new generated Japanese anime mecha girl bust portrait",
       "device_quad": [
         [
-          270,
-          560
-        ],
-        [
-          490,
-          560
+          265,
+          490
         ],
         [
           485,
-          810
+          490
         ],
         [
-          265,
-          810
+          480,
+          740
+        ],
+        [
+          260,
+          740
         ]
       ],
       "eyes": [
         [
           328,
-          324,
-          15,
-          12
+          280,
+          16,
+          13
         ],
         [
-          448,
-          304,
-          15,
-          12
+          444,
+          260,
+          16,
+          13
         ]
       ],
       "device_partly_occluded_by_side_pose": false
@@ -89,33 +85,33 @@
       "device_quad": [
         [
           245,
-          632
+          485
         ],
         [
-          475,
-          632
+          465,
+          485
         ],
         [
-          470,
-          882
+          460,
+          735
         ],
         [
           240,
-          882
+          735
         ]
       ],
       "eyes": [
         [
-          295,
-          328,
-          17,
-          14
+          315,
+          262,
+          16,
+          13
         ],
         [
-          458,
-          306,
-          17,
-          14
+          438,
+          246,
+          16,
+          13
         ]
       ],
       "device_partly_occluded_by_side_pose": false
@@ -124,33 +120,33 @@
       "base": "new generated Japanese anime mecha girl bust portrait",
       "device_quad": [
         [
-          250,
-          625
+          255,
+          460
+        ],
+        [
+          475,
+          460
         ],
         [
           470,
-          625
+          710
         ],
         [
-          465,
-          875
-        ],
-        [
-          245,
-          875
+          250,
+          710
         ]
       ],
       "eyes": [
         [
-          310,
-          306,
-          15,
+          316,
+          232,
+          16,
           13
         ],
         [
-          442,
-          294,
-          15,
+          428,
+          222,
+          16,
           13
         ]
       ],
@@ -161,33 +157,33 @@
       "device_quad": [
         [
           320,
-          620
+          595
         ],
         [
           550,
-          620
+          595
         ],
         [
           545,
-          880
+          845
         ],
         [
           315,
-          880
+          845
         ]
       ],
       "eyes": [
         [
-          406,
-          232,
-          15,
-          12
+          416,
+          226,
+          16,
+          13
         ],
         [
-          566,
-          255,
-          14,
-          12
+          570,
+          250,
+          16,
+          13
         ]
       ],
       "device_partly_occluded_by_side_pose": false
@@ -196,34 +192,34 @@
       "base": "new generated Japanese anime mecha girl bust portrait",
       "device_quad": [
         [
-          245,
-          610
-        ],
-        [
-          465,
-          610
+          240,
+          520
         ],
         [
           460,
-          860
+          520
         ],
         [
-          240,
-          860
+          455,
+          770
+        ],
+        [
+          235,
+          770
         ]
       ],
       "eyes": [
         [
-          302,
-          344,
-          14,
-          10
+          305,
+          306,
+          16,
+          13
         ],
         [
-          424,
-          334,
-          15,
-          10
+          416,
+          294,
+          16,
+          13
         ]
       ],
       "device_partly_occluded_by_side_pose": false
@@ -233,33 +229,33 @@
       "device_quad": [
         [
           245,
-          515
+          455
         ],
         [
-          455,
-          515
+          465,
+          455
         ],
         [
-          450,
-          765
+          460,
+          705
         ],
         [
           240,
-          765
+          705
         ]
       ],
       "eyes": [
         [
-          296,
-          266,
-          13,
-          8
+          295,
+          250,
+          16,
+          13
         ],
         [
-          404,
-          260,
-          13,
-          8
+          396,
+          242,
+          16,
+          13
         ]
       ],
       "device_partly_occluded_by_side_pose": false
@@ -268,33 +264,33 @@
       "base": "new generated Japanese anime mecha girl bust portrait",
       "device_quad": [
         [
-          265,
-          545
+          255,
+          485
         ],
         [
           475,
-          545
+          485
         ],
         [
           470,
-          795
+          735
         ],
         [
-          260,
-          795
+          250,
+          735
         ]
       ],
       "eyes": [
         [
-          326,
-          308,
-          15,
+          346,
+          282,
+          16,
           13
         ],
         [
-          442,
-          296,
-          15,
+          455,
+          268,
+          16,
           13
         ]
       ],
@@ -304,142 +300,142 @@
       "base": "new generated Japanese anime mecha girl bust portrait",
       "device_quad": [
         [
-          290,
-          585
-        ],
-        [
-          510,
-          585
+          285,
+          535
         ],
         [
           505,
-          835
+          535
         ],
         [
-          285,
-          835
+          500,
+          785
+        ],
+        [
+          280,
+          785
         ]
       ],
       "eyes": [
         [
-          414,
-          308,
-          14,
-          10
+          396,
+          272,
+          16,
+          13
         ],
         [
-          528,
-          322,
-          13,
-          10
+          500,
+          292,
+          16,
+          13
         ]
       ],
       "device_partly_occluded_by_side_pose": false
     },
     "akira": {
-      "base": "retained angled original",
+      "base": "new generated Japanese anime mecha girl bust portrait",
       "device_quad": [
         [
-          425,
-          635
+          230,
+          555
         ],
         [
-          615,
-          655
+          455,
+          555
         ],
         [
-          625,
-          885
+          450,
+          805
         ],
         [
-          435,
-          865
+          225,
+          805
         ]
       ],
       "eyes": [
         [
-          423,
-          355,
-          10,
-          5
+          272,
+          318,
+          16,
+          13
         ],
         [
-          519,
-          362,
-          8,
-          5
+          400,
+          304,
+          16,
+          13
         ]
       ],
       "device_partly_occluded_by_side_pose": false
     },
     "veil": {
-      "base": "retained angled original",
+      "base": "new generated Japanese anime mecha girl bust portrait",
       "device_quad": [
         [
-          200,
-          735
-        ],
-        [
-          405,
-          715
-        ],
-        [
-          420,
-          955
-        ],
-        [
-          215,
-          975
-        ]
-      ],
-      "eyes": [
-        [
-          243,
-          306,
-          8,
-          5
-        ],
-        [
-          361,
-          279,
-          10,
-          6
-        ]
-      ],
-      "device_partly_occluded_by_side_pose": false
-    },
-    "misa": {
-      "base": "retained angled original",
-      "device_quad": [
-        [
-          290,
-          585
-        ],
-        [
-          485,
-          605
+          255,
+          415
         ],
         [
           475,
-          835
+          415
         ],
         [
-          280,
-          815
+          470,
+          665
+        ],
+        [
+          250,
+          665
         ]
       ],
       "eyes": [
         [
           356,
-          272,
-          11,
-          6
+          250,
+          16,
+          13
         ],
         [
-          470,
-          301,
-          10,
-          6
+          455,
+          240,
+          16,
+          13
+        ]
+      ],
+      "device_partly_occluded_by_side_pose": false
+    },
+    "misa": {
+      "base": "new generated Japanese anime mecha girl bust portrait",
+      "device_quad": [
+        [
+          275,
+          435
+        ],
+        [
+          495,
+          435
+        ],
+        [
+          490,
+          685
+        ],
+        [
+          270,
+          685
+        ]
+      ],
+      "eyes": [
+        [
+          382,
+          294,
+          16,
+          13
+        ],
+        [
+          486,
+          302,
+          16,
+          13
         ]
       ],
       "device_partly_occluded_by_side_pose": false
