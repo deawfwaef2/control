@@ -84,13 +84,14 @@ async function fixture(p,id,side,mutate){await p.evaluate(({id,side})=>{const q=
   await fixture(p,1,'g',()=>{const q=window.__MV_QA__,f=q.snapshot();q.load(f.c,f.s);const saved=q.save();delete saved.s.quest;delete saved.checkpoint.s.quest;saved.s.ventStart=3;q.restore(saved);});const f=await p.evaluate(()=>window.__MV_QA__.snapshot());assert.equal(f.s.quest.version,2);assert.equal(f.s.quest.stage,0);assert.equal(f.s.mid,1);assert.equal(f.c.roster.lyra.status,'active');
  });
  await require('./ensemble-tests.cjs')({p,check,assert});
+ await require('./screenplay-tests.cjs')({p,check,assert,newPage,url});
  const mobile=await newPage({width:390,height:844});await mobile.goto(url+'#qa');
  await check('Mobile page contains its large board in a horizontal viewport',async()=>{await mobile.evaluate(()=>window.__MV_QA__.start('g'));const metrics=await mobile.evaluate(()=>({width:innerWidth,body:document.documentElement.scrollWidth,pan:document.querySelector('.board-pan').clientWidth,board:document.querySelector('.board-surround').getBoundingClientRect().width}));assert.ok(metrics.body<=metrics.width+2);assert.ok(metrics.board>=650&&metrics.pan<metrics.board);return metrics;});
  await check('Mobile overview fits all eight columns without page overflow',async()=>{await mobile.locator('#overview-btn').click();const metrics=await mobile.evaluate(()=>({width:innerWidth,body:document.documentElement.scrollWidth,board:document.querySelector('.board-surround').getBoundingClientRect().width}));assert.ok(metrics.body<=metrics.width+2);assert.ok(metrics.board<=390);return metrics;});
  await check('Packaged game makes no external network requests',async()=>{assert.deepEqual(networkRequests,[]);});
  await check('No browser page errors in targeted checks',async()=>{assert.deepEqual(runtimeErrors,[]);});
- const report={milestone:'M5',date:'2026-10-18',mode:'offline file:// + opt-in #qa deterministic fixtures',browser:'Chromium',results,runtimeErrors,externalRequests:networkRequests,passed:results.filter(r=>r.pass).length,total:results.length,limitations:['No full manual campaign playthrough','No difficulty-balance certification','Fixtures isolate rules; they do not claim players reached objectives naturally','No real-time second agent was observed']};
- fs.writeFileSync(path.join(ROOT,'qa','m5-report.json'),JSON.stringify(report,null,2));
+ const report={milestone:'M6',date:'2026-10-18',mode:'offline file:// + opt-in #qa deterministic fixtures',browser:'Chromium',results,runtimeErrors,externalRequests:networkRequests,passed:results.filter(r=>r.pass).length,total:results.length,limitations:['No full manual campaign playthrough','No difficulty-balance certification','Fixtures isolate rules; they do not claim players reached objectives naturally','No real-time second agent was observed']};
+ fs.writeFileSync(path.join(ROOT,'qa','m6-report.json'),JSON.stringify(report,null,2));
  await normal.screenshot({path:'/tmp/control-m2-battle.png',fullPage:true});await mobile.screenshot({path:'/tmp/control-m2-mobile.png',fullPage:true});
  console.log(`RESULT ${report.passed}/${report.total}`);await browser.close();process.exitCode=report.passed===report.total?0:1;
 })().catch(async e=>{console.error(e);if(browser)await browser.close();process.exitCode=1});

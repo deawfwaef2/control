@@ -131,8 +131,8 @@ async function updateDirector(reason){
  }
  if(reason==='round'){
   let warning=null;
-  if(S.mid===1&&S.round===S.ventStart&&!q.warnings.includes('vent'))warning={id:'vent',who:'misa',text:'听。密封层在倒数。橙色闪烁的横排会在这一轮结束时失压。没有命中率，也没有第二次机会——先把她们移开。',title:'玻璃破裂之前'};
-  if(S.mid===2&&S.round===S.collapseAt-1&&!q.warnings.includes('bridge'))warning={id:'bridge',who:'akira',text:`外侧桥面还剩一轮。第 ${S.collapseAt} 轮结束时，C、F 列的中段会彻底断开。走在上面的人，以及她携带的记忆，都不会自己回来。`,title:'桥下，是地球'};
+  if(S.mid===1&&S.round===S.ventStart&&!q.warnings.includes('vent'))warning={id:'vent',who:'misa',text:'供压在掉。橙色警戒排将在本轮末泄压。先把人移走，再讨论样本。',title:'玻璃破裂之前'};
+  if(S.mid===2&&S.round===S.collapseAt-1&&!q.warnings.includes('bridge'))warning={id:'bridge',who:'akira',text:`外侧桥面还剩一轮。第 ${S.collapseAt} 轮结束时，C、F 列的中段会彻底断开。先保住携带者与交付口，不要留在外段等锁。`,title:'桥下，是地球'};
   if(warning){q.warnings.push(warning.id);directorBusy=true;busy=true;persist();await directorScene([{who:warning.who,side:C.side,text:warning.text,camera:'establish',shot:'声音收窄。环境危险不是意外，而是提前公开的选择。'}],warning.title);directorBusy=false;if(token!==runId)return;busy=false;render();persist();}
  }
 }
