@@ -140,7 +140,7 @@ const caseButton=document.createElement('button');caseButton.id='casefile-btn';c
 function evidenceResolved(id){return id==='manifest'?hasEvidence('downlink'):['signature','downlink'].includes(id)?!!C?.flags.disclosure:hasEvidence('signature');}
 function showCasefile(){
  if(C&&S)syncEvidence();const f=ensureCasefile(),found=f?.found||[];
- openModal('回声站封锁案','ECHO / EVIDENCE & TESTIMONY',`<div class="case-heading"><p>原始记录与推断分开保存。跳过演出不会丢失任务中取得的证据。</p><strong>${found.length}<small> / 06 份记录</small></strong></div><div class="case-grid">${Object.entries(ECHO_EVIDENCE).map(([id,d])=>{const entry=found.find(e=>e.id===id);return`<article class="case-card ${entry?'unlocked':'locked'}" data-evidence="${id}"><span class="case-number">${d.number}</span>${entry?`<span class="case-source">${esc(d.source)}</span><h3>${esc(d.title)}</h3><p>${esc(d.fact)}</p><div class="case-question">待解释：${esc(d.question)}</div>${evidenceResolved(id)?`<div class="case-payoff">关联已核验<br>${esc(d.payoff)}</div>`:''}<small>${esc(entry.origin)} / 第${entry.round}轮</small>`:'<h3>尚未接入</h3><p>后续任务中核验后解锁。不提前展示答案。</p>'}</article>`;}).join('')}</div><details class="case-transcript"><summary>已观看的对白与记录 · ${f?.transcript.length||0} 条</summary>${(f?.transcript||[]).map(t=>`<article><span>${esc(t.title)} / ${esc(t.source)}</span><strong>${esc(t.actor)}</strong><p>${esc(t.text)}</p></article>`).join('')||'<p>开始调查后，这里保留你已经看过的镜头对白。</p>'}</details>${C?`<div class="case-disposition">最终发送：${C.flags.disclosure==='open'?'公开原件 / 停止协议':C.flags.disclosure==='command'?'接管授权':C.flags.disclosure==='sealed'?'停机回执 / 原件封存':'尚未决定'}<br>永久损毁：${Object.entries(C.roster).filter(([id,r])=>r.status==='destroyed').map(([id])=>CHAR[id].name).join('、')||'无已确认记录'}。受控或未归队者不会被自动记为死亡。</div>`:''}`);
+ openModal('回声站封锁案','ECHO / EVIDENCE & TESTIMONY',`<div class="case-heading"><p>原始记录与推断分开保存。跳过演出不会丢失任务中取得的证据。</p><strong>${found.length}<small> / 06 份记录</small></strong></div><div class="case-grid">${Object.entries(ECHO_EVIDENCE).map(([id,d])=>{const entry=found.find(e=>e.id===id);return`<article class="case-card ${entry?'unlocked':'locked'}" data-evidence="${id}"><span class="case-number">${d.number}</span>${entry?`<span class="case-source">${esc(d.source)}</span><h3>${esc(d.title)}</h3><p>${esc(d.fact)}</p><div class="case-question">待解释：${esc(d.question)}</div>${evidenceResolved(id)?`<div class="case-payoff">关联已核验<br>${esc(d.payoff)}</div>`:''}<small>${esc(entry.origin)} / 第${entry.round}轮</small>`:'<h3>尚未接入</h3><p>后续任务中核验后解锁。不提前展示答案。</p>'}</article>`;}).join('')}</div><details class="case-transcript"><summary>已观看的对白与记录 · ${f?.transcript.length||0} 条</summary>${(f?.transcript||[]).map(t=>`<article><span>${esc(t.title)} / ${esc(t.source)}</span><strong>${esc(t.actor)}</strong><p>${esc(t.text)}</p></article>`).join('')||'<p>开始调查后，这里保留你已经看过的镜头对白。</p>'}</details>${C?`<div class="case-disposition">最终发送：${C.flags.disclosure==='open'?'公开原件 / 停产协议':C.flags.disclosure==='command'?'接管授权':C.flags.disclosure==='sealed'?'停机回执 / 原件封存':'尚未决定'}<br>永久损毁：${Object.entries(C.roster).filter(([id,r])=>r.status==='destroyed').map(([id])=>CHAR[id].name).join('、')||'无已确认记录'}。受控或未归队者不会被自动记为死亡。</div>`:''}`);
 }
 caseButton.onclick=showCasefile;
 
@@ -173,13 +173,13 @@ function renderEchoResult(){
 }
 function chooseFinalTransmission(){
  const g=C.side==='g';
- const frame=echoCard('最终发送 / 需要操作者确认',g?'RETURN LINK':'UPLINK READY',g?['停机 / 已确认','原件 / 保留两份']:['原件与撤药修复表 / 待发送','接管控制表 / 待发送'],g?'回收链路只剩一次完整上行余量。提交哪一种记录？':'通道已经稳定。现在选择发送什么。',{title:'最后一个确认键',scene:'station'});
+ const frame=echoCard('最终发送 / 需要操作者确认',g?'RETURN LINK':'UPLINK READY',g?['停机 / 已确认','原件 / 保留两份']:['原件与停产协议 / 待发送','接管控制表 / 待发送'],g?'回收链路只剩一次完整上行余量。提交哪一种记录？':'通道已经稳定。现在选择发送什么。',{title:'最后一个确认键',scene:'station'});
  const commit=value=>{C.flags.disclosure=value;persist();showResult();};
  playChoice(frame,g?[
   {label:'公开操作原件，保留所有签名',detail:'发送可核验的操作与授权记录；缺失内容仍标为缺失，不用证词冒充原始数据。个人神经副本不随操作日志公开。',action:()=>commit('open')},
   {label:'先交停机回执，封存原件',detail:'确认地面安全，暂不公开操作责任。两份原件保留；封存不等于销毁，也不等于结案。',action:()=>commit('sealed')}
  ]:[
-  {label:'广播原件与撤药修复表',detail:'恢复地面端的患者终止条件，不发送接管控制表。相关修改者的签名也会被保留。',action:()=>commit('open')},
+  {label:'广播原件与停产协议',detail:'令地面停止制造新的感染载体，不发送接管授权。已经受控的人无法恢复；相关签名与损失照常保留。',action:()=>commit('open')},
   {label:'继续发送接管授权',detail:'允许地面N–6进入运动接管。停止字段维持空白；发送者的这次选择会成为新增证据。',action:()=>commit('command')}
  ]);
 }
@@ -192,7 +192,7 @@ showResult=function(){
 };
 
 const echoFaction=selectFaction;
-selectFaction=function(side){echoFaction(side);$('faction-description').textContent=side==='g'?'以守护者身份进入封锁区，救回失联者，核验授权链，阻止地面生产端接管。':'以受控载体和少量夹具起步，突破回收封锁；最后由你决定上行队列发送证词，还是接管授权。';};
+selectFaction=function(side){echoFaction(side);$('faction-description').textContent=side==='g'?'进入不可逆感染区，核验授权链、阻止扩散。只有赤蛛能夺控；其他吃子直接击杀，无法解救。':'以受控载体和少量夹具起步，突破回收封锁；最后由你决定上行队列发送证词，还是接管授权。';};
 $('home').querySelector('.hero-description').innerHTML='求救信号，<span>比事故早了七分钟。</span><br>十七天后，她仍站在门后。';
 $('home').querySelector('.hero-copy>.micro-label').innerHTML='<span class="red-line"></span> THE ECHO STATION CASE / 回声证词';
 $('home').querySelector('.prototype-tag').textContent='ECHO CUT · 0.5';

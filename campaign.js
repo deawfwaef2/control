@@ -22,7 +22,7 @@ function initQuest(s){
 makeMission=function(id){const s=baseMakeMission(id);initQuest(s);return s;};
 shielded=function(s){return baseShielded(s)||(s.mid===4&&s.quest?.player==='g'&&s.quest.stage<3);};
 function heldChar(s,id,side){const u=charter(s,id);return !!u&&onBoard(u)&&u.side===side;}
-function centralNoct(s,side){const n=charter(s,'noct');return !!n&&onBoard(n)&&n.side===side&&n.y===3&&[3,4].includes(n.x);}
+function centralSync(s,side){return pieces(s,side).some(u=>(side==='g'||u.char==='noct')&&u.y===3&&[3,4].includes(u.x));}
 function gateOf(s,side){return s.relays.find(r=>r.gate===side);}
 function actGoals(s,side=s.quest?.player||C.side){
  const q=s.quest;if(!q)return baseObjectives(s,side).main;
@@ -30,7 +30,7 @@ function actGoals(s,side=s.quest?.player||C.side){
  const row=(text,done)=>out.push({text,done:!!done});
  if(s.mid===0){
   if(stage===0){if(g)row('占领 C4 接入台，建立稳定战术链路',s.relays.find(t=>t.role==='entry')?.owner==='g');else{const c=s.units.find(u=>u.kind==='courier');row('让信使抵达第 5 排以上，或感染一名机娘',c&&!c.dead&&(c.escaped||c.y<=3)||s.flags.conversionsR.length>=1);}}
-  if(stage===1){if(g){row('控制 D8 主中继站',s.relays.find(t=>t.role==='uplink')?.owner==='g');row('解放璃雀，或截获载毒数据包',heldChar(s,'lark','g')||lootById(s,'packet')?.side==='g');}else row('信使抵达 H8，或累计感染两名不同机娘',s.flags.courierEscaped||s.flags.conversionsR.length>=2);}
+  if(stage===1){if(g){row('控制 D8 主中继站',s.relays.find(t=>t.role==='uplink')?.owner==='g');row('截获数据包，或在 D8 中继站固守读取原始授时头',!!q.signalRecovered||lootById(s,'packet')?.side==='g');}else row('信使抵达 H8，或累计感染两名不同机娘',s.flags.courierEscaped||s.flags.conversionsR.length>=2);}
   if(stage===2)row(`让 ${q.extractNeed} 个己方单位从${g?' C1 / F1 / A1':' C8 / F8 / H8'}撤离（${q.extracted.length}/${q.extractNeed}）`,q.extracted.length>=q.extractNeed);
  }
  if(s.mid===1){
@@ -46,8 +46,8 @@ function actGoals(s,side=s.quest?.player||C.side){
  }
  if(s.mid===3){
   if(stage===0)row('接管 B5 / G5 任一终端，开启中央镜室',r>=1);
-  if(stage===1){row(g?'解放并保有朔夜':'保有朔夜的人格载体',heldChar(s,'noct',side));row('同时控制 B5 与 G5 两座终端',r===2);}
-  if(stage===2){row('让朔夜进入 D5 或 E5 镜室同步座',centralNoct(s,side));row(`保持双终端与同步座，连续 2 次轮末（${q.held}/2）`,q.held>=2&&r===2&&centralNoct(s,side));}
+  if(stage===1){if(!g)row('保有朔夜的受控载体',heldChar(s,'noct','r'));row('同时控制 B5 与 G5 两座终端，读取两份签名',r===2);}
+  if(stage===2){row(g?'让任一守护单位进入 D5 或 E5，校验签名原件':'让朔夜进入 D5 或 E5 镜室同步座',centralSync(s,side));row(`保持双终端与同步座，连续 2 次轮末（${q.held}/2）`,q.held>=2&&r===2&&centralSync(s,side));}
  }
  if(s.mid===4){
   if(g){
@@ -57,7 +57,7 @@ function actGoals(s,side=s.quest?.player||C.side){
    if(stage===3){row('保持双终端，使护盾关闭',r===2);row('吃掉 E8 赤巢内核',s.units.find(u=>u.kind==='core')?.dead);}
   }else{
    if(stage===0)row('维持核心与战术链路，撑过第 2 轮末',s.round>=3||q.events.includes('first-growth'));
-   if(stage===1){const newCaptures=s.flags.conversionsR.length-q.captureBaseline,newKills=q.kills.r-q.killBaseline;row(`本阶段感染 1 名机娘或摧毁 2 个装置（感染 ${Math.max(0,newCaptures)} / 摧毁 ${Math.max(0,newKills)}）`,newCaptures>=1||newKills>=2||movers(s,'g').length===0);}
+   if(stage===1){const newCaptures=s.flags.conversionsR.length-q.captureBaseline,newKills=q.kills.r-q.killBaseline;row(`本阶段感染 1 名机娘或击杀 2 个敌方单位（感染 ${Math.max(0,newCaptures)} / 摧毁 ${Math.max(0,newKills)}）`,newCaptures>=1||newKills>=2||movers(s,'g').length===0);}
    if(stage===2){row('至少掌控 B6 / G6 其中一座终端',r>=1);row('在赤巢控制的终端上固守一次，开启外向广播',q.broadcast.r);}
    if(stage===3){row('外向广播保持在线',q.broadcast.r);row('核心存活至第 12 轮末，或清除全部守护单位',s.flags.survived||movers(s,'g').length===0);}
   }
@@ -75,6 +75,7 @@ applyBasic=function(s,m){
  if(ev.escaped&&s.mid===0&&q.stage===2&&ev.side===q.player&&!q.extracted.includes(ev.unit))q.extracted.push(ev.unit);
  if(s.mid===2&&s.flags.delivered&&gateOf(s,s.flags.delivered)?.owner!==s.flags.delivered){s.flags.delivered=previousDelivery;ev.lockedGate=true;}
  if(m.type==='wait'&&u&&onBoard(u)){
+  if(s.mid===0&&q.stage===1&&u.side==='g'&&s.relays.some(r=>r.role==='uplink'&&r.owner==='g'&&r.x===u.x&&r.y===u.y)){q.signalRecovered=true;ev.operation='原始授时头已读取';}
   if(s.mid===1&&q.stage===2&&(u.x===4&&u.y===3||u.char==='misa'&&distance(u,{x:4,y:3})<=1)){q.isolation[u.side]=true;ev.operation=u.side==='g'?'失压回路已封闭':'培育协议已覆写';}
   if(s.mid===4&&u.side==='g'&&q.player==='g'&&q.stage===2){const core=s.units.find(v=>v.kind==='core');if(core&&distance(u,core)<=(u.char==='misa'?2:1)){q.disrupt.g=true;ev.operation='近场人格链已断开';}}
   if(s.mid===4&&u.side==='r'&&q.player==='r'&&q.stage===2&&s.relays.some(t=>t.owner==='r'&&t.x===u.x&&t.y===u.y)){q.broadcast.r=true;ev.operation='外向广播已开启';}
@@ -167,7 +168,7 @@ resolveEnvironment=function(){
  const q=S.quest;
  if(q){
   if(S.mid===1&&C.side==='g'&&q.stage===1)q.held=relayCount(S,'g')===2?q.held+1:0;
-  if(S.mid===3&&q.stage===2)q.held=relayCount(S,C.side)===2&&centralNoct(S,C.side)?q.held+1:0;
+  if(S.mid===3&&q.stage===2)q.held=relayCount(S,C.side)===2&&centralSync(S,C.side)?q.held+1:0;
   if(S.mid===4&&C.side==='g'&&q.stage===1)q.held=relayCount(S,'g')===2?q.held+1:0;
  }
  if(checkOutcome())return true;
@@ -186,7 +187,7 @@ strategicTarget=function(s,u){
 const oldPositionScore=goalPositionScore;
 goalPositionScore=function(s,side){let score=oldPositionScore(s,side);
  if(s.mid===2){const item=lootById(s,'key'),carrier=s.units.find(u=>u.uid===item?.carrier&&onBoard(u));if(carrier){const gate=gateOf(s,carrier.side);if(gate&&gate.owner!==carrier.side)score+=(carrier.side===side?1:-1)*(110-distance(carrier,gate)*24);}}
- if(s.mid===3&&s.quest?.stage===2&&centralNoct(s,s.quest.player)&&relayCount(s,s.quest.player)===2)score+=(side===s.quest.player?1:-1)*(80+s.quest.held*40);
+ if(s.mid===3&&s.quest?.stage===2&&centralSync(s,s.quest.player)&&relayCount(s,s.quest.player)===2)score+=(side===s.quest.player?1:-1)*(80+s.quest.held*40);
  return score;
 };
 
@@ -221,10 +222,11 @@ introFor=function(id){
 };
 function questHint(s){
  const q=s.quest;if(!q)return MISSIONS[s.mid].note;
+ if(s.mid===0&&q.stage===1&&C.side==='g')return'原始数据可从信使身上截获，也可占领 D8 后固守读取。不能解救璃雀；普通攻击将击杀她。';
  if(s.mid===0&&q.stage===2)return`撤收需要 ${q.extractNeed} 个单位。普通装置可撤离；机娘会保留人格与同步度，下关继续出现。撤离后本关不可召回。`;
  if(s.mid===1)return`第 ${s.ventStart} 轮末首次泄压，此后每 3 轮一次。${q.stage===2?'E5 固守可执行任务操作；弥砂可在相邻格远程操作。':'阶段目标不同于可选样本争夺。闪烁横排上的载体会永久损毁。'}`;
  if(s.mid===2)return`${s.collapsed?'外侧桥面已断裂。':`外侧桥面第 ${s.collapseAt} 轮末坍塌。`}交付前必须控制本方轨道锁：守护者 E7 / 赤巢 D2。普通 EXIT 不是密钥交付口。`;
- if(s.mid===3&&q.stage===2)return'朔夜必须位于 D5 / E5，且双终端仍归己方，连续两个轮末才能同步完成。追猎增援已进入战场。';
+ if(s.mid===3&&q.stage===2)return(C.side==='g'?'任一守护单位':'朔夜')+'必须位于 D5 / E5，双终端仍归己方，连续两个轮末完成校验。受控者不能解救；守护者不需要收编朔夜。';
  if(s.mid===4)return C.side==='g'?'先双锁稳定，再近场固守断链，最后才能吃核心。弥砂可距核心 2 格执行断链。新出槽赤蛛本阶段不会额外行动。':'不是纯粹等待：折断阵线、占领终端、固守广播，然后让核心存活至第十二轮末。';
  return MISSIONS[s.mid].note;
 }
@@ -239,6 +241,7 @@ renderStatus=function(){
 };
 const previousDossier=renderDossier;
 renderDossier=function(){previousDossier();const btn=$('wait-btn');if(!btn||!S.quest)return;const u=S.units.find(v=>v.uid===btn.dataset.unit);if(!u||u.used)return;
+ if(S.mid===0&&C.side==='g'&&S.quest.stage===1&&S.relays.some(r=>r.role==='uplink'&&r.owner==='g'&&r.x===u.x&&r.y===u.y))btn.textContent='固守 · 读取授时头';
  if(S.mid===1&&S.quest.stage===2&&(u.x===4&&u.y===3||u.char==='misa'&&distance(u,{x:4,y:3})<=1))btn.textContent=C.side==='g'?'固守 · 紧急隔离':'固守 · 覆写培育台';
  if(S.mid===4&&C.side==='g'&&S.quest.stage===2){const core=S.units.find(v=>v.kind==='core');if(core&&distance(u,core)<=(u.char==='misa'?2:1))btn.textContent='固守 · 近场断链';}
  if(S.mid===4&&C.side==='r'&&S.quest.stage===2&&S.relays.some(r=>r.owner==='r'&&r.x===u.x&&r.y===u.y))btn.textContent='固守 · 开启广播';

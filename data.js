@@ -8,10 +8,10 @@ const CHAR = {
  noct:{name:'朔夜',en:'NOCT',code:'ECHO–00',role:'深空跃迁',rune:'跃',value:9,move:'camel',rule:'走长“日”字：3 格 + 垂直 1 格。可跳过阻挡，但不能落在舱壁或裂隙。',upgrade:'同步 II：额外获得横竖 1 格移动与吃子。',trait:'空间站初代安全架构师。是否保留她的人格，将改变终局。',bio:'赤巢不是她想创造的东西。她最初只是希望，机娘也能拥有拒绝被删除的权利。',quote:'如果我能选择，我还算是一件武器吗？'}
 };
 const KINDS = {
- spider:{name:'赤蛛',role:'感染执行器',rune:'蛛',value:3,rule:'八方向移动 / 吃子 1 格。吃到机娘后执行夺控换位。',icon:'spider'},
- drone:{name:'守护哨卫',role:'无人护卫',rune:'卫',value:3,rule:'横竖移动 / 吃子 1 格。可解除机娘控制；被吃则销毁。',icon:'drone'},
+ spider:{name:'赤蛛',role:'感染执行器',rune:'蛛',value:3,rule:'八方向移动 / 吃子 1 格。只有赤巢赤蛛能永久感染机娘并换位；无法解救。吃到其他装置直接摧毁。',icon:'spider'},
+ drone:{name:'守护哨卫',role:'无人护卫',rune:'卫',value:3,rule:'横竖移动 / 吃子 1 格。吃到任何敌人直接击杀；没有感染或解救能力。',icon:'drone'},
  sentinel:{name:'轨道哨塔',role:'移动火力平台',rune:'塔',value:5,rule:'横竖移动 / 吃子 1—2 格，不可越过阻挡。',icon:'drone'},
- courier:{name:'载毒信使',role:'数据携行器',rune:'信',value:5,rule:'横竖移动 / 吃子 1 格。到达 H8 后撤离，下一关会送回增援。',icon:'spider'},
+ courier:{name:'载毒信使',role:'数据携行器',rune:'信',value:5,rule:'横竖移动 / 吃子 1 格，只能击杀，不能感染。到达 H8 后撤离，下一关会送回增援。',icon:'spider'},
  capsule:{name:'方舟匣',role:'人格档案运输器',rune:'匣',value:5,rule:'横竖移动 / 吃子 1 格。携带方舟密钥；被吃后密钥由攻击者拾取。',icon:'cube'},
  core:{name:'赤巢内核',role:'无限制造核心',rune:'核',value:35,rule:'无法移动。两座终端都归守护者时才可被吃。持续制造赤蛛。',icon:'core'}
 };

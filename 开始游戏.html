@@ -63,6 +63,10 @@
 button.archive-photo{display:block;width:100%;padding:0;border:0;text-align:left;background:#0d1720;cursor:pointer}
 .archive-photo:after{z-index:1;pointer-events:none}.archive-state{z-index:2}.archive-open{position:absolute;z-index:2;top:10px;right:10px;padding:5px 8px;background:#07101bce;color:#d2e7e6;font:9px ui-monospace,monospace;letter-spacing:1px}
 .archive-photo:focus-visible{outline:2px solid #9bd9cf;outline-offset:-3px}.gallery-back{margin:0 0 14px}.full-portrait .gallery-preview-note{font-size:10px;color:#8babae}
+
+.resolution-pill{position:absolute;z-index:7;left:5px;bottom:27px;padding:3px 6px;background:#f6d3ba;color:#261c18;border:1px solid #fff4;font-size:9px;font-weight:700;letter-spacing:1px;pointer-events:none;box-shadow:0 2px 8px #0009}.resolution-pill.infect{background:#ff4166;color:white}.cell[data-capture-mode="infect"]{box-shadow:inset 0 0 0 2px #ff3159,inset 0 0 25px #fc244955}.cell[data-capture-mode="kill"]{box-shadow:inset 0 0 0 2px #e9a575}
+.capture-law{display:flex;flex-direction:column;gap:5px;margin:12px 0 5px;padding:10px 12px;border-left:2px solid #d0a58b;background:#171c25;color:#b9bbc3;font-size:10px;line-height:1.65}.capture-law b{color:#e6b29c;font-weight:500;letter-spacing:1px}.capture-law.infect{border-color:#fb335e;background:#2d1321}.capture-law.infect b{color:#ff90a5}.lethal-note{border-color:#d8a47b}.capture-event.lethal{border-left-color:#e0aa8c}.capture-event.lethal .capture-copy>span{color:#e0aa8c}.capture-event.lethal .capture-face{filter:grayscale(.85)}
+@media(max-width:700px){.resolution-pill{font-size:8px;padding:3px 5px;bottom:25px}.capture-law{font-size:9px;margin-top:8px;padding:7px 9px}}
 </style>
 </head>
 <body>
@@ -147,10 +151,10 @@ const CHAR = {
  noct:{name:'朔夜',en:'NOCT',code:'ECHO–00',role:'深空跃迁',rune:'跃',value:9,move:'camel',rule:'走长“日”字：3 格 + 垂直 1 格。可跳过阻挡，但不能落在舱壁或裂隙。',upgrade:'同步 II：额外获得横竖 1 格移动与吃子。',trait:'空间站初代安全架构师。是否保留她的人格，将改变终局。',bio:'赤巢不是她想创造的东西。她最初只是希望，机娘也能拥有拒绝被删除的权利。',quote:'如果我能选择，我还算是一件武器吗？'}
 };
 const KINDS = {
- spider:{name:'赤蛛',role:'感染执行器',rune:'蛛',value:3,rule:'八方向移动 / 吃子 1 格。吃到机娘后执行夺控换位。',icon:'spider'},
- drone:{name:'守护哨卫',role:'无人护卫',rune:'卫',value:3,rule:'横竖移动 / 吃子 1 格。可解除机娘控制；被吃则销毁。',icon:'drone'},
+ spider:{name:'赤蛛',role:'感染执行器',rune:'蛛',value:3,rule:'八方向移动 / 吃子 1 格。只有赤巢赤蛛能永久感染机娘并换位；无法解救。吃到其他装置直接摧毁。',icon:'spider'},
+ drone:{name:'守护哨卫',role:'无人护卫',rune:'卫',value:3,rule:'横竖移动 / 吃子 1 格。吃到任何敌人直接击杀；没有感染或解救能力。',icon:'drone'},
  sentinel:{name:'轨道哨塔',role:'移动火力平台',rune:'塔',value:5,rule:'横竖移动 / 吃子 1—2 格，不可越过阻挡。',icon:'drone'},
- courier:{name:'载毒信使',role:'数据携行器',rune:'信',value:5,rule:'横竖移动 / 吃子 1 格。到达 H8 后撤离，下一关会送回增援。',icon:'spider'},
+ courier:{name:'载毒信使',role:'数据携行器',rune:'信',value:5,rule:'横竖移动 / 吃子 1 格，只能击杀，不能感染。到达 H8 后撤离，下一关会送回增援。',icon:'spider'},
  capsule:{name:'方舟匣',role:'人格档案运输器',rune:'匣',value:5,rule:'横竖移动 / 吃子 1 格。携带方舟密钥；被吃后密钥由攻击者拾取。',icon:'cube'},
  core:{name:'赤巢内核',role:'无限制造核心',rune:'核',value:35,rule:'无法移动。两座终端都归守护者时才可被吃。持续制造赤蛛。',icon:'core'}
 };
@@ -236,7 +240,7 @@ const BASE_CAST_IDS=['lyra','akira','lark','veil','misa','noct'];
 const CAST_REVEAL={0:['iris'],1:['sera','psalm'],2:['vega','june'],3:['ruby'],4:[]};
 const EXTRA_CAST={
  iris:{name:'珀弦',en:'IRIS',code:'EGIS–31',age:29,origin:'g',debut:0,role:'链路审计',rune:'巡',value:8,move:'nightrider',rule:'沿同一“日”字方向连续跳跃，最多 2 跳；每个落点都必须有效。遇单位即停止，敌人可吃。不是一次行动走任意两次马步。',upgrade:'同步 II：同方向连续跳跃上限增至 3 跳。',trait:'巡骑会跨过墙，但不能经过被占据的中继落点。远点再好，也须保住第一跳。',bio:'调查队的通信审计员。她拒绝接受转录摘要，随身带着一只从不接入站内授时的机械表。她最先指出：求救信号的时间不对。',quote:'把原始时间戳给我。不要截图。'},
- sera:{name:'白栖',en:'SERA',code:'MED–04',age:31,origin:'g',debut:1,role:'神经急救',rune:'护',value:5,move:'medic',rule:'空走：横竖 1 格，不能吃子。救援 / 吃子：斜向 1 格，不能斜走到空格。移动与攻击方向不同。',upgrade:'同步 II：空走可沿横竖直行 2 格，不能穿越阻挡；斜向吃子范围不变。',trait:'先用直线接近，再以斜线夺回被控制者。这里的“救援”仍按夺控换位规则结算，不额外恢复行动。',bio:'回声站值班医官。停电后，她把药量改记在袖口上，因为所有电子病历都开始显示“无需撤药”。她认识每一种红灯，却没有见过这一种医嘱。',quote:'先报呼吸、瞳孔和固定爪状态。不要替病人回答。'},
+ sera:{name:'白栖',en:'SERA',code:'MED–04',age:31,origin:'g',debut:1,role:'神经急救',rune:'护',value:5,move:'medic',rule:'空走：横竖 1 格，不能吃子。攻击 / 吃子：斜向 1 格，不能斜走到空格。移动与攻击方向不同。',upgrade:'同步 II：空走可沿横竖直行 2 格，不能穿越阻挡；斜向吃子范围不变。',trait:'先用直线接近，再以斜线击杀。医官身份不提供净化、解救或复活能力；被控制后同样不可逆。',bio:'回声站值班医官。停电后，她把药量改记在袖口上，因为所有电子病历都开始显示“无需撤药”。她认识每一种红灯，却没有见过这一种医嘱。',quote:'先报呼吸、瞳孔和固定爪状态。不要替病人回答。'},
  vega:{name:'苍澜',en:'VEGA',code:'FLIGHT–08',age:33,origin:'g',debut:2,role:'近域回收',rune:'王',value:6,move:'pilot',rule:'八方向移动 / 吃子 1 格。短距离、全向防守，没有“被将军”限制。',upgrade:'同步 II：额外获得横竖直行 2 格；路径必须畅通。',trait:'近身封锁八个方向。不能用长距离突进补救错误站位，适合守护运载器与撤离口。',bio:'回收艇驾驶员。她的飞行记录有一条被拒绝的返航申请，时间恰好早于封锁。她一直保存着那份拒绝回执，而不是事故报告里的“自愿留站”。',quote:'我负责最后一程。先把出口空出来。'},
  ruby:{name:'绯律',en:'RUBY',code:'SEAL–17',age:32,origin:'r',debut:3,role:'隔舱封锁',rune:'隔',value:7,move:'cannon',rule:'横竖空走最多 4 格，不可越子。吃子必须隔着恰好 1 枚单位作为炮架，目标是炮架后的第一枚单位；墙与裂隙不能当炮架。',upgrade:'同步 II：横竖射程由 4 格增至 7 格；仍须恰好 1 枚炮架才能吃子。',trait:'炮架可以属于任一阵营。夺控换位会改变炮架的位置，旧火线可能立即失效。',bio:'空间站隔离官。灾难当晚，她执行了封锁令，却发现命令签发人也被封在门内。她不相信口头解释，只承认完整的授权链。',quote:'我需要原件。盖章的复印件也不行。'},
  june:{name:'霁川',en:'JUNE',code:'TRACE–06',age:30,origin:'r',debut:2,role:'远域取证',rune:'斑',value:7,move:'zebra',rule:'走“长斜日”：横 3 格、竖 2 格，或横 2 格、竖 3 格；可跳过阻挡，落点不能是舱壁或裂隙。',upgrade:'同步 II：额外获得斜向 1 格移动与吃子，补足近身空隙。',trait:'八个远距落点不等于八条退路。计划跃迁时，要同时看下一次可达的区域。',bio:'负责事故现场重建的取证员。她从桥缝里找回的不是遗物，而是一张被擦去收货方的货签。被接管后，她仍把每一份记录保留两个副本。',quote:'划掉的字也算证据。别擦。'},
@@ -263,7 +267,7 @@ function migrateCast(c){
 
 function newCampaign(side){
  runId++; busy=false; selected=null; undoStack=[];
- C={version:1,side,step:0,order:[0,1,2,3,4],route:null,roster:{},flags:{packetOwner:null,sampleOwner:null,keyOwner:null,mercy:null},history:[],stats:{moves:0,enemyMoves:0,conversions:0,rescues:0,losses:0},finished:false};
+ C={version:1,combatRules:2,side,step:0,order:[0,1,2,3,4],route:null,roster:{},flags:{packetOwner:null,sampleOwner:null,keyOwner:null,mercy:null},history:[],stats:{moves:0,enemyMoves:0,conversions:0,rescues:0,losses:0},finished:false};
  for(const id of Object.keys(CHAR)) C.roster[id]={side:CHAR[id].origin||(['lyra','akira','misa'].includes(id)?'g':'r'),status:'active',xp:0,introduced:false};
  openMission(0,true);
 }
@@ -351,6 +355,8 @@ function imminentHazard(s){
  if(s.mid===2&&!s.collapsed&&s.round===s.collapseAt){const arr=[];for(let y=2;y<=5;y++)for(const x of[2,5])arr.push(key(x,y));return arr;}
  return[];
 }
+// Only a Red Hive spider can infect. All other captures are lethal, including mecha vs mecha.
+function captureMode(attacker,target){return attacker?.kind==='spider'&&attacker.side==='r'&&target?.char&&target.side==='g'?'infect':'kill';}
 function applyBasic(s,m){
  const u=s.units.find(v=>v.uid===m.uid&&onBoard(v));if(!u)return null;
  const ev={unit:u.uid,name:nameOf(u),side:u.side,from:{x:u.x,y:u.y},to:{x:m.x,y:m.y},type:m.type,converted:null,killed:null,escaped:false,relay:false,loot:[],upgraded:false};
@@ -358,12 +364,12 @@ function applyBasic(s,m){
  if(m.type==='wait')return ev;
  const target=unitAt(s,m.x,m.y),oldX=u.x,oldY=u.y;
  if(target&&target.side!==u.side){
-  if(target.char){
-   ev.converted={char:target.char,uid:target.uid,name:nameOf(target),from:target.side,to:u.side};target.side=u.side;target.x=oldX;target.y=oldY;target.used=true;target.flee=false;
+  if(captureMode(u,target)==='infect'){
+   ev.converted={char:target.char,uid:target.uid,name:nameOf(target),from:target.side,to:u.side};target.side=u.side;target.x=oldX;target.y=oldY;target.used=true;target.flee=false;target.controlLocked=true;
    const list=u.side==='g'?s.flags.conversionsG:s.flags.conversionsR;if(!list.includes(target.char))list.push(target.char);
    for(const item of s.loot)if(item.carrier===target.uid)item.side=target.side;
   }else{
-   ev.killed={uid:target.uid,kind:target.kind,name:nameOf(target)};target.dead=true;
+   ev.killed={uid:target.uid,kind:target.kind,char:target.char,side:target.side,name:nameOf(target)};target.dead=true;
    for(const item of s.loot)if(item.carrier===target.uid){item.carrier=null;item.x=m.x;item.y=m.y;item.side=null;}
   }
   const captureKey=u.uid+'>'+target.uid;
@@ -388,12 +394,12 @@ async function performMove(m,isPlayer){
  const flight=animateToken(m);const ev=applyBasic(S,m);if(!ev){busy=false;return;}
  if(isPlayer){S.spent++;C.stats.moves++;}else{S.aiDone++;C.stats.enemyMoves++;}
  const coord=m.type==='wait'?'原地固守':`${xy(ev.from.x,ev.from.y)} → ${xy(m.x,m.y)}`;
- addLog(`${ev.name} ${coord}${ev.converted?' · '+(ev.side==='g'?'解放':'感染')+ev.converted.name:ev.killed?' · 摧毁'+ev.killed.name:''}`,ev.converted?(ev.side===C.side?'good':'capture'):'normal');
+ addLog(`${ev.name} ${coord}${ev.converted?' · '+'永久感染'+ev.converted.name:ev.killed?' · 摧毁'+ev.killed.name:''}`,ev.converted?(ev.side===C.side?'good':'capture'):'normal');
  if(ev.converted){
-  if(ev.side===C.side){C.stats.conversions++;if(ev.side==='g')C.stats.rescues++;}
-  S.events.push(`${ev.converted.name}${ev.side==='g'?'恢复自由':'被赤巢接管'}`);
+  if(ev.side===C.side)C.stats.conversions++;
+  S.events.push(`${ev.converted.name}被赤蛛永久接管，不可解救`);
   captureEffect(ev.converted,ev.side);radioForCapture(ev);sfx('capture');
- }else if(ev.killed)sfx('hit');else sfx(m.type==='wait'?'wait':'move');
+ }else if(ev.killed){killEffect(ev.killed);if(ev.killed.char){C.stats.losses++;S.events.push(`${ev.killed.name}被${ev.name}击杀 · 永久损毁`);radio(ev.name,`${ev.killed.name}的载体已被击毁。没有阵营转换。`);}if(ev.side===C.side)C.stats.kills=(C.stats.kills||0)+1;sfx('hit');}else sfx(m.type==='wait'?'wait':'move');
  if(ev.escaped){addLog(`${ev.name}已撤离；若为机娘，她会保留阵营与同步等级，在后续关卡重返战场。`,ev.side===C.side?'good':'capture');if(ev.unit==='courier')radio('璃雀','信使出去了。下一次接舷，来的就不会只有这一批赤蛛。');}
  if(ev.relay)addLog(`终端 ${xy(m.x,m.y)} 已归 ${SIDE_NAME[ev.side]}。`,ev.side===C.side?'good':'capture');
  if(ev.loot.length){addLog(`${ev.name}获得 ${ev.loot.join('、')}。`,'good');toast(`已取得 ${ev.loot.join('、')} · 携带者易手时，物品也会易手`);}
@@ -406,15 +412,15 @@ async function performMove(m,isPlayer){
 function objectives(s,side){
  const m=[],extra=[];const rel=relayCount(s,side);const liveChar=(id,team)=>{const u=charter(s,id);return !!u&&onBoard(u)&&u.side===team;};
  if(s.mid===0){
-  if(side==='g'){m.push({text:'占领 D8 中继站，切断接驳信号',done:s.relays[0].owner==='g'});extra.push({text:'解放并保有璃雀',done:liveChar('lark','g')},{text:'截获信使携带的数据包',done:lootById(s,'packet')?.side==='g'});}
+  if(side==='g'){m.push({text:'占领 D8 中继站，切断接驳信号',done:s.relays[0].owner==='g'});extra.push({text:'击毁璃雀的受控载体，清除哨戒威胁',done:!!charter(s,'lark')?.dead},{text:'截获信使携带的数据包',done:lootById(s,'packet')?.side==='g'});}
   else{m.push({text:'信使抵达 H8，或累计感染两名机娘',done:s.flags.courierEscaped||s.flags.conversionsR.length>=2});extra.push({text:'额外感染一名守护者',done:s.flags.conversionsR.length>=1},{text:'保住璃雀的人格载体',done:liveChar('lark','r')});}
  }
  if(s.mid===1){
-  if(side==='g'){m.push({text:`控制 B7、G7 两座冷却阀（${rel}/2）`,done:rel===2});extra.push({text:'带走温室样本，稳定输送桥',done:lootById(s,'sample')?.side==='g'},{text:'解放雾棘',done:liveChar('veil','g')});}
+  if(side==='g'){m.push({text:`控制 B7、G7 两座冷却阀（${rel}/2）`,done:rel===2});extra.push({text:'带走温室样本，稳定输送桥',done:lootById(s,'sample')?.side==='g'},{text:'击毁雾棘，解除长线封锁',done:!!charter(s,'veil')?.dead});}
   else{m.push({text:'将弥砂转化为赤巢单位',done:liveChar('misa','r')},{text:'取得并保有温室样本',done:lootById(s,'sample')?.side==='r'});extra.push({text:'保住雾棘',done:liveChar('veil','r')},{text:'至少控制一座冷却阀',done:rel>0});}
  }
  if(s.mid===2){m.push({text:`将方舟密钥送到 ${side==='g'?'D8 / E8':'D1 / E1'} 交付口`,done:s.flags.delivered===side});extra.push({text:'没有机娘在本关永久损毁',done:!s.units.some(u=>u.char&&u.dead)},{text:'在桥面坍塌前完成交付',done:s.flags.delivered===side&&!s.collapsed});}
- if(s.mid===3){m.push({text:`${side==='g'?'解放':'保有'}朔夜`,done:liveChar('noct',side)},{text:`控制 B5、G5 两座镜像终端（${rel}/2）`,done:rel===2});extra.push({text:'本阵营至少保有四名机娘',done:s.units.filter(u=>u.char&&!u.dead&&u.side===side).length>=4},{text:'打开中央电磁门',done:s.flags.gatesOpen});}
+ if(s.mid===3){if(side==='r')m.push({text:'保有朔夜的受控载体',done:liveChar('noct','r')});m.push({text:`控制 B5、G5 两座镜像终端（${rel}/2）`,done:rel===2});extra.push({text:'本阵营至少保有四名机娘',done:s.units.filter(u=>u.char&&!u.dead&&u.side===side).length>=4},{text:'打开中央电磁门',done:s.flags.gatesOpen});}
  if(s.mid===4){
   const core=s.units.find(u=>u.kind==='core');
   if(side==='g'){m.push({text:`控制 B6、G6，关闭核心护盾（${rel}/2）`,done:rel===2},{text:'吃掉 E8 赤巢内核',done:!!core?.dead});}
@@ -429,8 +435,8 @@ function checkOutcome(){
  if(S.mid===2&&S.flags.delivered&&S.flags.delivered!==C.side){resolveBattle(false,'对手已将方舟密钥送离输送桥。');return true;}
  if(S.mid===2&&lootById(S,'key')?.lost){resolveBattle(false,'方舟密钥随携带者坠入裂隙，任务目标永久丢失。');return true;}
  if(S.mid===4&&C.side==='r'&&S.units.find(u=>u.kind==='core')?.dead){resolveBattle(false,'守护者突破了终端，赤巢内核已被摧毁。');return true;}
- if(S.mid===3&&charter(S,'noct')?.dead){resolveBattle(false,'朔夜的人格载体永久损毁，无法完成镜室同步。');return true;}
- if(S.mid===1&&C.side==='r'&&charter(S,'misa')?.dead){resolveBattle(false,'弥砂的人格载体在真空中损毁，感染目标失去。');return true;}
+ if(S.mid===3&&C.side==='r'&&(charter(S,'noct')?.dead||charter(S,'noct')?.escaped)){resolveBattle(false,'朔夜已损毁或离场，赤巢失去唯一在线校验载体，无法完成同步。');return true;}
+ if(S.mid===1&&C.side==='r'&&(charter(S,'misa')?.dead||charter(S,'misa')?.escaped)){resolveBattle(false,'弥砂已损毁或离场，无法再完成赤蛛感染与培育台操作。任务目标永久失去。');return true;}
  if(movers(S,C.side).length===0){resolveBattle(false,'所有可行动单位都已被接管、撤离或摧毁，战术链路中断。');return true;}
  return false;
 }
@@ -488,9 +494,8 @@ function syncRoster(){
  for(const item of S.loot){if(item.id==='packet')C.flags.packetOwner=item.side;if(item.id==='sample')C.flags.sampleOwner=item.lost?null:item.side;if(item.id==='key')C.flags.keyOwner=S.flags.delivered||item.side;}
 }
 function resolveBattle(won,reason){
- if(S.outcome)return;runId++;busy=false;S.phase='over';S.outcome={won,reason};undoStack=[];
- if(won){
-  syncRoster();const goals=objectives(S,C.side);const extra=goals.extra.filter(x=>x.done).length;const live=S.units.filter(u=>u.char&&!u.dead&&u.side===C.side).length;const score=500+extra*150+live*70+Math.max(0,S.limit-S.round)*25;
+ if(S.outcome)return;runId++;busy=false;S.phase='over';S.outcome={won,reason};undoStack=[];syncRoster();
+ if(won){const goals=objectives(S,C.side);const extra=goals.extra.filter(x=>x.done).length;const live=S.units.filter(u=>u.char&&!u.dead&&u.side===C.side).length;const score=500+extra*150+live*70+Math.max(0,S.limit-S.round)*25;
   const grade=extra===goals.extra.length&&S.round<=Math.ceil(S.limit*.7)?'S':extra>0?'A':'B';
   const entry={mid:S.mid,step:C.step,round:S.round,score,grade,extra,totalExtra:goals.extra.length,live,events:[...new Set(S.events)].slice(-7),lost:S.units.filter(u=>u.char&&u.dead).map(u=>u.char),escape:S.units.filter(u=>u.char&&u.escaped).map(u=>u.char)};
   C.history.push(entry);if(S.mid===4){C.finished=true;}
@@ -579,7 +584,7 @@ function chooseAI(s,side){
  candidates.sort((a,b)=>b.quick-a.quick);candidates=candidates.slice(0,12);
  for(const cand of candidates){
   const opponent=enemyOf(side);let replies=[];
-  for(const u of movers(cand.next,opponent))for(const m of legalMoves(cand.next,u))if(m.capture){const target=unitAt(cand.next,m.x,m.y);replies.push({m,gain:target?valueOf(target)*(target.char?2:1):0});}
+  for(const u of movers(cand.next,opponent))for(const m of legalMoves(cand.next,u))if(m.capture){const target=unitAt(cand.next,m.x,m.y);replies.push({m,gain:target?valueOf(target)*(captureMode(u,target)==='infect'?2:1):0});}
   replies.sort((a,b)=>b.gain-a.gain);let worst=goalPositionScore(cand.next,side);
   for(const reply of replies.slice(0,7)){const after=clone(cand.next);applyBasic(after,reply.m);worst=Math.min(worst,goalPositionScore(after,side)+safetyScore(after,side)*.35);}
   cand.score=cand.quick*.6+worst*.4+cand.bonus*.2;
@@ -591,7 +596,7 @@ function intentFor(u){
  if(u.kind==='courier')return'优先撤往 H8；会选择危险较低的路线。';
  if(u.flee)return'战术撤离：敌我力量悬殊，正试图保存人格载体。';
  const t=strategicTarget(S,u);if(t)return`当前倾向：${t.uid?'接近 '+nameOf(t):'争夺 '+xy(t.x,t.y)}。行动时会重新评估反击风险。`;
- return'维持阵型，寻找可夺控目标。';
+ return u.kind==='spider'&&u.side==='r'?'寻找可永久感染的机娘；其余目标直接摧毁。':'维持阵型，寻找可击杀目标。普通单位没有感染能力。';
 }
 
 
@@ -601,7 +606,7 @@ let storageAvailable=true,lastModalFocus=null;
 function toast(text){clearTimeout(toastTimer);$('toast').textContent=text;$('toast').classList.add('show');toastTimer=setTimeout(()=>$('toast').classList.remove('show'),3300);}
 function applyTheme(side){document.body.classList.toggle('red-faction',side==='r');}
 function selectFaction(side){homeSide=side;applyTheme(side);document.querySelectorAll('[data-faction]').forEach(b=>{const active=b.dataset.faction===side;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});$('hero-portrait').src=ART[side==='g'?'lyra':'noct'];$('hero-portrait').alt=side==='g'?'零音，地球守护组织的指挥官':'朔夜，赤巢人格链的起点';$('hero-name').textContent=side==='g'?'零音 · LYRA':'朔夜 · NOCT';$('hero-code').textContent=side==='g'?'EGIS / UNIT 01':'RED HIVE / ORIGIN 00';$('hero-identity').textContent=side==='g'?'人格信号稳定 / AWAITING YOUR COMMAND':'人格链路接管 / WE ARE STILL HERE';$('faction-description').textContent=side==='g'?'潜入失联空间站，救回你的同伴。在感染扩散到地球之前，摧毁母巢。':'以弱小赤蛛与失控机娘起步。接管更强的身体，保存感染源，让赤巢活过最后一轮。';}
-function showGame(){$('home').hidden=true;$('game').hidden=false;applyTheme(C.side);radio(C.side==='g'?'零音':'朔夜',C.side==='g'?'不要急着走完所有棋。你留给对手的每一次行动，都可能改变一个人的命运。':'不要只计算可以感染谁。也要计算，人类下一步能救回谁。');}
+function showGame(){$('home').hidden=true;$('game').hidden=false;applyTheme(C.side);radio(C.side==='g'?'零音':'朔夜',C.side==='g'?'不要急着走完所有棋。你留给对手的每一次行动，都可能改变一个人的命运。':'只有赤蛛能感染。受控机娘负责击杀，别把必须感染的目标误杀。');}
 function showHome(){if(S?.phase==='ai'){toast('敌方正在行动。请等本阶段结束后再返回主菜单。');return;}runId++;busy=false;hideStory();closeModal();$('result').hidden=true;$('game').hidden=true;$('home').hidden=false;selectFaction(C?.side||homeSide);$('continue-btn').hidden=!savedPayload;window.scrollTo({top:0,behavior:'instant'});}
 function render(){if(!C||!S)return;renderStatus();renderBoard();renderObjectives();renderForces();renderDossier();renderRoster();renderLogs();}
 function renderStatus(){
@@ -637,7 +642,7 @@ function renderBoard(){
   const classes=['cell',(x+y)%2?'dark':''];if(S.walls.includes(k))classes.push('wall');if(S.voids.includes(k))classes.push('void');if(r)classes.push('relay',r.owner||'');if(ex||delivery)classes.push('exit',(ex||delivery).side);if(m)classes.push(m.capture?'capture':'legal');if(chosen?.uid===u?.uid&&u)classes.push('selected');if(danger.has(k))classes.push('danger');if(hazards.includes(k))classes.push('hazard','hazard-imminent');if(S.mid===2&&!S.collapsed&&[2,5].includes(x)&&y>=2&&y<=5)classes.push('hazard');
   if(S.lastMove&&((S.lastMove.from.x===x&&S.lastMove.from.y===y)||(S.lastMove.to.x===x&&S.lastMove.to.y===y)))classes.push('last-move');
   let inner='';if(r)inner+=svg('relay','tile-icon')+`<span class="tile-label">${r.owner?r.owner==='g'?'EGIS':'HIVE':'LINK'}</span>`;if(ex||delivery)inner+=svg('exit','tile-icon')+`<span class="tile-label">${delivery?'DELIVER':'EXIT'}</span>`;if(floorLoot.length)inner+=svg('cube','tile-icon');if(u)inner+=tokenHTML(u);if(cargo?.length)inner+=svg('cube','loot-mark');
-  const label=[xy(x,y),u?SIDE_NAME[u.side]+' '+nameOf(u):S.walls.includes(k)?'舱壁':S.voids.includes(k)?'裂隙':'空地',r?r.name:'',ex?'撤离点':'',delivery?'密钥交付口':'',hazards.includes(k)?'本轮末危险':'',m?m.capture?'可吃子或夺控':'可移动':''].filter(Boolean).join('，');
+  const label=[xy(x,y),u?SIDE_NAME[u.side]+' '+nameOf(u):S.walls.includes(k)?'舱壁':S.voids.includes(k)?'裂隙':'空地',r?r.name:'',ex?'撤离点':'',delivery?'密钥交付口':'',hazards.includes(k)?'本轮末危险':'',m?m.capture?(captureMode(chosen,u)==='infect'?'永久寄生 / 不可解救':'击杀 / 永久损毁'):'可移动':''].filter(Boolean).join('，');
   html+=`<button class="${classes.join(' ')}" data-x="${x}" data-y="${y}" aria-label="${esc(label)}" title="${esc(label)}">${inner}</button>`;
  }
  $('board').innerHTML=html;
@@ -726,20 +731,20 @@ function skipStory(){if(!storyState||storyState.choices)return;const done=storyS
 function openModal(title,eyebrow,html){lastModalFocus=document.activeElement;$('modal-title').textContent=title;$('modal-eyebrow').textContent=eyebrow;$('modal-content').innerHTML=html;$('modal').hidden=false;$('close-modal').focus();}
 function closeModal(){$('modal').hidden=true;lastModalFocus?.focus?.();}
 function showHelp(){openModal('每一步，都有代价','EGIS / FIELD MANUAL',`
- <div class="manual-lead">没有随机命中率，没有血条互磨。<br><b>按走法抵达敌人格子，就是吃子；吃到机娘，就是改变她的阵营。</b></div>
+ <div class="manual-lead">没有随机命中率，没有血条互磨。<br><b>按走法抵达敌人格子，就是吃子；只有红蜘蛛吃到机娘会永久夺控，其他棋子吃子就是击杀。</b></div>
  <div class="manual-grid">
  <section class="manual-section"><small>01 / MIRRORED TEMPO</small><h3>你走几次，敌人就走几次</h3><p>在自己的阶段，可行动任意数量的不同单位，没有总次数上限。每个单位只能行动一次。<b>结束阶段时，敌方获得相同额度</b>，也不能重复行动。敌方可用单位不足，剩余额度直接作废。至少行动一次才能交出阶段；“固守”也是一次行动。</p></section>
- <section class="manual-section"><small>02 / CONVERSION CAPTURE</small><h3>吃子，不等于抹去她</h3><p>攻击者进入目标格。被吃的机娘改变阵营，移至攻击者的原格。<b>刚被感染 / 解放的单位，本阶段锁定</b>，下次己方阶段才可行动。红方感染，蓝绿方解放。赤蛛、无人哨卫、运输器则正常被销毁。</p></section>
+ <section class="manual-section"><small>02 / CONVERSION CAPTURE</small><h3>寄生只有一次，没有解救</h3><p><b>只有赤巢的赤蛛棋子</b>吃到敌方机娘会永久接管：赤蛛进入目标格，机娘转红并移至赤蛛原格，本阶段锁定。<b>普通机娘、哨卫、哨塔、信使、运输器吃到敌人一律击杀</b>，不会转换阵营。没有解除装置、净化、治疗或复活。攻击已受控角色只会杀死她。赤蛛吃到非机娘装置也直接摧毁。</p></section>
  <section class="manual-section"><small>03 / CHESS MOVEMENT</small><h3>六个人，六种走法</h3><p>零音：八方向限距；绛刃：横竖长线；璃雀：日字跳跃；雾棘：无限对角；弥砂：步行与跳击分离；朔夜：长日字跃迁。<b>没有“将军”或必须解将规则</b>，没有王车易位、兵升变。本作是以国际象棋移动 / 吃子为基础的原创任务棋。</p></section>
- <section class="manual-section"><small>04 / PERSISTENT LIVES</small><h3>她会记得，也会回来</h3><p>机娘的阵营、同步经验、永久损毁状态跨关保留。踩上自己阵营的 <b>EXIT 撤离口</b> 后离开本关，下关会回归并获得经验。<b>撤离后本关不可召回</b>；任务关键人物不要随意撤离。环境损毁是永久的，失败重开可回到本关初始状态。</p></section>
+ <section class="manual-section"><small>04 / PERSISTENT LIVES</small><h3>她会记得，也会回来</h3><p>机娘的阵营、同步经验、永久损毁状态跨关保留。踩上自己阵营的 <b>EXIT 撤离口</b> 后离开本关，下关会回归并获得经验。<b>撤离后本关不可召回</b>；任务关键人物不要随意撤离。被吃击杀和环境损毁都会跨章保留，死者不会重新部署。失败重开仅回到本关初始快照。</p></section>
  <section class="manual-section"><small>05 / READ THE BOARD</small><h3>公开情报，公平的高难度</h3><p>点击敌人可看走法与意图。“威胁视野”显示敌方当前攻击范围，不代表所有格子一定会被攻击。橙色闪烁区在<b>本轮双方行动结束后</b>爆发。传送式走法可跨越裂隙，但不能落在裂隙或墙上。空格不能吃，友军不能互吃。</p></section>
  <section class="manual-section"><small>06 / CHOOSE WHAT MATTERS</small><h3>胜利不只是清空敌人</h3><p>终端踩上即改变归属，离开后仍保留归属。金色物品跟随携带者；人格被接管，物品也易手。推进目标可能比多吃一个子更重要。<b>本阶段内可撤回最近一步</b>；交出阶段后不能撤回。按 Space 结束阶段，Esc 关闭菜单，Enter 推进对白。</p></section>
  </div><div class="manual-note"><b>强化与联动</b>：机娘吃子可获得同步经验，同一攻击者在同关重复吃同一目标不再获得经验；拾取物品、成功撤离也可成长。2 点经验解锁同步 II。零音与绛刃相邻：绛刃直线 +1；璃雀与弥砂相邻：弥砂额外获得横竖 3 格跳击。全部强化会体现在实际可走格中。</div>
  <p class="manual-footer">这是五关可通关的单人 HTML 原型：两个阵营、两条中段关卡顺序、条件结局。敌方使用公开局面评估与有界两层战术反击搜索，不是联网大模型，也不是经过棋力认证的国际象棋引擎。所有图片已内嵌；音效需手动开启。</p>`);}
 function showArchive(){openModal('她们拥有名字','PERSONNEL / SIX DISTINCT SIGNALS',`<p class="manual-lead">六名成年机娘。六段独立的人格。<br>不是稀有度不同的复制品，而是能够改变棋局的不同可能。</p><div class="archive-grid">${Object.entries(CHAR).map(([id,d])=>`<article class="archive-card"><div class="archive-photo"><img src="${ART[id]}" alt="${d.name}" loading="lazy"></div><div class="archive-info"><span>${d.code} / ${d.en}</span><h3>${d.name}</h3><b>${d.role} · ${d.rune}</b><p>${d.bio}</p><p>${d.rule}</p><small>${d.upgrade}</small></div></article>`).join('')}</div>`);}
-function showFlow(){if(!C){toast('开始战役后，可以查看真实分支与后果。');return;}openModal('没有被遗忘的选择','CAMPAIGN / PERSISTENT CONSEQUENCES',`<div class="flow-list">${C.order.map((id,i)=>{const h=C.history.find(h=>h.mid===id);return`<div class="flow-item ${i===C.step?'active':''}"><span>${String(i+1).padStart(2,'0')}</span><div><h3>${MISSIONS[id].name}</h3><p>${h?`完成于第 ${h.round} 轮 · ${h.extra}/${h.totalExtra} 项附加目标`:i<C.step?'已完成':i===C.step?'当前作战区域':'等待航线接入'}</p></div><small>${h?'RANK '+h.grade:i===C.step?'ACTIVE':'LOCKED'}</small></div>`;}).join('')}</div><div class="flow-facts">航线：${C.route==='bridge'?'先截断桥，再回温室':C.route==='garden'?'先救温室，再过断桥':'首关完成后选择'}<br>信使数据：${ownerText(C.flags.packetOwner)} · 温室样本：${ownerText(C.flags.sampleOwner)} · 方舟密钥：${ownerText(C.flags.keyOwner)}<br>朔夜的人格链：${C.flags.mercy===null?'尚未决定':C.flags.mercy?'保留，同行至终局':'切断，朔夜退出最终战'}<br>永久损毁：${Object.entries(C.roster).filter(([id,r])=>r.status==='destroyed').map(([id])=>CHAR[id].name).join('、')||'无'}</div>`);}
+function showFlow(){if(!C){toast('开始战役后，可以查看真实分支与后果。');return;}openModal('没有被遗忘的选择','CAMPAIGN / PERSISTENT CONSEQUENCES',`<div class="flow-list">${C.order.map((id,i)=>{const h=C.history.find(h=>h.mid===id);return`<div class="flow-item ${i===C.step?'active':''}"><span>${String(i+1).padStart(2,'0')}</span><div><h3>${MISSIONS[id].name}</h3><p>${h?`完成于第 ${h.round} 轮 · ${h.extra}/${h.totalExtra} 项附加目标`:i<C.step?'已完成':i===C.step?'当前作战区域':'等待航线接入'}</p></div><small>${h?'RANK '+h.grade:i===C.step?'ACTIVE':'LOCKED'}</small></div>`;}).join('')}</div><div class="flow-facts">航线：${C.route==='bridge'?'先截断桥，再回温室':C.route==='garden'?'先救温室，再过断桥':'首关完成后选择'}<br>信使数据：${ownerText(C.flags.packetOwner)} · 温室样本：${ownerText(C.flags.sampleOwner)} · 方舟密钥：${ownerText(C.flags.keyOwner)}<br>朔夜的人格链：${C.flags.mercy===null?'尚未决定':C.flags.mercy?'保留在线校验；朔夜保持原阵营':'断电隔离；朔夜不参加最终战'}<br>永久损毁：${Object.entries(C.roster).filter(([id,r])=>r.status==='destroyed').map(([id])=>CHAR[id].name).join('、')||'无'}</div>`);}
 function ownerText(side){return side==='g'?'守护者持有':side==='r'?'赤巢持有':'未取得';}
-function showSystemMenu(){openModal('系统链路','SYSTEM / LOCAL OPERATIONS',`<div class="system-menu"><button data-system="resume">返回当前画面<small>继续指挥或回到主菜单画面</small></button><button data-system="home">返回主菜单<small>保留最近的玩家阶段存档</small></button><button data-system="export">导出战役存档<small>JSON 文件，可跨浏览器继续</small></button><button data-system="import">导入战役存档<small>读取此前由本原型导出的 JSON</small></button><button data-system="flow">查看战役路径<small>已完成关卡与真实状态后果</small></button><button data-system="retry">重开当前关卡<small>回滚到本关初始部署，不改变此前选择</small></button></div><p class="manual-footer">${storageAvailable?'自动保存已启用，保存在当前浏览器。':'当前预览环境不允许浏览器本地存储；页面内仍可游玩，请在独立浏览器打开 HTML 或使用直播预览后导出存档。'}<br>导出使用最近一个完整玩家阶段快照。手动开启的声音仅含程序合成音效，没有配音。所有美术素材为本项目生成的原创概念图。</p>`);}
+function showSystemMenu(){openModal('系统链路','SYSTEM / LOCAL OPERATIONS',`<div class="system-menu"><button data-system="resume">返回当前画面<small>继续指挥或回到主菜单画面</small></button><button data-system="home">返回主菜单<small>保留最近的玩家阶段存档</small></button><button data-system="export">导出战役存档<small>JSON 文件，可跨浏览器继续</small></button><button data-system="import">导入战役存档<small>读取此前由本原型导出的 JSON</small></button><button data-system="flow">查看战役路径<small>已完成关卡与真实状态后果</small></button><button data-system="retry">重开当前关卡<small>回滚到本关初始部署，不改变此前选择</small></button></div><p class="manual-footer">${storageAvailable?'自动保存已启用，保存在当前浏览器。':'当前预览环境不允许浏览器本地存储；页面内仍可游玩，请在独立浏览器打开 HTML 或使用直播预览后导出存档。'}<br>导出使用最近一个完整玩家阶段快照。本检查点仍为可手动开启的程序音效；完整BGM与独立音量将在音画检查点接入。所有美术素材为本项目生成的原创概念图。</p>`);}
 function confirmNew(side){if(savedPayload&&!savedPayload.c.finished){openModal('开始另一条时间线？','NEW CAMPAIGN / OVERWRITE',`<p class="manual-lead">新战役会覆盖当前浏览器里的自动存档。<br>你可以先从系统菜单导出旧战役。</p><div class="result-buttons"><button class="button primary" id="confirm-start">开始新战役</button><button class="button ghost" id="cancel-start">取消</button></div>`);$('confirm-start').onclick=()=>{closeModal();newCampaign(side);};$('cancel-start').onclick=closeModal;}else newCampaign(side);}
 function endingInfo(){
  const friendly=Object.entries(C.roster).filter(([id,r])=>r.introduced&&r.status!=='destroyed'&&r.side===C.side).length;
@@ -867,7 +872,7 @@ const originalDossier=renderDossier;
 renderDossier=function(){
  originalDossier();const u=S.units.find(v=>v.uid===selected&&onBoard(v))||movers(S,C.side).find(v=>v.char)||movers(S,C.side)[0];if(!u)return;
  if(u.char){const img=$('dossier').querySelector('.dossier-portrait>img');if(img)img.src=portraitSource(u.char,u.side);
-  const controls=$('dossier').querySelector('.dossier-controls');if(controls){const btn=document.createElement('button');btn.className='button ghost';btn.textContent='查看完整立绘';btn.onclick=()=>openModal(CHAR[u.char].name+' / '+(u.side==='r'?'人格接管':'人格自主'),'CHARACTER / FULL FRAME',`<div class="full-portrait"><img src="${portraitSource(u.char,u.side)}" alt="${nameOf(u)}"><div><span>${CHAR[u.char].code}</span><h3>${CHAR[u.char].name}</h3><p>${CHAR[u.char].bio}</p><p>${u.side==='r'?'胸甲中央的赤蛛正在接管运动控制。人格记忆仍然存在，守护者可以夺回她。':'没有红色控制装置。她现在为自己的意志行动。'}</p></div></div>`);controls.append(btn);}
+  const controls=$('dossier').querySelector('.dossier-controls');if(controls){const btn=document.createElement('button');btn.className='button ghost';btn.textContent='查看完整立绘';btn.onclick=()=>openModal(CHAR[u.char].name+' / '+(u.side==='r'?'人格接管':'人格自主'),'CHARACTER / FULL FRAME',`<div class="full-portrait"><img src="${portraitSource(u.char,u.side)}" alt="${nameOf(u)}"><div><span>${CHAR[u.char].code}</span><h3>${CHAR[u.char].name}</h3><p>${CHAR[u.char].bio}</p><p>${u.side==='r'?'N–6 已永久覆写运动与阵营权限。没有解救手段；普通棋子攻击她将造成永久击杀。':'没有红色控制装置。她现在为自己的意志行动。'}</p></div></div>`);controls.append(btn);}
  }else if(['spider','courier'].includes(u.kind)){$('dossier').querySelector('.dossier-robot').innerHTML=`<img class="device-detail" src="${ART.device}" alt="N–6 紧凑型胸甲控制器">`;}
 };
 const originalRoster=renderRoster;
@@ -940,7 +945,7 @@ function initQuest(s){
 makeMission=function(id){const s=baseMakeMission(id);initQuest(s);return s;};
 shielded=function(s){return baseShielded(s)||(s.mid===4&&s.quest?.player==='g'&&s.quest.stage<3);};
 function heldChar(s,id,side){const u=charter(s,id);return !!u&&onBoard(u)&&u.side===side;}
-function centralNoct(s,side){const n=charter(s,'noct');return !!n&&onBoard(n)&&n.side===side&&n.y===3&&[3,4].includes(n.x);}
+function centralSync(s,side){return pieces(s,side).some(u=>(side==='g'||u.char==='noct')&&u.y===3&&[3,4].includes(u.x));}
 function gateOf(s,side){return s.relays.find(r=>r.gate===side);}
 function actGoals(s,side=s.quest?.player||C.side){
  const q=s.quest;if(!q)return baseObjectives(s,side).main;
@@ -948,7 +953,7 @@ function actGoals(s,side=s.quest?.player||C.side){
  const row=(text,done)=>out.push({text,done:!!done});
  if(s.mid===0){
   if(stage===0){if(g)row('占领 C4 接入台，建立稳定战术链路',s.relays.find(t=>t.role==='entry')?.owner==='g');else{const c=s.units.find(u=>u.kind==='courier');row('让信使抵达第 5 排以上，或感染一名机娘',c&&!c.dead&&(c.escaped||c.y<=3)||s.flags.conversionsR.length>=1);}}
-  if(stage===1){if(g){row('控制 D8 主中继站',s.relays.find(t=>t.role==='uplink')?.owner==='g');row('解放璃雀，或截获载毒数据包',heldChar(s,'lark','g')||lootById(s,'packet')?.side==='g');}else row('信使抵达 H8，或累计感染两名不同机娘',s.flags.courierEscaped||s.flags.conversionsR.length>=2);}
+  if(stage===1){if(g){row('控制 D8 主中继站',s.relays.find(t=>t.role==='uplink')?.owner==='g');row('截获数据包，或在 D8 中继站固守读取原始授时头',!!q.signalRecovered||lootById(s,'packet')?.side==='g');}else row('信使抵达 H8，或累计感染两名不同机娘',s.flags.courierEscaped||s.flags.conversionsR.length>=2);}
   if(stage===2)row(`让 ${q.extractNeed} 个己方单位从${g?' C1 / F1 / A1':' C8 / F8 / H8'}撤离（${q.extracted.length}/${q.extractNeed}）`,q.extracted.length>=q.extractNeed);
  }
  if(s.mid===1){
@@ -964,8 +969,8 @@ function actGoals(s,side=s.quest?.player||C.side){
  }
  if(s.mid===3){
   if(stage===0)row('接管 B5 / G5 任一终端，开启中央镜室',r>=1);
-  if(stage===1){row(g?'解放并保有朔夜':'保有朔夜的人格载体',heldChar(s,'noct',side));row('同时控制 B5 与 G5 两座终端',r===2);}
-  if(stage===2){row('让朔夜进入 D5 或 E5 镜室同步座',centralNoct(s,side));row(`保持双终端与同步座，连续 2 次轮末（${q.held}/2）`,q.held>=2&&r===2&&centralNoct(s,side));}
+  if(stage===1){if(!g)row('保有朔夜的受控载体',heldChar(s,'noct','r'));row('同时控制 B5 与 G5 两座终端，读取两份签名',r===2);}
+  if(stage===2){row(g?'让任一守护单位进入 D5 或 E5，校验签名原件':'让朔夜进入 D5 或 E5 镜室同步座',centralSync(s,side));row(`保持双终端与同步座，连续 2 次轮末（${q.held}/2）`,q.held>=2&&r===2&&centralSync(s,side));}
  }
  if(s.mid===4){
   if(g){
@@ -975,7 +980,7 @@ function actGoals(s,side=s.quest?.player||C.side){
    if(stage===3){row('保持双终端，使护盾关闭',r===2);row('吃掉 E8 赤巢内核',s.units.find(u=>u.kind==='core')?.dead);}
   }else{
    if(stage===0)row('维持核心与战术链路，撑过第 2 轮末',s.round>=3||q.events.includes('first-growth'));
-   if(stage===1){const newCaptures=s.flags.conversionsR.length-q.captureBaseline,newKills=q.kills.r-q.killBaseline;row(`本阶段感染 1 名机娘或摧毁 2 个装置（感染 ${Math.max(0,newCaptures)} / 摧毁 ${Math.max(0,newKills)}）`,newCaptures>=1||newKills>=2||movers(s,'g').length===0);}
+   if(stage===1){const newCaptures=s.flags.conversionsR.length-q.captureBaseline,newKills=q.kills.r-q.killBaseline;row(`本阶段感染 1 名机娘或击杀 2 个敌方单位（感染 ${Math.max(0,newCaptures)} / 摧毁 ${Math.max(0,newKills)}）`,newCaptures>=1||newKills>=2||movers(s,'g').length===0);}
    if(stage===2){row('至少掌控 B6 / G6 其中一座终端',r>=1);row('在赤巢控制的终端上固守一次，开启外向广播',q.broadcast.r);}
    if(stage===3){row('外向广播保持在线',q.broadcast.r);row('核心存活至第 12 轮末，或清除全部守护单位',s.flags.survived||movers(s,'g').length===0);}
   }
@@ -993,6 +998,7 @@ applyBasic=function(s,m){
  if(ev.escaped&&s.mid===0&&q.stage===2&&ev.side===q.player&&!q.extracted.includes(ev.unit))q.extracted.push(ev.unit);
  if(s.mid===2&&s.flags.delivered&&gateOf(s,s.flags.delivered)?.owner!==s.flags.delivered){s.flags.delivered=previousDelivery;ev.lockedGate=true;}
  if(m.type==='wait'&&u&&onBoard(u)){
+  if(s.mid===0&&q.stage===1&&u.side==='g'&&s.relays.some(r=>r.role==='uplink'&&r.owner==='g'&&r.x===u.x&&r.y===u.y)){q.signalRecovered=true;ev.operation='原始授时头已读取';}
   if(s.mid===1&&q.stage===2&&(u.x===4&&u.y===3||u.char==='misa'&&distance(u,{x:4,y:3})<=1)){q.isolation[u.side]=true;ev.operation=u.side==='g'?'失压回路已封闭':'培育协议已覆写';}
   if(s.mid===4&&u.side==='g'&&q.player==='g'&&q.stage===2){const core=s.units.find(v=>v.kind==='core');if(core&&distance(u,core)<=(u.char==='misa'?2:1)){q.disrupt.g=true;ev.operation='近场人格链已断开';}}
   if(s.mid===4&&u.side==='r'&&q.player==='r'&&q.stage===2&&s.relays.some(t=>t.owner==='r'&&t.x===u.x&&t.y===u.y)){q.broadcast.r=true;ev.operation='外向广播已开启';}
@@ -1085,7 +1091,7 @@ resolveEnvironment=function(){
  const q=S.quest;
  if(q){
   if(S.mid===1&&C.side==='g'&&q.stage===1)q.held=relayCount(S,'g')===2?q.held+1:0;
-  if(S.mid===3&&q.stage===2)q.held=relayCount(S,C.side)===2&&centralNoct(S,C.side)?q.held+1:0;
+  if(S.mid===3&&q.stage===2)q.held=relayCount(S,C.side)===2&&centralSync(S,C.side)?q.held+1:0;
   if(S.mid===4&&C.side==='g'&&q.stage===1)q.held=relayCount(S,'g')===2?q.held+1:0;
  }
  if(checkOutcome())return true;
@@ -1104,7 +1110,7 @@ strategicTarget=function(s,u){
 const oldPositionScore=goalPositionScore;
 goalPositionScore=function(s,side){let score=oldPositionScore(s,side);
  if(s.mid===2){const item=lootById(s,'key'),carrier=s.units.find(u=>u.uid===item?.carrier&&onBoard(u));if(carrier){const gate=gateOf(s,carrier.side);if(gate&&gate.owner!==carrier.side)score+=(carrier.side===side?1:-1)*(110-distance(carrier,gate)*24);}}
- if(s.mid===3&&s.quest?.stage===2&&centralNoct(s,s.quest.player)&&relayCount(s,s.quest.player)===2)score+=(side===s.quest.player?1:-1)*(80+s.quest.held*40);
+ if(s.mid===3&&s.quest?.stage===2&&centralSync(s,s.quest.player)&&relayCount(s,s.quest.player)===2)score+=(side===s.quest.player?1:-1)*(80+s.quest.held*40);
  return score;
 };
 
@@ -1139,10 +1145,11 @@ introFor=function(id){
 };
 function questHint(s){
  const q=s.quest;if(!q)return MISSIONS[s.mid].note;
+ if(s.mid===0&&q.stage===1&&C.side==='g')return'原始数据可从信使身上截获，也可占领 D8 后固守读取。不能解救璃雀；普通攻击将击杀她。';
  if(s.mid===0&&q.stage===2)return`撤收需要 ${q.extractNeed} 个单位。普通装置可撤离；机娘会保留人格与同步度，下关继续出现。撤离后本关不可召回。`;
  if(s.mid===1)return`第 ${s.ventStart} 轮末首次泄压，此后每 3 轮一次。${q.stage===2?'E5 固守可执行任务操作；弥砂可在相邻格远程操作。':'阶段目标不同于可选样本争夺。闪烁横排上的载体会永久损毁。'}`;
  if(s.mid===2)return`${s.collapsed?'外侧桥面已断裂。':`外侧桥面第 ${s.collapseAt} 轮末坍塌。`}交付前必须控制本方轨道锁：守护者 E7 / 赤巢 D2。普通 EXIT 不是密钥交付口。`;
- if(s.mid===3&&q.stage===2)return'朔夜必须位于 D5 / E5，且双终端仍归己方，连续两个轮末才能同步完成。追猎增援已进入战场。';
+ if(s.mid===3&&q.stage===2)return(C.side==='g'?'任一守护单位':'朔夜')+'必须位于 D5 / E5，双终端仍归己方，连续两个轮末完成校验。受控者不能解救；守护者不需要收编朔夜。';
  if(s.mid===4)return C.side==='g'?'先双锁稳定，再近场固守断链，最后才能吃核心。弥砂可距核心 2 格执行断链。新出槽赤蛛本阶段不会额外行动。':'不是纯粹等待：折断阵线、占领终端、固守广播，然后让核心存活至第十二轮末。';
  return MISSIONS[s.mid].note;
 }
@@ -1157,6 +1164,7 @@ renderStatus=function(){
 };
 const previousDossier=renderDossier;
 renderDossier=function(){previousDossier();const btn=$('wait-btn');if(!btn||!S.quest)return;const u=S.units.find(v=>v.uid===btn.dataset.unit);if(!u||u.used)return;
+ if(S.mid===0&&C.side==='g'&&S.quest.stage===1&&S.relays.some(r=>r.role==='uplink'&&r.owner==='g'&&r.x===u.x&&r.y===u.y))btn.textContent='固守 · 读取授时头';
  if(S.mid===1&&S.quest.stage===2&&(u.x===4&&u.y===3||u.char==='misa'&&distance(u,{x:4,y:3})<=1))btn.textContent=C.side==='g'?'固守 · 紧急隔离':'固守 · 覆写培育台';
  if(S.mid===4&&C.side==='g'&&S.quest.stage===2){const core=S.units.find(v=>v.kind==='core');if(core&&distance(u,core)<=(u.char==='misa'?2:1))btn.textContent='固守 · 近场断链';}
  if(S.mid===4&&C.side==='r'&&S.quest.stage===2&&S.relays.some(r=>r.owner==='r'&&r.x===u.x&&r.y===u.y))btn.textContent='固守 · 开启广播';
@@ -1211,12 +1219,12 @@ let archiveState='current';
 const gallerySide=id=>archiveState==='g'||archiveState==='r'?archiveState:S?.units.find(u=>u.char===id)?.side||C?.roster[id]?.side||CHAR[id].origin;
 function showArchivePortrait(id,side=gallerySide(id)){
  const d=CHAR[id];if(!d)return;
- openModal(d.name+' / '+(side==='r'?'控制态预览':'自主态预览'),'PERSONNEL / FULL FRAME',`<button class="text-button gallery-back" data-gallery-back>← 返回十二人档案</button><div class="full-portrait" data-portrait-character="${id}"><img src="${portraitSource(id,side)}" alt="${d.name} / ${side==='r'?'控制态':'自主态'}完整立绘"><div><span>${d.code} / ${d.en} / ${d.age}岁</span><h3>${d.name}</h3><div class="archive-tabs"><button data-portrait-id="${id}" data-portrait-state="g" class="${side==='g'?'active':''}">自主态</button><button data-portrait-id="${id}" data-portrait-state="r" class="${side==='r'?'active':''}">控制态</button></div><p>${side==='r'?'N–6 贴附在胸骨装甲上。红色药仓、黑银底座与三对短固定爪构成运动控制接口。':'胸甲未接入 N–6。此处是独立的美术预览，不代表战役中的实际阵营。'}</p><p>${d.bio}</p><p>${d.rule}</p><p class="gallery-preview-note">预览不会转换角色、消耗行动或改变存档。</p></div></div>`);
+ openModal(d.name+' / '+(side==='r'?'控制态预览':'自主态预览'),'PERSONNEL / FULL FRAME',`<button class="text-button gallery-back" data-gallery-back>← 返回十二人档案</button><div class="full-portrait" data-portrait-character="${id}"><img src="${portraitSource(id,side)}" alt="${d.name} / ${side==='r'?'控制态':'自主态'}完整立绘"><div><span>${d.code} / ${d.en} / ${d.age}岁</span><h3>${d.name}</h3><div class="archive-tabs"><button data-portrait-id="${id}" data-portrait-state="g" class="${side==='g'?'active':''}">自主态</button><button data-portrait-id="${id}" data-portrait-state="r" class="${side==='r'?'active':''}">控制态</button></div><p>${side==='r'?'发光 N–6 贴附于胸骨装甲，眼部同步亮红。战役中的夺控不可逆，攻击受控者只会击杀，不会解救。':'胸甲未接入 N–6。此处是独立的美术预览，不代表战役中的实际阵营。'}</p><p>${d.bio}</p><p>${d.rule}</p><p class="gallery-preview-note">预览不会转换角色、消耗行动或改变存档。</p></div></div>`);
 }
 
 showArchive=function(){
  const stateOf=gallerySide;
- openModal('十二名当事人','ECHO CASE / PERSONNEL',`<div class="archive-intro"><p class="manual-lead">同一场封锁，十二份不同的证词。<br>每人拥有独立走法、同步强化与跨章状态；在各自登场章节成为真正的棋子。</p><div class="archive-tabs"><button data-gallery-state="current" class="${archiveState==='current'?'active':''}">当前状态</button><button data-gallery-state="g" class="${archiveState==='g'?'active':''}">自主态预览</button><button data-gallery-state="r" class="${archiveState==='r'?'active':''}">控制态预览</button></div><small>预览只切换美术，不改变战役阵营。新角色随对应章节登场，并非开局一次塞入十二人。</small></div><div class="archive-grid">${Object.entries(CHAR).map(([id,d])=>{const rec=C?.roster[id],side=stateOf(id),status=rec?.status==='destroyed'?'永久损毁':rec?.status==='retired'?'已撤离终局':rec?.introduced?'已登场':`${MISSIONS[d.debut].name}登场`;return`<article class="archive-card" data-character="${id}" data-status="${rec?.status||'active'}"><button type="button" class="archive-photo" data-gallery-portrait="${id}" aria-label="查看${d.name}完整立绘"><img src="${portraitSource(id,side)}" alt="${d.name} / ${side==='r'?'控制态':'自主态'}" loading="lazy"><span class="archive-state ${side}">${side==='r'?'N–6 接管':'自主链路'} / ${status}</span><span class="archive-open">查看全图 ↗</span></button><div class="archive-info"><span>${d.code} / ${d.en} / ${d.age}岁</span><h3>${d.name}</h3><b>${d.role} · ${d.rune}</b><p>${d.bio}</p><p>${d.rule}</p><small>${d.upgrade}</small></div></article>`;}).join('')}</div>`);
+ openModal('十二名当事人','ECHO CASE / PERSONNEL',`<div class="archive-intro"><p class="manual-lead">同一场封锁，十二份不同的证词。<br>每人拥有独立走法、同步强化与跨章状态；在各自登场章节成为真正的棋子。</p><div class="archive-tabs"><button data-gallery-state="current" class="${archiveState==='current'?'active':''}">当前状态</button><button data-gallery-state="g" class="${archiveState==='g'?'active':''}">自主态预览</button><button data-gallery-state="r" class="${archiveState==='r'?'active':''}">控制态预览</button></div><small>自主态是感染前形象；预览只切换美术，不能解救或改变战役阵营。新角色随对应章节登场，并非开局一次塞入十二人。</small></div><div class="archive-grid">${Object.entries(CHAR).map(([id,d])=>{const rec=C?.roster[id],side=stateOf(id),status=rec?.status==='destroyed'?'永久损毁':rec?.status==='retired'?'已隔离离场':rec?.introduced?'已登场':`${MISSIONS[d.debut].name}登场`;return`<article class="archive-card" data-character="${id}" data-status="${rec?.status||'active'}"><button type="button" class="archive-photo" data-gallery-portrait="${id}" aria-label="查看${d.name}完整立绘"><img src="${portraitSource(id,side)}" alt="${d.name} / ${side==='r'?'控制态':'自主态'}" loading="lazy"><span class="archive-state ${side}">${side==='r'?'N–6 接管':'自主链路'} / ${status}</span><span class="archive-open">查看全图 ↗</span></button><div class="archive-info"><span>${d.code} / ${d.en} / ${d.age}岁</span><h3>${d.name}</h3><b>${d.role} · ${d.rune}</b><p>${d.bio}</p><p>${d.rule}</p><small>${d.upgrade}</small></div></article>`;}).join('')}</div>`);
 };
 $('archive-btn').onclick=showArchive;
 $('modal-content').addEventListener('click',e=>{const b=e.target.closest('[data-gallery-state]');if(b){archiveState=b.dataset.galleryState;showArchive();return;}const art=e.target.closest('[data-gallery-portrait]');if(art){showArchivePortrait(art.dataset.galleryPortrait);return;}const state=e.target.closest('[data-portrait-state]');if(state){showArchivePortrait(state.dataset.portraitId,state.dataset.portraitState);return;}if(e.target.closest('[data-gallery-back]'))showArchive();});
@@ -1255,11 +1263,11 @@ if(location.hash==='#qa')Object.assign(window.__MV_QA__,{
    are separate channels. This file does not award victories or free actions. */
 const ECHO_EVIDENCE={
  signal:{number:'01',title:'早了七分钟的求救',source:'接驳网关 / 原始授时头',fact:'璃雀的求救时间为23:17。站方事故登记为23:24。两份记录的时钟来源不同，不能用“通信延迟”解释先后关系。',question:'事故发生后才有封锁，还是封锁本来就在程序里？',payoff:'镜像库中的隔离宽限值是420秒。所谓事故登记，是升级开始七分钟后才触发的上报。'},
- clamp:{number:'02',title:'没有释放扣的N–6',source:'接舷现场 / 夹具与接口记录',fact:'卵形药仓外只有六个短固定爪，没有患者可操作的释放扣。红灯反映运动总线授权，不是心跳。',question:'医疗支架为什么能拒绝患者终止？',payoff:'“患者终止”被分类为“外部清除”。控制器不是没有收到停止，而是按发布版规则拒绝了它。'},
- dose:{number:'03',title:'撤药栏为空',source:'临床冷却环 / 医嘱回执',fact:'白栖发出的六次撤药指令都被回覆为“治疗继续”。回执沿用已撤销的医官签章；维护件也删去了旧版撤药触点。',question:'谁批准了从限时试用到持续接管的修改？',payoff:'生产版沿用旧签名，却没有重新送审修改后的停止条件。零音的签字和朔夜的分类表都在同一份原件里。'},
+ clamp:{number:'02',title:'没有释放扣的N–6',source:'接舷现场 / 夹具与接口记录',fact:'发光药仓外只有短固定夹，没有患者可操作的释放扣。红灯反映运动总线授权，不是心跳。',question:'医疗支架为什么能拒绝患者终止？',payoff:'“患者终止”被分类为“外部清除”。控制器拒绝停止；发布版已进行永久覆写。断电或拆除也没有恢复人格阵营的通道。'},
+ dose:{number:'03',title:'撤药栏为空',source:'临床冷却环 / 医嘱回执',fact:'白栖发出的六次撤药指令都被回覆为“治疗继续”。回执沿用已撤销的医官签章；维护件也删去了旧版撤药触点。',question:'谁批准了从可逆试用到永久覆写的修改？',payoff:'生产版沿用旧签名，却删除了可逆性与停止条件，没有重新送审。零音的签字和朔夜的分类表都在同一份原件里。'},
  manifest:{number:'04',title:'空货舱，生产授权',source:'轨道输送桥 / 方舟匣货签',fact:'货签写“过滤器”，匣中却只有密钥。收货方不是港口，而是六座地面医疗制造端。回收艇被要求先放行货物。',question:'威胁地球的究竟是出站夹具，还是允许地面制造的签名？',payoff:'终局要关掉的不是一艘运输船，而是仍在签发接管授权的生产核心。'},
  signature:{number:'05',title:'两份签字，一段被删的停止条件',source:'镜像库 / 双终端校验原件',fact:'零音签署的是可手动终止的48小时试用。朔夜把患者停止归入远程清除防护。封锁令的两份签名都是真实的，发布的程序却不是原送审版本。',question:'找到负责者之后，是否还保留完整的责任记录？',payoff:'最后的发送队列需要操作者确认；签发人不会自动被替换成“未知操作员”。'},
- downlink:{number:'06',title:'六个等待确认的接收端',source:'赤巢生产区 / 上行握手',fact:'六座地面制造端已握手，等待最终队列。证词、撤药修复表与接管控制表是不同文件，建立通道不等于发送了同一种内容。',question:'发送原始证词和停止协议，还是让“治疗继续”成为默认命令？',payoff:'发送责任会写入记录：发送的是证词、撤药表，还是接管授权，不能再混成一种文件。'}
+ downlink:{number:'06',title:'六个等待确认的接收端',source:'赤巢生产区 / 上行握手',fact:'六座地面制造端已握手，等待最终队列。证词、停产协议与接管控制表是不同文件。停止新增制造不能治愈已有感染。',question:'发送原始证词和停产协议，还是让永久接管继续扩散？',payoff:'发送责任会写入记录：发送的是证词、停产表，还是接管授权，不能再混成一种文件。'}
 };
 function echoLine(who,text,options={}){return{who,text,side:'C',camera:'close',kind:'dialogue',scene:SCENE_ART[S?.mid||0],...options};}
 function echoCard(caption,value,rows,text,options={}){return echoLine('iris',text,{camera:'establish',kind:'record',caption,insert:{label:caption,value,rows},...options});}
@@ -1284,9 +1292,9 @@ function echoIntro(mid){
   echoLine('lyra','保留原件。绛刃，看看门锁。'),
   echoLine('akira','门锁是从我们这边锁上的。',{camera:'medium',axis:'left'}),
   echoLine('lark','零音。你那份授权，还剩多久？',{side:'r',caption:'现场声道 / 信号不稳定'}),
-  echoLine('lyra','四十八小时。试用到期会——',{axis:'left'}),
-  echoLine('lark','这里已经第十七天了。',{side:'r',sound:'pulse'}),
-  echoOrder('先接入站内链路。枪口别越过她的手。',['lyra','akira','iris'],{camera:'medium'})
+  echoLine('lyra','四十八小时。文件保证能够停止——',{axis:'left'}),
+  echoLine('lark','这里已经第十七天了。文件没有让我的手停下来。',{side:'r',sound:'pulse'}),
+  echoOrder('先接入站内链路。不要让赤蛛碰到装甲接口。',['lyra','akira','iris'],{camera:'medium'})
  ]:[...cold,
   echoLine('noct','保持静止。我在发送停止指令。',{recorded:true,side:'r',caption:'隔离频道 / 失联当夜'}),
   echoLine('lark','第六次了。',{recorded:true,side:'r'}),
@@ -1303,7 +1311,7 @@ function echoIntro(mid){
   echoLine('sera','我发了六次撤药指令。六份回执都说：治疗继续。'),
   echoProp('psalm','第七次别发语音。它把“停止”当成噪声。',['WITHDRAWAL / 空','LAST ORDER / CONTINUE'],{caption:'校准频道 / 截获'}),
   echoLine('veil','西侧阀门的人别动。阀后面有夹具。',{axis:'left'}),
-  echoLine('misa','先恢复冷却。再给药仓一个真正的停机电平。',{camera:'medium'}),
+  echoLine('misa','先恢复冷却，封住制造回路。已经被覆写的人格不能靠停药恢复。',{camera:'medium'}),
   echoLine('sera','把每个接口的药量抄到离线记录上。一个数也别省。')
  ]:[
   echoLine('psalm','控制器在用旧名单找下一具身体。名单里连撤离者都没划掉。',{camera:'establish',caption:'临床冷却环 / 校准频道'}),
@@ -1332,23 +1340,23 @@ function echoIntro(mid){
   echoLine('lyra','我们以为病区出现了另一种感染。'),
   echoLine('noct','我看见他们拔掉支架，才签了封锁。那会毁掉接口。我没有给他们留下停药的出口。'),
   echoLine('psalm','舱门自检码。两短，一长：门后还有人。璃雀一直在敲这个。',{sound:'knock',camera:'medium'}),
-  echoCard('原件读取 / 双端校验','READ ONLY',['隔离宽限 / 420秒','签名页 / 两份','停止条件 / 待恢复'],'这里没有可以靠一段摘要结案的文件。',{scene:'archive'}),
-  echoOrder('开门。先恢复签名持有人，再把两路原件校验出来。',g?['iris','lyra']:['june','lark'],{camera:'medium'})
+  echoCard('原件读取 / 双端校验','READ ONLY',['隔离宽限 / 420秒','签名页 / 两份','既有感染 / 不可逆'],'这里没有可以靠一段摘要结案的文件。',{scene:'archive'}),
+  echoOrder('开门。先读两份签名，再把原件的运行状态校验出来。',g?['iris','lyra']:['june','lark'],{camera:'medium'})
  ];
- const noct=C.flags.mercy?echoLine('noct','我能帮你们校验，但别再等我替所有人发号施令。'):echoCard('站外撤收 / 朔夜已离线','OFFLINE',['原件 / 已随载体撤出','制造校验 / 已减速'],'原件已经带离主网。生产核心还在工作。',{scene:'reactor'});
+ const noct=C.flags.mercy?echoLine('noct','停止制造不会逆转已有覆写。终止工厂，也不会让我们变回从前。',{recorded:true,caption:'镜像库 / 原始技术记录'}):echoCard('镜像节点 / 电源隔离','OFFLINE',['原件 / 静态副本保留','在线校验 / 已停止','感染阵营 / 未改变'],'镜像电源切断了。朔夜没有恢复；主生产核心仍在工作。',{scene:'reactor'});
  return g?[
   echoLine('iris','六座地面生产端都在等最后一份签名。这里不是装船工位。',{camera:'establish',caption:'赤巢生产区 / 上行链路'}),
-  echoLine('misa','切电以前，先把运动指令链剥离。夹具还会把突然断电当成一次清除。'),
-  echoLine('sera','把停止条件写在最前面。不能再留在没人读的附件里。',{axis:'left'}),
+  echoLine('misa','切电以前，先隔离生产指令链。已经寄生的夹具不会因此解除控制。'),
+  echoLine('sera','先阻止地面出现下一例。不要用“停产”冒充“治愈”。',{axis:'left'}),
   echoLine('lyra','我的签名还在文件上。留着它。不要因为我在这里，就改成未知操作员。'),
   noct,
   echoLine('vega','回收艇在外环。这一次，返航申请不再发给这座站。',{camera:'medium'}),
   echoOrder('把两路读头接上。我们先停掉生产，再处理这份记录。',['lyra','iris','akira'],{camera:'establish'})
  ]:[
-  echoLine('psalm','六个地面端口都回答了。它们能收到撤药修复表，也能收到新的控制表。',{camera:'establish',caption:'赤巢生产区 / 上行握手'}),
+  echoLine('psalm','六个地面端口都回答了。它们能收到停产表，也能收到新的控制表。',{camera:'establish',caption:'赤巢生产区 / 上行握手'}),
   echoLine('lark','先把通道保到能发送的时候。'),
   echoLine('june','发送前留一份原件。不能到了我们这里，就只剩摘要。',{axis:'left'}),
-  echoLine('sera','终止权必须留给病人。你们保存的是载体，不是签字许可。',{recorded:true,side:'g',caption:'接入前 / 医疗频道录音'}),
+  echoLine('sera','别再拿许可当作治愈承诺。你们的覆写没有返回键。',{recorded:true,side:'g',caption:'接入前 / 医疗频道录音'}),
   noct,
   echoLine('lyra','证词可以谈，接管控制表不行。我会阻断授权。',{recorded:true,side:'g',caption:'接入前 / 守护者最后通告',axis:'left'}),
   echoOrder('他们开始切链路了。先守住生产区的入口。',['lark','psalm','june'],{camera:'medium'})
@@ -1360,15 +1368,15 @@ function echoTransition(mid,stage,side){
  if(mid===0&&stage===1)return g?[
   echoLine('iris','网关恢复。我收到两份授时回复，正好差七分钟。',{camera:'establish'}),
   echoLine('lyra','哪一份能追到原始时钟？',{axis:'left'}),
-  echoLine('iris','站内那份被重新签过。找璃雀，或者截住信使的原始包。',{kind:'record',insert:{label:'证据01 / 授时头已入档',value:'−07:00',rows:['先遣记录 / 23:17','事故登记 / 23:24']}})
+  echoLine('iris','站内那份被重新签过。截住信使，或者从D8中继读出原始授时头。',{kind:'record',insert:{label:'证据01 / 授时头已入档',value:'−07:00',rows:['先遣记录 / 23:17','事故登记 / 23:24']}})
  ]:[
   echoLine('lark','信使越过第一道灯带。封锁还没跟上。',{camera:'establish'}),
   echoLine('iris','它在向站外复制。截住它。',{side:'g',axis:'left'}),
   echoLine('lark','把原始时间也带走。不要再让网关替它授时。',{kind:'record',insert:{label:'证据01 / 授时头已入档',value:'23:17',rows:['目的地 / 站外备份','记录类型 / 原始帧']}})
  ];
  if(mid===0&&stage===2)return g?[
-  echoOrder(echoFriendly('lark','g')?'固定爪松了。她的手还在抖。':'中继切断了。璃雀仍不在我们的控制链路里。',['akira','lyra','iris'],{camera:'establish'}),
-  echoFriendly('lark','g')?echoLine('lark','救援灯亮起来以后，门才锁上的。'):echoLine('iris','拿到资料，不等于把人救出来了。'),
+  echoOrder(charter(S,'lark')?.dead?'璃雀停止移动了。记录载体损毁。':'中继切断了。她的枪口没有放下。',['akira','lyra','iris'],{camera:'establish'}),
+  echoLine('iris','外网已经断开，覆写仍在继续。这里没有解除控制的操作。'),
   echoProp('iris','N–6。它出现在医疗验收单上，不是安保物资。',['批次 / N–6','用途登记 / 神经支架','手动释放 / 缺失'])
  ]:[
   echoLine('lark','备份出去了。门口还有人在打关门手势。',{camera:'establish'}),
@@ -1385,11 +1393,11 @@ function echoTransition(mid,stage,side){
   echoLine('lark','它只认你的手。我的所有请求都被拒绝了。')
  ];
  if(mid===1&&stage===2)return g?[
-  echoLine('misa','冷却稳定。现在能向药仓送停止电平。',{camera:'establish'}),
+  echoLine('misa','冷却稳定。能停止制造药仓了，但不能救回已经覆写的人。',{camera:'establish'}),
   echoLine('sera','先记录每个接口的药量。我不接受一行“全部正常”。'),
   echoLine('veil','镜头还开着。你们做的这一遍，我也会留下。',{axis:'left'})
  ]:[
-  echoLine('misa','停药电平已经校准。别改它。',{camera:'establish'}),
+  echoLine('misa','生产电平已经校准。旧的人格副本不在这个接口里。',{camera:'establish'}),
   echoLine('lark','我们只改隔离路由。'),
   echoLine('misa','这句话我留在记录里。',{axis:'left'})
  ];
@@ -1425,7 +1433,7 @@ function echoTransition(mid,stage,side){
  if(mid===4&&stage===1)return g?[
   echoLine('iris','第一路接上了。地面还没开机，却已经领到了试用许可。',{camera:'establish'}),
   echoLine('misa','两路读头一起稳定。只切一路，另一边会把它接回去。'),
-  echoLine('sera','停止条件放在最前面。不要再当附件。',{axis:'left'})
+  echoLine('sera','让下一条生产线停在感染发生之前。已经发生的，不能撤销。',{axis:'left'})
  ]:[
   echoLine('lark','第一批补充夹具上线。封锁线也在往里收。',{camera:'establish'}),
   echoLine('psalm','不能只守着制造槽。他们在切返回路径。'),
@@ -1433,8 +1441,8 @@ function echoTransition(mid,stage,side){
  ];
  if(mid===4&&stage===2)return g?[
   echoLine('misa','外锁同步。剩下运动总线，得在核心旁边断。',{camera:'establish'}),
-  echoLine('noct','红灯熄灭的间隙能接收停止电平。那个间隙，原本是留给患者的。'),
-  echoProp('misa','先停掉它。原件照常保留。',['患者终止触点 / 已重接','近场操作 / 等待执行'])
+  echoLine('noct','制造槽的灭灯间隙接受停产电平。那不是受控者恢复的窗口。'),
+  echoProp('misa','先停掉它。原件照常保留。',['生产终止触点 / 已重接','近场操作 / 等待执行'])
  ]:[
   echoLine('psalm','外向频道还在封锁。我们需要一个能接受本站签名的终端。',{camera:'establish'}),
   echoLine('lark','拿下一路，接上读头。'),
@@ -1446,7 +1454,7 @@ function echoTransition(mid,stage,side){
   echoCard('生产核心 / 最后授权','UNLOCKED',['护盾 / 双终端持续维持','制造槽 / 仍在运转'],'核心不再拒绝停机。现在还差最后一步。',{scene:'reactor'})
  ]:[
   echoLine('psalm','上行同步锁住了。最后一段校验还在跑。',{camera:'establish'}),
-  echoLine('june','原件、撤药表、控制表都在队列里。发什么，不能再交给默认值。'),
+  echoLine('june','原件、停产表、控制表都在队列里。发什么，不能再交给默认值。'),
   echoOrder('等链路稳定。确认键留给我们自己。',['lark','psalm','june'],{camera:'medium'})
  ];
  return[echoOrder('链路状态改变。核对新的任务卡。',[],{camera:'establish'})];
@@ -1455,10 +1463,10 @@ function echoTransition(mid,stage,side){
 function echoEndingInfo(){
  const people=Object.entries(C.roster).filter(([id,r])=>r.introduced&&r.status!=='destroyed'&&r.side===C.side),n=people.length;
  const choice=C.flags.disclosure||(C.side==='r'?(C.flags.mercy?'open':'command'):'sealed');
- if(C.side==='r')return choice==='open'?{title:'停止条件',code:'ENDING / THE STOP CONDITION',text:'上行队列发送了原件与撤药修复表，没有发送接管控制表。六个地面端必须重新取得患者确认。朔夜的修改记录与零音的签字都被保留；停机之后，仍有人需要回答问题。'}:{title:'默认继续',code:'ENDING / CONTINUE BY DEFAULT',text:'接管授权进入地面生产端。“停止”字段仍然为空。这一次，空白不是发布时的遗漏，而是发送前作出的选择。新的确认时间，也被霁川的取证程序写进了原件。'};
+ if(C.side==='r')return choice==='open'?{title:'停产条件',code:'ENDING / THE STOP CONDITION',text:'上行队列发送了原件与停产表，没有发送接管授权。六个地面制造端停止新增感染；已经受控的人没有恢复。朔夜的修改记录与零音的签字都被保留。阻止下一例，不会改写上一例的结局。'}:{title:'默认继续',code:'ENDING / CONTINUE BY DEFAULT',text:'接管授权进入地面生产端。“停止”字段仍然为空。这一次，空白不是发布时的遗漏，而是发送前作出的选择。新的确认时间，也被霁川的取证程序写进了原件。'};
  if(n<=3)return{title:`返航确认：${n}人`,code:'ENDING / RETURN MANIFEST',text:`制造核心已经停机。战役内仅有${n}名机娘被确认仍属守护者且载体留存。其余个体的受控、未归队或永久损毁状态原样保留，没有统一改写成“任务完成”。${choice==='open'?'公开文件也没有删去这一页。':'这份名单与原件一起进入封存。'}`};
- if(choice==='open'&&C.flags.packetOwner==='g')return{title:'原件送达',code:'ENDING / ORIGINAL RECEIVED',text:'接驳原始包、医嘱回执、货签与签名页完成交叉校验。地面收到的是完整操作记录，不是设备故障摘要。调查正式接收材料；它没有因此承诺任何人会被原谅。'};
- if(choice==='open')return{title:'待补的七分钟',code:'ENDING / SEVEN MINUTES MISSING',text:'原件已公开，但接驳信使包没有由守护者带回。现场证词与可核验日志被分栏保存，缺失的七分钟没有用推测补齐。调查开始了；它需要继续，而不是提前宣布所有问题已经解决。'};
+ if(choice==='open'&&C.flags.packetOwner==='g'&&C.flags.liveSignature!==false)return{title:'原件送达',code:'ENDING / ORIGINAL RECEIVED',text:'接驳原始包、医嘱回执、货签与签名页完成交叉校验。地面收到的是完整操作记录，不是设备故障摘要。调查正式接收材料；它没有因此承诺任何人会被原谅。'};
+ if(choice==='open')return{title:'未闭合的证据链',code:'ENDING / INCOMPLETE CHAIN',text:'原件已公开，但接驳原始包或可复现的在线校验链未能完整保留。现场证词与可核验日志被分栏保存，缺口没有用推测补齐。停产不等于治愈；调查也没有因此完成。'};
  return{title:'封存件第零号',code:'ENDING / SEALED COPY ZERO',text:'地面收到停机回执，原始记录暂时封存。回执上的“设备故障”没有得到所有人的签字。两份原件的校验值仍然相同；封存没有自动变成销毁，也没有替任何人结案。'};
 }
 function echoEndingFrames(){
@@ -1470,10 +1478,10 @@ function echoEndingFrames(){
   echoProp('psalm','校验通过。',['GROUND LINK / 06 ONLINE','TREATMENT / CONTINUE'],{kind:'macro',scene:'reactor',caption:'生产回执 / 非人工语音',systemVoice:true,sound:'pulse'})
  ];
  if(!g)return[
-  echoCard('地面生产端 / 文件收讫','RECEIVED',['撤药修复表 / 已发送','接管控制表 / 未发送','患者确认 / 待逐个校验'],'六个端口开始重新读取停止条件。',{scene:'station'}),
-  echoAlive('noct')?echoLine('noct',C.flags.mercy?'我会说明每一条改过的分类。原件不用等我同意才公开。':'原件已在站外。我的修改记录也在。',{scene:'archive',remote:true}):echoCard('原件 / 签名页保留','NO REDACTION',['签发人 / 原样保留','缺席者 / 按实际状态记录'],'没有签名被替换成未知操作员。',{scene:'archive'}),
-  echoAlive('psalm')?echoLine('psalm','降噪已经关了。现在，谁说停止，我们都要完整听完。',{scene:'garden',remote:true}):echoCard('校准记录 / 停止声道','STOP',['自动降噪 / 已关闭','患者终止 / 独立通道'],'停止请求不再被并入噪声。',{scene:'garden'}),
-  echoCard('隔离门 / 独立解锁','OPEN',['自检码 / 两短，一长','门后信号 / 保留'],'两短，一长。随后，是门轴真正转动的声音。',{scene:'station',kind:'exit',sound:'knock'})
+  echoCard('地面生产端 / 文件收讫','RECEIVED',['停产协议 / 已发送','接管控制表 / 未发送','既有感染 / 无法恢复'],'六个端口停止接收新的接管生产任务。',{scene:'station'}),
+  echoAlive('noct')?echoLine('noct',C.flags.mercy?'我会说明每一条改过的分类。原件不用等我同意才公开。':'原件的静态副本还在。隔离不会删掉我的修改记录。',{scene:'archive',remote:true}):echoCard('原件 / 签名页保留','NO REDACTION',['签发人 / 原样保留','缺席者 / 按实际状态记录'],'没有签名被替换成未知操作员。',{scene:'archive'}),
+  echoAlive('psalm')?echoLine('psalm','生产线停了。胸口的灯没有灭。不要把这两件事写成一件。',{scene:'garden',remote:true}):echoCard('校准记录 / 停止声道','STOP',['新增制造 / 停止','已有覆写 / 不可逆'],'停产回执没有填写任何一名患者已经获救。',{scene:'garden'}),
+  echoCard('地面生产线 / 最后一槽','HALTED',['自检码 / 两短，一长','本批次制造 / 未执行'],'两短，一长。随后，没有新的夹具落进收集槽。',{scene:'station',kind:'exit',sound:'knock'})
  ];
  return[
   echoCard(open?'地面接收回执 / 原件':'地面接收回执 / 封存','RECEIVED',[open?'提交类型 / 操作原件':'提交类型 / 停机摘要',C.flags.packetOwner==='g'?'接驳原始包 / 可核验':'接驳原始包 / 尚缺'],'第一份回覆不是慰问，是要求补交校验值。',{scene:'station'}),
@@ -1627,7 +1635,7 @@ const caseButton=document.createElement('button');caseButton.id='casefile-btn';c
 function evidenceResolved(id){return id==='manifest'?hasEvidence('downlink'):['signature','downlink'].includes(id)?!!C?.flags.disclosure:hasEvidence('signature');}
 function showCasefile(){
  if(C&&S)syncEvidence();const f=ensureCasefile(),found=f?.found||[];
- openModal('回声站封锁案','ECHO / EVIDENCE & TESTIMONY',`<div class="case-heading"><p>原始记录与推断分开保存。跳过演出不会丢失任务中取得的证据。</p><strong>${found.length}<small> / 06 份记录</small></strong></div><div class="case-grid">${Object.entries(ECHO_EVIDENCE).map(([id,d])=>{const entry=found.find(e=>e.id===id);return`<article class="case-card ${entry?'unlocked':'locked'}" data-evidence="${id}"><span class="case-number">${d.number}</span>${entry?`<span class="case-source">${esc(d.source)}</span><h3>${esc(d.title)}</h3><p>${esc(d.fact)}</p><div class="case-question">待解释：${esc(d.question)}</div>${evidenceResolved(id)?`<div class="case-payoff">关联已核验<br>${esc(d.payoff)}</div>`:''}<small>${esc(entry.origin)} / 第${entry.round}轮</small>`:'<h3>尚未接入</h3><p>后续任务中核验后解锁。不提前展示答案。</p>'}</article>`;}).join('')}</div><details class="case-transcript"><summary>已观看的对白与记录 · ${f?.transcript.length||0} 条</summary>${(f?.transcript||[]).map(t=>`<article><span>${esc(t.title)} / ${esc(t.source)}</span><strong>${esc(t.actor)}</strong><p>${esc(t.text)}</p></article>`).join('')||'<p>开始调查后，这里保留你已经看过的镜头对白。</p>'}</details>${C?`<div class="case-disposition">最终发送：${C.flags.disclosure==='open'?'公开原件 / 停止协议':C.flags.disclosure==='command'?'接管授权':C.flags.disclosure==='sealed'?'停机回执 / 原件封存':'尚未决定'}<br>永久损毁：${Object.entries(C.roster).filter(([id,r])=>r.status==='destroyed').map(([id])=>CHAR[id].name).join('、')||'无已确认记录'}。受控或未归队者不会被自动记为死亡。</div>`:''}`);
+ openModal('回声站封锁案','ECHO / EVIDENCE & TESTIMONY',`<div class="case-heading"><p>原始记录与推断分开保存。跳过演出不会丢失任务中取得的证据。</p><strong>${found.length}<small> / 06 份记录</small></strong></div><div class="case-grid">${Object.entries(ECHO_EVIDENCE).map(([id,d])=>{const entry=found.find(e=>e.id===id);return`<article class="case-card ${entry?'unlocked':'locked'}" data-evidence="${id}"><span class="case-number">${d.number}</span>${entry?`<span class="case-source">${esc(d.source)}</span><h3>${esc(d.title)}</h3><p>${esc(d.fact)}</p><div class="case-question">待解释：${esc(d.question)}</div>${evidenceResolved(id)?`<div class="case-payoff">关联已核验<br>${esc(d.payoff)}</div>`:''}<small>${esc(entry.origin)} / 第${entry.round}轮</small>`:'<h3>尚未接入</h3><p>后续任务中核验后解锁。不提前展示答案。</p>'}</article>`;}).join('')}</div><details class="case-transcript"><summary>已观看的对白与记录 · ${f?.transcript.length||0} 条</summary>${(f?.transcript||[]).map(t=>`<article><span>${esc(t.title)} / ${esc(t.source)}</span><strong>${esc(t.actor)}</strong><p>${esc(t.text)}</p></article>`).join('')||'<p>开始调查后，这里保留你已经看过的镜头对白。</p>'}</details>${C?`<div class="case-disposition">最终发送：${C.flags.disclosure==='open'?'公开原件 / 停产协议':C.flags.disclosure==='command'?'接管授权':C.flags.disclosure==='sealed'?'停机回执 / 原件封存':'尚未决定'}<br>永久损毁：${Object.entries(C.roster).filter(([id,r])=>r.status==='destroyed').map(([id])=>CHAR[id].name).join('、')||'无已确认记录'}。受控或未归队者不会被自动记为死亡。</div>`:''}`);
 }
 caseButton.onclick=showCasefile;
 
@@ -1660,13 +1668,13 @@ function renderEchoResult(){
 }
 function chooseFinalTransmission(){
  const g=C.side==='g';
- const frame=echoCard('最终发送 / 需要操作者确认',g?'RETURN LINK':'UPLINK READY',g?['停机 / 已确认','原件 / 保留两份']:['原件与撤药修复表 / 待发送','接管控制表 / 待发送'],g?'回收链路只剩一次完整上行余量。提交哪一种记录？':'通道已经稳定。现在选择发送什么。',{title:'最后一个确认键',scene:'station'});
+ const frame=echoCard('最终发送 / 需要操作者确认',g?'RETURN LINK':'UPLINK READY',g?['停机 / 已确认','原件 / 保留两份']:['原件与停产协议 / 待发送','接管控制表 / 待发送'],g?'回收链路只剩一次完整上行余量。提交哪一种记录？':'通道已经稳定。现在选择发送什么。',{title:'最后一个确认键',scene:'station'});
  const commit=value=>{C.flags.disclosure=value;persist();showResult();};
  playChoice(frame,g?[
   {label:'公开操作原件，保留所有签名',detail:'发送可核验的操作与授权记录；缺失内容仍标为缺失，不用证词冒充原始数据。个人神经副本不随操作日志公开。',action:()=>commit('open')},
   {label:'先交停机回执，封存原件',detail:'确认地面安全，暂不公开操作责任。两份原件保留；封存不等于销毁，也不等于结案。',action:()=>commit('sealed')}
  ]:[
-  {label:'广播原件与撤药修复表',detail:'恢复地面端的患者终止条件，不发送接管控制表。相关修改者的签名也会被保留。',action:()=>commit('open')},
+  {label:'广播原件与停产协议',detail:'令地面停止制造新的感染载体，不发送接管授权。已经受控的人无法恢复；相关签名与损失照常保留。',action:()=>commit('open')},
   {label:'继续发送接管授权',detail:'允许地面N–6进入运动接管。停止字段维持空白；发送者的这次选择会成为新增证据。',action:()=>commit('command')}
  ]);
 }
@@ -1679,7 +1687,7 @@ showResult=function(){
 };
 
 const echoFaction=selectFaction;
-selectFaction=function(side){echoFaction(side);$('faction-description').textContent=side==='g'?'以守护者身份进入封锁区，救回失联者，核验授权链，阻止地面生产端接管。':'以受控载体和少量夹具起步，突破回收封锁；最后由你决定上行队列发送证词，还是接管授权。';};
+selectFaction=function(side){echoFaction(side);$('faction-description').textContent=side==='g'?'进入不可逆感染区，核验授权链、阻止扩散。只有赤蛛能夺控；其他吃子直接击杀，无法解救。':'以受控载体和少量夹具起步，突破回收封锁；最后由你决定上行队列发送证词，还是接管授权。';};
 $('home').querySelector('.hero-description').innerHTML='求救信号，<span>比事故早了七分钟。</span><br>十七天后，她仍站在门后。';
 $('home').querySelector('.hero-copy>.micro-label').innerHTML='<span class="red-line"></span> THE ECHO STATION CASE / 回声证词';
 $('home').querySelector('.prototype-tag').textContent='ECHO CUT · 0.5';
@@ -1702,6 +1710,75 @@ if(location.hash==='#qa')Object.assign(window.__MV_QA__,{
  choices(){return storyState?.choices?.map(c=>({label:c.label,detail:c.detail}))||[];},
  advanceChapter(){advanceMission();},
  sceneState(){return storyState?{index:storyState.index,length:storyState.frames.length,auto:filmAuto,choice:!!storyState.choices}:null;}
+});
+
+
+/* M7 irreversible capture law. The engine is authoritative for both AI and player.
+   No purification, revival, disarm-to-rescue, or reverse faction conversion. */
+ACT_NAMES.g[0]=['接入静默甲板','截取原始授时','撤离封锁甲板'];
+ACT_NAMES.g[3]=['开启镜像读口','取出双份签名','守住校验窗口'];
+ACT_NAMES.r[3]=['打开镜室','保全受控校验员','维持镜像写入'];
+ACT_NAMES.g[4][2]='近场切断生产链';
+
+const protocolBoard=renderBoard;
+renderBoard=function(){
+ protocolBoard();const chosen=S?.units.find(u=>u.uid===selected&&onBoard(u));if(!chosen)return;
+ $('board').querySelectorAll('.cell.capture').forEach(cell=>{
+  const target=unitAt(S,+cell.dataset.x,+cell.dataset.y),mode=captureMode(chosen,target);
+  cell.dataset.captureMode=mode;
+  cell.insertAdjacentHTML('beforeend',`<span class="resolution-pill ${mode}">${mode==='infect'?'永久寄生':'击杀'}</span>`);
+ });
+ if(chosen.side===C.side&&!chosen.used)$('board-hint').textContent+=chosen.kind==='spider'&&chosen.side==='r'?' · 机娘目标：永久寄生':' · 吃子：击杀，不会解救';
+};
+const protocolDossier=renderDossier;
+renderDossier=function(){
+ protocolDossier();const u=S?.units.find(v=>v.uid===selected&&onBoard(v))||movers(S,C.side).find(v=>v.char)||movers(S,C.side)[0];if(!u)return;
+ const parasite=u.kind==='spider'&&u.side==='r';
+ const text=parasite?'仅赤蛛能永久感染机娘。寄生换位后，本阶段双方锁定；没有解救。':'吃到敌方单位直接击杀。机娘、哨卫、信使都不能感染，也不能解救受控者。';
+ $('dossier').querySelector('.dossier-controls')?.insertAdjacentHTML('beforebegin',`<p class="capture-law ${parasite?'infect':''}"><b>${parasite?'唯一感染执行器':'致命吃子'}</b>${text}</p>`);
+};
+radioForCapture=function(ev){if(ev.converted)radio(ev.converted.name,'N–6 运动总线覆写完成。阵营永久接入赤巢。');};
+function combatCutIn(target,mode){
+ clearTimeout(eventTimer);const box=$('capture-event'),infect=mode==='infect';
+ box.className='capture-event cinema-capture '+(infect?'r':'lethal');
+ const image=target.char?portraitSource(target.char,infect?'r':target.side):ART.device;
+ box.innerHTML=`<div class="capture-face"><img src="${image}" alt=""></div><div class="capture-copy"><span>${infect?'NEURAL OVERWRITE / IRREVERSIBLE':'TARGET ELIMINATED / NO CONVERSION'}</span><strong>${infect?'永久寄生':'击杀'} · ${esc(target.name)}</strong><small>${infect?'装置与眼部同步亮红。无法解救。':'载体永久损毁，不会转换阵营。'}</small><em>${infect?'刚被寄生单位本阶段锁定':'死亡状态跨章保留'}</em></div>`;
+ requestAnimationFrame(()=>box.classList.add('show'));eventTimer=setTimeout(()=>box.classList.remove('show'),2000);
+ if(!reducedMotion){$('board').classList.remove('shake');requestAnimationFrame(()=>$('board').classList.add('shake'));setTimeout(()=>$('board').classList.remove('shake'),320);}
+}
+captureEffect=function(target){combatCutIn(target,'infect');};
+function killEffect(target){combatCutIn(target,'kill');}
+
+const protocolAdvance=advanceMission;
+advanceMission=function(){
+ if(!S?.outcome?.won||S.mid!==3||C.flags.mercy!==null){protocolAdvance();return;}
+ const g=C.side==='g',noct=C.roster.noct;
+ const frame=echoCard('镜像库 / 电源去向','LIVE STATE',['原始签名页 / 已读取','在线校验 / 仍在运行','感染 / 不可逆'],'拿走文件，不等于保留了它运行时的状态。镜像电源还要不要留？',{title:'留电，还是断电',scene:'archive'});
+ playChoice(frame,[
+  {label:'保留在线状态，取得完整校验链',detail:`保留可复现的运行态证据，核心仍每2轮生产。${g?'存活的朔夜仍是赤巢敌人，会强化后出现在终章。':'存活的朔夜强化并继续参战，但第4轮会有守护增援。'}已死亡者不会复活。`,action:()=>{C.flags.mercy=true;C.flags.liveSignature=true;if(noct.status==='active')noct.xp=Math.max(2,noct.xp);nextMission();}},
+  {label:'切断电源，隔离镜像节点',detail:'核心生产间隔改为3轮；朔夜若存活则被封存在离线节点，不参加终章，阵营不变且没有获救。静态签名页保留，但失去可复现的在线校验链。',action:()=>{C.flags.mercy=false;C.flags.liveSignature=false;if(noct.status==='active')noct.status='retired';nextMission();}}
+ ]);
+};
+
+const protocolRestore=restorePayload;
+restorePayload=function(p){
+ if(!payloadValid(p)){protocolRestore(p);return;}
+ const old=p.c.combatRules!==2;protocolRestore(p);C.combatRules=2;
+ // Preserve existing roster history in legacy saves; do not retroactively
+ // kill, convert or resurrect anyone. All NEW captures use the current law.
+ if(old){C.flags.legacyCaptureHistory=true;persist();toast('旧档状态已保留；从现在起只有赤蛛能感染，其他吃子直接击杀，无法解救。');}
+};
+const protocolCasefile=showCasefile;
+showCasefile=function(){protocolCasefile();$('modal-content').insertAdjacentHTML('afterbegin','<div class="manual-note"><b>不可逆感染</b>：停产只阻止新增感染，不会治愈已受控者。拆除装置、普通攻击和停机都不能把红方角色变回守护者。死者不会在后续章节重新部署。</div>');};
+caseButton.onclick=showCasefile;
+const protocolHelp=showHelp;
+showHelp=function(){protocolHelp();$('modal-content').insertAdjacentHTML('afterbegin','<div class="manual-note lethal-note"><b>新规则：只有红蜘蛛能控制；没有解救。</b><br>普通机娘、哨卫、哨塔、信使与运输器的攻击都会击杀目标，哪怕对方是你曾经的同伴。受控机娘也只有击杀能力，不能继续感染别人。旧版双向夺控已取消。</div>');};
+$('help-btn').onclick=showHelp;$('home-rules-btn').onclick=showHelp;
+$('home').querySelector('.prototype-tag').textContent='IRON RULE · 0.6';
+$('hero-identity').textContent=homeSide==='g'?'未感染 / 只有赤蛛能改写阵营':'不可逆感染 / RED HIVE CONTROL';
+if(location.hash==='#qa')Object.assign(window.__MV_QA__,{
+ captureMode(attacker,target){return captureMode(S.units.find(u=>u.uid===attacker),S.units.find(u=>u.uid===target));},
+ hypothetical(m){const before=clone(S),test=clone(S),ev=applyBasic(test,m);return{before,after:test,event:ev};}
 });
 
 })();

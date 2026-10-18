@@ -1,6 +1,6 @@
 function newCampaign(side){
  runId++; busy=false; selected=null; undoStack=[];
- C={version:1,side,step:0,order:[0,1,2,3,4],route:null,roster:{},flags:{packetOwner:null,sampleOwner:null,keyOwner:null,mercy:null},history:[],stats:{moves:0,enemyMoves:0,conversions:0,rescues:0,losses:0},finished:false};
+ C={version:1,combatRules:2,side,step:0,order:[0,1,2,3,4],route:null,roster:{},flags:{packetOwner:null,sampleOwner:null,keyOwner:null,mercy:null},history:[],stats:{moves:0,enemyMoves:0,conversions:0,rescues:0,losses:0},finished:false};
  for(const id of Object.keys(CHAR)) C.roster[id]={side:CHAR[id].origin||(['lyra','akira','misa'].includes(id)?'g':'r'),status:'active',xp:0,introduced:false};
  openMission(0,true);
 }
@@ -88,6 +88,8 @@ function imminentHazard(s){
  if(s.mid===2&&!s.collapsed&&s.round===s.collapseAt){const arr=[];for(let y=2;y<=5;y++)for(const x of[2,5])arr.push(key(x,y));return arr;}
  return[];
 }
+// Only a Red Hive spider can infect. All other captures are lethal, including mecha vs mecha.
+function captureMode(attacker,target){return attacker?.kind==='spider'&&attacker.side==='r'&&target?.char&&target.side==='g'?'infect':'kill';}
 function applyBasic(s,m){
  const u=s.units.find(v=>v.uid===m.uid&&onBoard(v));if(!u)return null;
  const ev={unit:u.uid,name:nameOf(u),side:u.side,from:{x:u.x,y:u.y},to:{x:m.x,y:m.y},type:m.type,converted:null,killed:null,escaped:false,relay:false,loot:[],upgraded:false};
@@ -95,12 +97,12 @@ function applyBasic(s,m){
  if(m.type==='wait')return ev;
  const target=unitAt(s,m.x,m.y),oldX=u.x,oldY=u.y;
  if(target&&target.side!==u.side){
-  if(target.char){
-   ev.converted={char:target.char,uid:target.uid,name:nameOf(target),from:target.side,to:u.side};target.side=u.side;target.x=oldX;target.y=oldY;target.used=true;target.flee=false;
+  if(captureMode(u,target)==='infect'){
+   ev.converted={char:target.char,uid:target.uid,name:nameOf(target),from:target.side,to:u.side};target.side=u.side;target.x=oldX;target.y=oldY;target.used=true;target.flee=false;target.controlLocked=true;
    const list=u.side==='g'?s.flags.conversionsG:s.flags.conversionsR;if(!list.includes(target.char))list.push(target.char);
    for(const item of s.loot)if(item.carrier===target.uid)item.side=target.side;
   }else{
-   ev.killed={uid:target.uid,kind:target.kind,name:nameOf(target)};target.dead=true;
+   ev.killed={uid:target.uid,kind:target.kind,char:target.char,side:target.side,name:nameOf(target)};target.dead=true;
    for(const item of s.loot)if(item.carrier===target.uid){item.carrier=null;item.x=m.x;item.y=m.y;item.side=null;}
   }
   const captureKey=u.uid+'>'+target.uid;
@@ -125,12 +127,12 @@ async function performMove(m,isPlayer){
  const flight=animateToken(m);const ev=applyBasic(S,m);if(!ev){busy=false;return;}
  if(isPlayer){S.spent++;C.stats.moves++;}else{S.aiDone++;C.stats.enemyMoves++;}
  const coord=m.type==='wait'?'原地固守':`${xy(ev.from.x,ev.from.y)} → ${xy(m.x,m.y)}`;
- addLog(`${ev.name} ${coord}${ev.converted?' · '+(ev.side==='g'?'解放':'感染')+ev.converted.name:ev.killed?' · 摧毁'+ev.killed.name:''}`,ev.converted?(ev.side===C.side?'good':'capture'):'normal');
+ addLog(`${ev.name} ${coord}${ev.converted?' · '+'永久感染'+ev.converted.name:ev.killed?' · 摧毁'+ev.killed.name:''}`,ev.converted?(ev.side===C.side?'good':'capture'):'normal');
  if(ev.converted){
-  if(ev.side===C.side){C.stats.conversions++;if(ev.side==='g')C.stats.rescues++;}
-  S.events.push(`${ev.converted.name}${ev.side==='g'?'恢复自由':'被赤巢接管'}`);
+  if(ev.side===C.side)C.stats.conversions++;
+  S.events.push(`${ev.converted.name}被赤蛛永久接管，不可解救`);
   captureEffect(ev.converted,ev.side);radioForCapture(ev);sfx('capture');
- }else if(ev.killed)sfx('hit');else sfx(m.type==='wait'?'wait':'move');
+ }else if(ev.killed){killEffect(ev.killed);if(ev.killed.char){C.stats.losses++;S.events.push(`${ev.killed.name}被${ev.name}击杀 · 永久损毁`);radio(ev.name,`${ev.killed.name}的载体已被击毁。没有阵营转换。`);}if(ev.side===C.side)C.stats.kills=(C.stats.kills||0)+1;sfx('hit');}else sfx(m.type==='wait'?'wait':'move');
  if(ev.escaped){addLog(`${ev.name}已撤离；若为机娘，她会保留阵营与同步等级，在后续关卡重返战场。`,ev.side===C.side?'good':'capture');if(ev.unit==='courier')radio('璃雀','信使出去了。下一次接舷，来的就不会只有这一批赤蛛。');}
  if(ev.relay)addLog(`终端 ${xy(m.x,m.y)} 已归 ${SIDE_NAME[ev.side]}。`,ev.side===C.side?'good':'capture');
  if(ev.loot.length){addLog(`${ev.name}获得 ${ev.loot.join('、')}。`,'good');toast(`已取得 ${ev.loot.join('、')} · 携带者易手时，物品也会易手`);}
@@ -143,15 +145,15 @@ async function performMove(m,isPlayer){
 function objectives(s,side){
  const m=[],extra=[];const rel=relayCount(s,side);const liveChar=(id,team)=>{const u=charter(s,id);return !!u&&onBoard(u)&&u.side===team;};
  if(s.mid===0){
-  if(side==='g'){m.push({text:'占领 D8 中继站，切断接驳信号',done:s.relays[0].owner==='g'});extra.push({text:'解放并保有璃雀',done:liveChar('lark','g')},{text:'截获信使携带的数据包',done:lootById(s,'packet')?.side==='g'});}
+  if(side==='g'){m.push({text:'占领 D8 中继站，切断接驳信号',done:s.relays[0].owner==='g'});extra.push({text:'击毁璃雀的受控载体，清除哨戒威胁',done:!!charter(s,'lark')?.dead},{text:'截获信使携带的数据包',done:lootById(s,'packet')?.side==='g'});}
   else{m.push({text:'信使抵达 H8，或累计感染两名机娘',done:s.flags.courierEscaped||s.flags.conversionsR.length>=2});extra.push({text:'额外感染一名守护者',done:s.flags.conversionsR.length>=1},{text:'保住璃雀的人格载体',done:liveChar('lark','r')});}
  }
  if(s.mid===1){
-  if(side==='g'){m.push({text:`控制 B7、G7 两座冷却阀（${rel}/2）`,done:rel===2});extra.push({text:'带走温室样本，稳定输送桥',done:lootById(s,'sample')?.side==='g'},{text:'解放雾棘',done:liveChar('veil','g')});}
+  if(side==='g'){m.push({text:`控制 B7、G7 两座冷却阀（${rel}/2）`,done:rel===2});extra.push({text:'带走温室样本，稳定输送桥',done:lootById(s,'sample')?.side==='g'},{text:'击毁雾棘，解除长线封锁',done:!!charter(s,'veil')?.dead});}
   else{m.push({text:'将弥砂转化为赤巢单位',done:liveChar('misa','r')},{text:'取得并保有温室样本',done:lootById(s,'sample')?.side==='r'});extra.push({text:'保住雾棘',done:liveChar('veil','r')},{text:'至少控制一座冷却阀',done:rel>0});}
  }
  if(s.mid===2){m.push({text:`将方舟密钥送到 ${side==='g'?'D8 / E8':'D1 / E1'} 交付口`,done:s.flags.delivered===side});extra.push({text:'没有机娘在本关永久损毁',done:!s.units.some(u=>u.char&&u.dead)},{text:'在桥面坍塌前完成交付',done:s.flags.delivered===side&&!s.collapsed});}
- if(s.mid===3){m.push({text:`${side==='g'?'解放':'保有'}朔夜`,done:liveChar('noct',side)},{text:`控制 B5、G5 两座镜像终端（${rel}/2）`,done:rel===2});extra.push({text:'本阵营至少保有四名机娘',done:s.units.filter(u=>u.char&&!u.dead&&u.side===side).length>=4},{text:'打开中央电磁门',done:s.flags.gatesOpen});}
+ if(s.mid===3){if(side==='r')m.push({text:'保有朔夜的受控载体',done:liveChar('noct','r')});m.push({text:`控制 B5、G5 两座镜像终端（${rel}/2）`,done:rel===2});extra.push({text:'本阵营至少保有四名机娘',done:s.units.filter(u=>u.char&&!u.dead&&u.side===side).length>=4},{text:'打开中央电磁门',done:s.flags.gatesOpen});}
  if(s.mid===4){
   const core=s.units.find(u=>u.kind==='core');
   if(side==='g'){m.push({text:`控制 B6、G6，关闭核心护盾（${rel}/2）`,done:rel===2},{text:'吃掉 E8 赤巢内核',done:!!core?.dead});}
@@ -166,8 +168,8 @@ function checkOutcome(){
  if(S.mid===2&&S.flags.delivered&&S.flags.delivered!==C.side){resolveBattle(false,'对手已将方舟密钥送离输送桥。');return true;}
  if(S.mid===2&&lootById(S,'key')?.lost){resolveBattle(false,'方舟密钥随携带者坠入裂隙，任务目标永久丢失。');return true;}
  if(S.mid===4&&C.side==='r'&&S.units.find(u=>u.kind==='core')?.dead){resolveBattle(false,'守护者突破了终端，赤巢内核已被摧毁。');return true;}
- if(S.mid===3&&charter(S,'noct')?.dead){resolveBattle(false,'朔夜的人格载体永久损毁，无法完成镜室同步。');return true;}
- if(S.mid===1&&C.side==='r'&&charter(S,'misa')?.dead){resolveBattle(false,'弥砂的人格载体在真空中损毁，感染目标失去。');return true;}
+ if(S.mid===3&&C.side==='r'&&(charter(S,'noct')?.dead||charter(S,'noct')?.escaped)){resolveBattle(false,'朔夜已损毁或离场，赤巢失去唯一在线校验载体，无法完成同步。');return true;}
+ if(S.mid===1&&C.side==='r'&&(charter(S,'misa')?.dead||charter(S,'misa')?.escaped)){resolveBattle(false,'弥砂已损毁或离场，无法再完成赤蛛感染与培育台操作。任务目标永久失去。');return true;}
  if(movers(S,C.side).length===0){resolveBattle(false,'所有可行动单位都已被接管、撤离或摧毁，战术链路中断。');return true;}
  return false;
 }
@@ -225,9 +227,8 @@ function syncRoster(){
  for(const item of S.loot){if(item.id==='packet')C.flags.packetOwner=item.side;if(item.id==='sample')C.flags.sampleOwner=item.lost?null:item.side;if(item.id==='key')C.flags.keyOwner=S.flags.delivered||item.side;}
 }
 function resolveBattle(won,reason){
- if(S.outcome)return;runId++;busy=false;S.phase='over';S.outcome={won,reason};undoStack=[];
- if(won){
-  syncRoster();const goals=objectives(S,C.side);const extra=goals.extra.filter(x=>x.done).length;const live=S.units.filter(u=>u.char&&!u.dead&&u.side===C.side).length;const score=500+extra*150+live*70+Math.max(0,S.limit-S.round)*25;
+ if(S.outcome)return;runId++;busy=false;S.phase='over';S.outcome={won,reason};undoStack=[];syncRoster();
+ if(won){const goals=objectives(S,C.side);const extra=goals.extra.filter(x=>x.done).length;const live=S.units.filter(u=>u.char&&!u.dead&&u.side===C.side).length;const score=500+extra*150+live*70+Math.max(0,S.limit-S.round)*25;
   const grade=extra===goals.extra.length&&S.round<=Math.ceil(S.limit*.7)?'S':extra>0?'A':'B';
   const entry={mid:S.mid,step:C.step,round:S.round,score,grade,extra,totalExtra:goals.extra.length,live,events:[...new Set(S.events)].slice(-7),lost:S.units.filter(u=>u.char&&u.dead).map(u=>u.char),escape:S.units.filter(u=>u.char&&u.escaped).map(u=>u.char)};
   C.history.push(entry);if(S.mid===4){C.finished=true;}
@@ -316,7 +317,7 @@ function chooseAI(s,side){
  candidates.sort((a,b)=>b.quick-a.quick);candidates=candidates.slice(0,12);
  for(const cand of candidates){
   const opponent=enemyOf(side);let replies=[];
-  for(const u of movers(cand.next,opponent))for(const m of legalMoves(cand.next,u))if(m.capture){const target=unitAt(cand.next,m.x,m.y);replies.push({m,gain:target?valueOf(target)*(target.char?2:1):0});}
+  for(const u of movers(cand.next,opponent))for(const m of legalMoves(cand.next,u))if(m.capture){const target=unitAt(cand.next,m.x,m.y);replies.push({m,gain:target?valueOf(target)*(captureMode(u,target)==='infect'?2:1):0});}
   replies.sort((a,b)=>b.gain-a.gain);let worst=goalPositionScore(cand.next,side);
   for(const reply of replies.slice(0,7)){const after=clone(cand.next);applyBasic(after,reply.m);worst=Math.min(worst,goalPositionScore(after,side)+safetyScore(after,side)*.35);}
   cand.score=cand.quick*.6+worst*.4+cand.bonus*.2;
@@ -328,5 +329,5 @@ function intentFor(u){
  if(u.kind==='courier')return'优先撤往 H8；会选择危险较低的路线。';
  if(u.flee)return'战术撤离：敌我力量悬殊，正试图保存人格载体。';
  const t=strategicTarget(S,u);if(t)return`当前倾向：${t.uid?'接近 '+nameOf(t):'争夺 '+xy(t.x,t.y)}。行动时会重新评估反击风险。`;
- return'维持阵型，寻找可夺控目标。';
+ return u.kind==='spider'&&u.side==='r'?'寻找可永久感染的机娘；其余目标直接摧毁。':'维持阵型，寻找可击杀目标。普通单位没有感染能力。';
 }

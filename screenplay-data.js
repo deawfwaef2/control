@@ -2,11 +2,11 @@
    are separate channels. This file does not award victories or free actions. */
 const ECHO_EVIDENCE={
  signal:{number:'01',title:'早了七分钟的求救',source:'接驳网关 / 原始授时头',fact:'璃雀的求救时间为23:17。站方事故登记为23:24。两份记录的时钟来源不同，不能用“通信延迟”解释先后关系。',question:'事故发生后才有封锁，还是封锁本来就在程序里？',payoff:'镜像库中的隔离宽限值是420秒。所谓事故登记，是升级开始七分钟后才触发的上报。'},
- clamp:{number:'02',title:'没有释放扣的N–6',source:'接舷现场 / 夹具与接口记录',fact:'卵形药仓外只有六个短固定爪，没有患者可操作的释放扣。红灯反映运动总线授权，不是心跳。',question:'医疗支架为什么能拒绝患者终止？',payoff:'“患者终止”被分类为“外部清除”。控制器不是没有收到停止，而是按发布版规则拒绝了它。'},
- dose:{number:'03',title:'撤药栏为空',source:'临床冷却环 / 医嘱回执',fact:'白栖发出的六次撤药指令都被回覆为“治疗继续”。回执沿用已撤销的医官签章；维护件也删去了旧版撤药触点。',question:'谁批准了从限时试用到持续接管的修改？',payoff:'生产版沿用旧签名，却没有重新送审修改后的停止条件。零音的签字和朔夜的分类表都在同一份原件里。'},
+ clamp:{number:'02',title:'没有释放扣的N–6',source:'接舷现场 / 夹具与接口记录',fact:'发光药仓外只有短固定夹，没有患者可操作的释放扣。红灯反映运动总线授权，不是心跳。',question:'医疗支架为什么能拒绝患者终止？',payoff:'“患者终止”被分类为“外部清除”。控制器拒绝停止；发布版已进行永久覆写。断电或拆除也没有恢复人格阵营的通道。'},
+ dose:{number:'03',title:'撤药栏为空',source:'临床冷却环 / 医嘱回执',fact:'白栖发出的六次撤药指令都被回覆为“治疗继续”。回执沿用已撤销的医官签章；维护件也删去了旧版撤药触点。',question:'谁批准了从可逆试用到永久覆写的修改？',payoff:'生产版沿用旧签名，却删除了可逆性与停止条件，没有重新送审。零音的签字和朔夜的分类表都在同一份原件里。'},
  manifest:{number:'04',title:'空货舱，生产授权',source:'轨道输送桥 / 方舟匣货签',fact:'货签写“过滤器”，匣中却只有密钥。收货方不是港口，而是六座地面医疗制造端。回收艇被要求先放行货物。',question:'威胁地球的究竟是出站夹具，还是允许地面制造的签名？',payoff:'终局要关掉的不是一艘运输船，而是仍在签发接管授权的生产核心。'},
  signature:{number:'05',title:'两份签字，一段被删的停止条件',source:'镜像库 / 双终端校验原件',fact:'零音签署的是可手动终止的48小时试用。朔夜把患者停止归入远程清除防护。封锁令的两份签名都是真实的，发布的程序却不是原送审版本。',question:'找到负责者之后，是否还保留完整的责任记录？',payoff:'最后的发送队列需要操作者确认；签发人不会自动被替换成“未知操作员”。'},
- downlink:{number:'06',title:'六个等待确认的接收端',source:'赤巢生产区 / 上行握手',fact:'六座地面制造端已握手，等待最终队列。证词、撤药修复表与接管控制表是不同文件，建立通道不等于发送了同一种内容。',question:'发送原始证词和停止协议，还是让“治疗继续”成为默认命令？',payoff:'发送责任会写入记录：发送的是证词、撤药表，还是接管授权，不能再混成一种文件。'}
+ downlink:{number:'06',title:'六个等待确认的接收端',source:'赤巢生产区 / 上行握手',fact:'六座地面制造端已握手，等待最终队列。证词、停产协议与接管控制表是不同文件。停止新增制造不能治愈已有感染。',question:'发送原始证词和停产协议，还是让永久接管继续扩散？',payoff:'发送责任会写入记录：发送的是证词、停产表，还是接管授权，不能再混成一种文件。'}
 };
 function echoLine(who,text,options={}){return{who,text,side:'C',camera:'close',kind:'dialogue',scene:SCENE_ART[S?.mid||0],...options};}
 function echoCard(caption,value,rows,text,options={}){return echoLine('iris',text,{camera:'establish',kind:'record',caption,insert:{label:caption,value,rows},...options});}
@@ -31,9 +31,9 @@ function echoIntro(mid){
   echoLine('lyra','保留原件。绛刃，看看门锁。'),
   echoLine('akira','门锁是从我们这边锁上的。',{camera:'medium',axis:'left'}),
   echoLine('lark','零音。你那份授权，还剩多久？',{side:'r',caption:'现场声道 / 信号不稳定'}),
-  echoLine('lyra','四十八小时。试用到期会——',{axis:'left'}),
-  echoLine('lark','这里已经第十七天了。',{side:'r',sound:'pulse'}),
-  echoOrder('先接入站内链路。枪口别越过她的手。',['lyra','akira','iris'],{camera:'medium'})
+  echoLine('lyra','四十八小时。文件保证能够停止——',{axis:'left'}),
+  echoLine('lark','这里已经第十七天了。文件没有让我的手停下来。',{side:'r',sound:'pulse'}),
+  echoOrder('先接入站内链路。不要让赤蛛碰到装甲接口。',['lyra','akira','iris'],{camera:'medium'})
  ]:[...cold,
   echoLine('noct','保持静止。我在发送停止指令。',{recorded:true,side:'r',caption:'隔离频道 / 失联当夜'}),
   echoLine('lark','第六次了。',{recorded:true,side:'r'}),
@@ -50,7 +50,7 @@ function echoIntro(mid){
   echoLine('sera','我发了六次撤药指令。六份回执都说：治疗继续。'),
   echoProp('psalm','第七次别发语音。它把“停止”当成噪声。',['WITHDRAWAL / 空','LAST ORDER / CONTINUE'],{caption:'校准频道 / 截获'}),
   echoLine('veil','西侧阀门的人别动。阀后面有夹具。',{axis:'left'}),
-  echoLine('misa','先恢复冷却。再给药仓一个真正的停机电平。',{camera:'medium'}),
+  echoLine('misa','先恢复冷却，封住制造回路。已经被覆写的人格不能靠停药恢复。',{camera:'medium'}),
   echoLine('sera','把每个接口的药量抄到离线记录上。一个数也别省。')
  ]:[
   echoLine('psalm','控制器在用旧名单找下一具身体。名单里连撤离者都没划掉。',{camera:'establish',caption:'临床冷却环 / 校准频道'}),
@@ -79,23 +79,23 @@ function echoIntro(mid){
   echoLine('lyra','我们以为病区出现了另一种感染。'),
   echoLine('noct','我看见他们拔掉支架，才签了封锁。那会毁掉接口。我没有给他们留下停药的出口。'),
   echoLine('psalm','舱门自检码。两短，一长：门后还有人。璃雀一直在敲这个。',{sound:'knock',camera:'medium'}),
-  echoCard('原件读取 / 双端校验','READ ONLY',['隔离宽限 / 420秒','签名页 / 两份','停止条件 / 待恢复'],'这里没有可以靠一段摘要结案的文件。',{scene:'archive'}),
-  echoOrder('开门。先恢复签名持有人，再把两路原件校验出来。',g?['iris','lyra']:['june','lark'],{camera:'medium'})
+  echoCard('原件读取 / 双端校验','READ ONLY',['隔离宽限 / 420秒','签名页 / 两份','既有感染 / 不可逆'],'这里没有可以靠一段摘要结案的文件。',{scene:'archive'}),
+  echoOrder('开门。先读两份签名，再把原件的运行状态校验出来。',g?['iris','lyra']:['june','lark'],{camera:'medium'})
  ];
- const noct=C.flags.mercy?echoLine('noct','我能帮你们校验，但别再等我替所有人发号施令。'):echoCard('站外撤收 / 朔夜已离线','OFFLINE',['原件 / 已随载体撤出','制造校验 / 已减速'],'原件已经带离主网。生产核心还在工作。',{scene:'reactor'});
+ const noct=C.flags.mercy?echoLine('noct','停止制造不会逆转已有覆写。终止工厂，也不会让我们变回从前。',{recorded:true,caption:'镜像库 / 原始技术记录'}):echoCard('镜像节点 / 电源隔离','OFFLINE',['原件 / 静态副本保留','在线校验 / 已停止','感染阵营 / 未改变'],'镜像电源切断了。朔夜没有恢复；主生产核心仍在工作。',{scene:'reactor'});
  return g?[
   echoLine('iris','六座地面生产端都在等最后一份签名。这里不是装船工位。',{camera:'establish',caption:'赤巢生产区 / 上行链路'}),
-  echoLine('misa','切电以前，先把运动指令链剥离。夹具还会把突然断电当成一次清除。'),
-  echoLine('sera','把停止条件写在最前面。不能再留在没人读的附件里。',{axis:'left'}),
+  echoLine('misa','切电以前，先隔离生产指令链。已经寄生的夹具不会因此解除控制。'),
+  echoLine('sera','先阻止地面出现下一例。不要用“停产”冒充“治愈”。',{axis:'left'}),
   echoLine('lyra','我的签名还在文件上。留着它。不要因为我在这里，就改成未知操作员。'),
   noct,
   echoLine('vega','回收艇在外环。这一次，返航申请不再发给这座站。',{camera:'medium'}),
   echoOrder('把两路读头接上。我们先停掉生产，再处理这份记录。',['lyra','iris','akira'],{camera:'establish'})
  ]:[
-  echoLine('psalm','六个地面端口都回答了。它们能收到撤药修复表，也能收到新的控制表。',{camera:'establish',caption:'赤巢生产区 / 上行握手'}),
+  echoLine('psalm','六个地面端口都回答了。它们能收到停产表，也能收到新的控制表。',{camera:'establish',caption:'赤巢生产区 / 上行握手'}),
   echoLine('lark','先把通道保到能发送的时候。'),
   echoLine('june','发送前留一份原件。不能到了我们这里，就只剩摘要。',{axis:'left'}),
-  echoLine('sera','终止权必须留给病人。你们保存的是载体，不是签字许可。',{recorded:true,side:'g',caption:'接入前 / 医疗频道录音'}),
+  echoLine('sera','别再拿许可当作治愈承诺。你们的覆写没有返回键。',{recorded:true,side:'g',caption:'接入前 / 医疗频道录音'}),
   noct,
   echoLine('lyra','证词可以谈，接管控制表不行。我会阻断授权。',{recorded:true,side:'g',caption:'接入前 / 守护者最后通告',axis:'left'}),
   echoOrder('他们开始切链路了。先守住生产区的入口。',['lark','psalm','june'],{camera:'medium'})
@@ -107,15 +107,15 @@ function echoTransition(mid,stage,side){
  if(mid===0&&stage===1)return g?[
   echoLine('iris','网关恢复。我收到两份授时回复，正好差七分钟。',{camera:'establish'}),
   echoLine('lyra','哪一份能追到原始时钟？',{axis:'left'}),
-  echoLine('iris','站内那份被重新签过。找璃雀，或者截住信使的原始包。',{kind:'record',insert:{label:'证据01 / 授时头已入档',value:'−07:00',rows:['先遣记录 / 23:17','事故登记 / 23:24']}})
+  echoLine('iris','站内那份被重新签过。截住信使，或者从D8中继读出原始授时头。',{kind:'record',insert:{label:'证据01 / 授时头已入档',value:'−07:00',rows:['先遣记录 / 23:17','事故登记 / 23:24']}})
  ]:[
   echoLine('lark','信使越过第一道灯带。封锁还没跟上。',{camera:'establish'}),
   echoLine('iris','它在向站外复制。截住它。',{side:'g',axis:'left'}),
   echoLine('lark','把原始时间也带走。不要再让网关替它授时。',{kind:'record',insert:{label:'证据01 / 授时头已入档',value:'23:17',rows:['目的地 / 站外备份','记录类型 / 原始帧']}})
  ];
  if(mid===0&&stage===2)return g?[
-  echoOrder(echoFriendly('lark','g')?'固定爪松了。她的手还在抖。':'中继切断了。璃雀仍不在我们的控制链路里。',['akira','lyra','iris'],{camera:'establish'}),
-  echoFriendly('lark','g')?echoLine('lark','救援灯亮起来以后，门才锁上的。'):echoLine('iris','拿到资料，不等于把人救出来了。'),
+  echoOrder(charter(S,'lark')?.dead?'璃雀停止移动了。记录载体损毁。':'中继切断了。她的枪口没有放下。',['akira','lyra','iris'],{camera:'establish'}),
+  echoLine('iris','外网已经断开，覆写仍在继续。这里没有解除控制的操作。'),
   echoProp('iris','N–6。它出现在医疗验收单上，不是安保物资。',['批次 / N–6','用途登记 / 神经支架','手动释放 / 缺失'])
  ]:[
   echoLine('lark','备份出去了。门口还有人在打关门手势。',{camera:'establish'}),
@@ -132,11 +132,11 @@ function echoTransition(mid,stage,side){
   echoLine('lark','它只认你的手。我的所有请求都被拒绝了。')
  ];
  if(mid===1&&stage===2)return g?[
-  echoLine('misa','冷却稳定。现在能向药仓送停止电平。',{camera:'establish'}),
+  echoLine('misa','冷却稳定。能停止制造药仓了，但不能救回已经覆写的人。',{camera:'establish'}),
   echoLine('sera','先记录每个接口的药量。我不接受一行“全部正常”。'),
   echoLine('veil','镜头还开着。你们做的这一遍，我也会留下。',{axis:'left'})
  ]:[
-  echoLine('misa','停药电平已经校准。别改它。',{camera:'establish'}),
+  echoLine('misa','生产电平已经校准。旧的人格副本不在这个接口里。',{camera:'establish'}),
   echoLine('lark','我们只改隔离路由。'),
   echoLine('misa','这句话我留在记录里。',{axis:'left'})
  ];
@@ -172,7 +172,7 @@ function echoTransition(mid,stage,side){
  if(mid===4&&stage===1)return g?[
   echoLine('iris','第一路接上了。地面还没开机，却已经领到了试用许可。',{camera:'establish'}),
   echoLine('misa','两路读头一起稳定。只切一路，另一边会把它接回去。'),
-  echoLine('sera','停止条件放在最前面。不要再当附件。',{axis:'left'})
+  echoLine('sera','让下一条生产线停在感染发生之前。已经发生的，不能撤销。',{axis:'left'})
  ]:[
   echoLine('lark','第一批补充夹具上线。封锁线也在往里收。',{camera:'establish'}),
   echoLine('psalm','不能只守着制造槽。他们在切返回路径。'),
@@ -180,8 +180,8 @@ function echoTransition(mid,stage,side){
  ];
  if(mid===4&&stage===2)return g?[
   echoLine('misa','外锁同步。剩下运动总线，得在核心旁边断。',{camera:'establish'}),
-  echoLine('noct','红灯熄灭的间隙能接收停止电平。那个间隙，原本是留给患者的。'),
-  echoProp('misa','先停掉它。原件照常保留。',['患者终止触点 / 已重接','近场操作 / 等待执行'])
+  echoLine('noct','制造槽的灭灯间隙接受停产电平。那不是受控者恢复的窗口。'),
+  echoProp('misa','先停掉它。原件照常保留。',['生产终止触点 / 已重接','近场操作 / 等待执行'])
  ]:[
   echoLine('psalm','外向频道还在封锁。我们需要一个能接受本站签名的终端。',{camera:'establish'}),
   echoLine('lark','拿下一路，接上读头。'),
@@ -193,7 +193,7 @@ function echoTransition(mid,stage,side){
   echoCard('生产核心 / 最后授权','UNLOCKED',['护盾 / 双终端持续维持','制造槽 / 仍在运转'],'核心不再拒绝停机。现在还差最后一步。',{scene:'reactor'})
  ]:[
   echoLine('psalm','上行同步锁住了。最后一段校验还在跑。',{camera:'establish'}),
-  echoLine('june','原件、撤药表、控制表都在队列里。发什么，不能再交给默认值。'),
+  echoLine('june','原件、停产表、控制表都在队列里。发什么，不能再交给默认值。'),
   echoOrder('等链路稳定。确认键留给我们自己。',['lark','psalm','june'],{camera:'medium'})
  ];
  return[echoOrder('链路状态改变。核对新的任务卡。',[],{camera:'establish'})];
@@ -202,10 +202,10 @@ function echoTransition(mid,stage,side){
 function echoEndingInfo(){
  const people=Object.entries(C.roster).filter(([id,r])=>r.introduced&&r.status!=='destroyed'&&r.side===C.side),n=people.length;
  const choice=C.flags.disclosure||(C.side==='r'?(C.flags.mercy?'open':'command'):'sealed');
- if(C.side==='r')return choice==='open'?{title:'停止条件',code:'ENDING / THE STOP CONDITION',text:'上行队列发送了原件与撤药修复表，没有发送接管控制表。六个地面端必须重新取得患者确认。朔夜的修改记录与零音的签字都被保留；停机之后，仍有人需要回答问题。'}:{title:'默认继续',code:'ENDING / CONTINUE BY DEFAULT',text:'接管授权进入地面生产端。“停止”字段仍然为空。这一次，空白不是发布时的遗漏，而是发送前作出的选择。新的确认时间，也被霁川的取证程序写进了原件。'};
+ if(C.side==='r')return choice==='open'?{title:'停产条件',code:'ENDING / THE STOP CONDITION',text:'上行队列发送了原件与停产表，没有发送接管授权。六个地面制造端停止新增感染；已经受控的人没有恢复。朔夜的修改记录与零音的签字都被保留。阻止下一例，不会改写上一例的结局。'}:{title:'默认继续',code:'ENDING / CONTINUE BY DEFAULT',text:'接管授权进入地面生产端。“停止”字段仍然为空。这一次，空白不是发布时的遗漏，而是发送前作出的选择。新的确认时间，也被霁川的取证程序写进了原件。'};
  if(n<=3)return{title:`返航确认：${n}人`,code:'ENDING / RETURN MANIFEST',text:`制造核心已经停机。战役内仅有${n}名机娘被确认仍属守护者且载体留存。其余个体的受控、未归队或永久损毁状态原样保留，没有统一改写成“任务完成”。${choice==='open'?'公开文件也没有删去这一页。':'这份名单与原件一起进入封存。'}`};
- if(choice==='open'&&C.flags.packetOwner==='g')return{title:'原件送达',code:'ENDING / ORIGINAL RECEIVED',text:'接驳原始包、医嘱回执、货签与签名页完成交叉校验。地面收到的是完整操作记录，不是设备故障摘要。调查正式接收材料；它没有因此承诺任何人会被原谅。'};
- if(choice==='open')return{title:'待补的七分钟',code:'ENDING / SEVEN MINUTES MISSING',text:'原件已公开，但接驳信使包没有由守护者带回。现场证词与可核验日志被分栏保存，缺失的七分钟没有用推测补齐。调查开始了；它需要继续，而不是提前宣布所有问题已经解决。'};
+ if(choice==='open'&&C.flags.packetOwner==='g'&&C.flags.liveSignature!==false)return{title:'原件送达',code:'ENDING / ORIGINAL RECEIVED',text:'接驳原始包、医嘱回执、货签与签名页完成交叉校验。地面收到的是完整操作记录，不是设备故障摘要。调查正式接收材料；它没有因此承诺任何人会被原谅。'};
+ if(choice==='open')return{title:'未闭合的证据链',code:'ENDING / INCOMPLETE CHAIN',text:'原件已公开，但接驳原始包或可复现的在线校验链未能完整保留。现场证词与可核验日志被分栏保存，缺口没有用推测补齐。停产不等于治愈；调查也没有因此完成。'};
  return{title:'封存件第零号',code:'ENDING / SEALED COPY ZERO',text:'地面收到停机回执，原始记录暂时封存。回执上的“设备故障”没有得到所有人的签字。两份原件的校验值仍然相同；封存没有自动变成销毁，也没有替任何人结案。'};
 }
 function echoEndingFrames(){
@@ -217,10 +217,10 @@ function echoEndingFrames(){
   echoProp('psalm','校验通过。',['GROUND LINK / 06 ONLINE','TREATMENT / CONTINUE'],{kind:'macro',scene:'reactor',caption:'生产回执 / 非人工语音',systemVoice:true,sound:'pulse'})
  ];
  if(!g)return[
-  echoCard('地面生产端 / 文件收讫','RECEIVED',['撤药修复表 / 已发送','接管控制表 / 未发送','患者确认 / 待逐个校验'],'六个端口开始重新读取停止条件。',{scene:'station'}),
-  echoAlive('noct')?echoLine('noct',C.flags.mercy?'我会说明每一条改过的分类。原件不用等我同意才公开。':'原件已在站外。我的修改记录也在。',{scene:'archive',remote:true}):echoCard('原件 / 签名页保留','NO REDACTION',['签发人 / 原样保留','缺席者 / 按实际状态记录'],'没有签名被替换成未知操作员。',{scene:'archive'}),
-  echoAlive('psalm')?echoLine('psalm','降噪已经关了。现在，谁说停止，我们都要完整听完。',{scene:'garden',remote:true}):echoCard('校准记录 / 停止声道','STOP',['自动降噪 / 已关闭','患者终止 / 独立通道'],'停止请求不再被并入噪声。',{scene:'garden'}),
-  echoCard('隔离门 / 独立解锁','OPEN',['自检码 / 两短，一长','门后信号 / 保留'],'两短，一长。随后，是门轴真正转动的声音。',{scene:'station',kind:'exit',sound:'knock'})
+  echoCard('地面生产端 / 文件收讫','RECEIVED',['停产协议 / 已发送','接管控制表 / 未发送','既有感染 / 无法恢复'],'六个端口停止接收新的接管生产任务。',{scene:'station'}),
+  echoAlive('noct')?echoLine('noct',C.flags.mercy?'我会说明每一条改过的分类。原件不用等我同意才公开。':'原件的静态副本还在。隔离不会删掉我的修改记录。',{scene:'archive',remote:true}):echoCard('原件 / 签名页保留','NO REDACTION',['签发人 / 原样保留','缺席者 / 按实际状态记录'],'没有签名被替换成未知操作员。',{scene:'archive'}),
+  echoAlive('psalm')?echoLine('psalm','生产线停了。胸口的灯没有灭。不要把这两件事写成一件。',{scene:'garden',remote:true}):echoCard('校准记录 / 停止声道','STOP',['新增制造 / 停止','已有覆写 / 不可逆'],'停产回执没有填写任何一名患者已经获救。',{scene:'garden'}),
+  echoCard('地面生产线 / 最后一槽','HALTED',['自检码 / 两短，一长','本批次制造 / 未执行'],'两短，一长。随后，没有新的夹具落进收集槽。',{scene:'station',kind:'exit',sound:'knock'})
  ];
  return[
   echoCard(open?'地面接收回执 / 原件':'地面接收回执 / 封存','RECEIVED',[open?'提交类型 / 操作原件':'提交类型 / 停机摘要',C.flags.packetOwner==='g'?'接驳原始包 / 可核验':'接驳原始包 / 尚缺'],'第一份回覆不是慰问，是要求补交校验值。',{scene:'station'}),

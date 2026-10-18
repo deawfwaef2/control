@@ -34,7 +34,7 @@ const originalDossier=renderDossier;
 renderDossier=function(){
  originalDossier();const u=S.units.find(v=>v.uid===selected&&onBoard(v))||movers(S,C.side).find(v=>v.char)||movers(S,C.side)[0];if(!u)return;
  if(u.char){const img=$('dossier').querySelector('.dossier-portrait>img');if(img)img.src=portraitSource(u.char,u.side);
-  const controls=$('dossier').querySelector('.dossier-controls');if(controls){const btn=document.createElement('button');btn.className='button ghost';btn.textContent='查看完整立绘';btn.onclick=()=>openModal(CHAR[u.char].name+' / '+(u.side==='r'?'人格接管':'人格自主'),'CHARACTER / FULL FRAME',`<div class="full-portrait"><img src="${portraitSource(u.char,u.side)}" alt="${nameOf(u)}"><div><span>${CHAR[u.char].code}</span><h3>${CHAR[u.char].name}</h3><p>${CHAR[u.char].bio}</p><p>${u.side==='r'?'胸甲中央的赤蛛正在接管运动控制。人格记忆仍然存在，守护者可以夺回她。':'没有红色控制装置。她现在为自己的意志行动。'}</p></div></div>`);controls.append(btn);}
+  const controls=$('dossier').querySelector('.dossier-controls');if(controls){const btn=document.createElement('button');btn.className='button ghost';btn.textContent='查看完整立绘';btn.onclick=()=>openModal(CHAR[u.char].name+' / '+(u.side==='r'?'人格接管':'人格自主'),'CHARACTER / FULL FRAME',`<div class="full-portrait"><img src="${portraitSource(u.char,u.side)}" alt="${nameOf(u)}"><div><span>${CHAR[u.char].code}</span><h3>${CHAR[u.char].name}</h3><p>${CHAR[u.char].bio}</p><p>${u.side==='r'?'N–6 已永久覆写运动与阵营权限。没有解救手段；普通棋子攻击她将造成永久击杀。':'没有红色控制装置。她现在为自己的意志行动。'}</p></div></div>`);controls.append(btn);}
  }else if(['spider','courier'].includes(u.kind)){$('dossier').querySelector('.dossier-robot').innerHTML=`<img class="device-detail" src="${ART.device}" alt="N–6 紧凑型胸甲控制器">`;}
 };
 const originalRoster=renderRoster;

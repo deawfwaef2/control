@@ -1,19 +1,17 @@
 {
   "date": "2026-10-18",
-  "milestone": "M6",
-  "html_bytes": 4646336,
-  "html_sha256": "0759d693a63e0bbb2ebc44d5ab3e4494f1231aedb60f109983ba998e6ef78c49",
-  "zip_bytes": 3395706,
-  "zip_sha256": "4b70ac0a3085d5633a0497bfac82092289d00375edf71fb6b26592a9bb6677ca",
+  "milestone": "M7",
+  "html_bytes": 4656242,
+  "html_sha256": "054e37bbcc77c2e5ab0789006226cd11044ee13e750feec0d108dbada8404409",
+  "zip_bytes": 3399495,
+  "zip_sha256": "aa54725004471035c16fd1821d730a90607a23cbca93b03b8588553c4783b0b9",
   "zip_crc_ok": true,
   "html_entries_identical": true,
   "workspace_entry_identical": true,
   "embedded_webp_assets": 30,
-  "browser_checks_passed": 54,
-  "browser_checks_total": 54,
+  "embedded_music_tracks": 0,
+  "browser_checks_passed": 72,
+  "browser_checks_total": 72,
   "external_requests": 0,
-  "browser_errors": 0,
-  "credential_pattern_matches": 0,
-  "credential_scan_limitations": "Known GitHub token / credential URL patterns only; not a security audit",
-  "workspace_bytes_before_commit": 64251212
+  "browser_errors": 0
 }
