@@ -1,17 +1,23 @@
-/* M6/M9/M11 Cohesive Screenplay Director & Multi-Route Campaign Integration.
-   Camera and dialogue never reset actions. Documents unlock from game state. */
+/* M6/M9/M11/M13 Master Screenplay Director, Full-Screen Anime CG Showcase,
+   Live Sandtable Unit-by-Unit Materialization & Mission Marker Choreography.
+   Camera and dialogue never mutate S.units or reset actions. */
 MISSIONS[0].name='死寂接舷';MISSIONS[0].en='SILENT DOCK';MISSIONS[0].location='天穹站 · A–01 接驳甲板';
 MISSIONS[1].name='绝命温室';MISSIONS[1].en='BIO-COOLING RING';MISSIONS[1].location='天穹站 · B–04 生态冷却环';
 MISSIONS[2].name='断轨天桥';MISSIONS[2].en='ORBITAL SKYBRIDGE';MISSIONS[2].location='天穹站 · C–07 轨道天桥';
 MISSIONS[3].name='镜室叛歌';MISSIONS[3].en='MIRROR ARCHIVE';MISSIONS[3].location='天穹站 · D–00 中枢镜像库';
 MISSIONS[4].name='赤巢零点';MISSIONS[4].en='CRIMSON CORE';MISSIONS[4].location='天穹站 · Ω–00 母巢反应堆';
-ACT_NAMES.g=[['攻破接驳门禁','拦截载毒信使','突入北侧通道'],['开启双侧冷却阀','提取抗蚀稳定剂','封死蜘蛛孵化池'],['掩护火控密钥匣','夺取北端轨道锁','交付密钥锁死空投井'],['开启中枢电磁门','控制双子镜像终端','固守同步座破译护盾'],['突入反应堆内环','同步双座护盾终端','近场切断增殖总线','摧毁赤巢无限内核']];
+ACT_NAMES.g=[['攻破接驳门禁','截获病毒信使','突入北侧通道'],['开启双侧冷却阀','提取抗蚀稳定剂','封死蜘蛛孵化池'],['掩护火控密钥匣','夺取北端轨道锁','交付密钥锁死空投井'],['开启中枢电磁门','夺取双子镜像终端','固守同步座破译护盾'],['突入反应堆内环','同步双座护盾终端','近场切断增殖总线','摧毁赤巢无限内核']];
 ACT_NAMES.r=[['撕开接驳防线','护送信使或夺取中继','撤入空间站深层'],['扑击寄生工兵弥砂','接管双侧冷却阀','覆写孵化池增殖回路'],['截获火控密钥匣','接管南端轨道锁','交付密钥启动空投舱'],['开启中枢电磁门','保全受控架构师朔夜','固守同步座锁定中枢'],['孵化首波赤蛛潮','撕裂守护者防线','启动对地轨道广播','死守赤巢内核至十二轮']];
 CHAR.noct.bio='天穹空间站中枢神经系统的总架构师。在试图封锁母巢内核时被赤蛛王寄生于胸口正中，她的中枢镜像里保存着破除赤巢内核无敌护盾的唯一密钥。';
 
+/* Sandtable progressive unit-reveal & marker state (pure UI state; never mutates S.units) */
+var sandtableRevealed=null;
+var sandtableJustArrived=new Set();
+var sandtableActiveFrame=null;
+
 introFor=echoIntro;
 endingInfo=echoEndingInfo;
-const ECHO_SCENE_TITLES={'0:1':'截击信使','0:2':'胸口红光','1:1':'蜘蛛孵化池','1:2':'回路隔离','2:1':'空投密钥','2:2':'轨道锁死','3:1':'中枢大门','3:2':'双子破盾','4:1':'内环突入','4:2':'近场破盾','4:3':'决战内核'};
+const ECHO_SCENE_TITLES={'0:1':'截击信使 · 任务推演','0:2':'撤离信标 · 任务推演','1:1':'双阀降温 · 任务推演','1:2':'封死孵化池 · 任务推演','2:1':'北端轨道锁 · 任务推演','2:2':'交付火控密钥 · 任务推演','3:1':'中枢大门开启 · 任务推演','3:2':'双子同步破盾 · 任务推演','4:1':'双锁剥离护盾 · 任务推演','4:2':'近场斩断总线 · 任务推演','4:3':'决战赤巢内核 · 任务推演'};
 transitionFrames=function(mid,stage,side){return echoTransition(mid,stage,side).map(f=>({...f,filmTitle:ECHO_SCENE_TITLES[mid+':'+stage]||MISSIONS[mid].name}));};
 
 function ensureCasefile(){
@@ -72,13 +78,32 @@ storySpeaker=function(frame){
 };
 
 const cinema=$('cinema');
+cinema.classList.add('sandtable-theater');
+
+/* Full-Screen 2D Anime Event CG Showcase Layer inside Cinema */
+const cgShowcase=document.createElement('div');
+cgShowcase.id='cg-showcase';
+cgShowcase.className='cg-showcase';
+cgShowcase.hidden=true;
+cgShowcase.innerHTML=`
+ <div class="cg-frame">
+  <img id="cg-showcase-img" src="${ART.station}" alt="剧情事件CG">
+  <div class="cg-vignette"></div>
+  <div class="cg-badge-bar">
+   <span class="cg-pill">◈ ANIME EVENT CG · 剧情剧照演出</span>
+   <strong id="cg-showcase-title">CG 01 · 死寂接舷</strong>
+   <small id="cg-showcase-sub"></small>
+  </div>
+ </div>`;
+cinema.querySelector('.dialogue-box').before(cgShowcase);
+
 const insert=document.createElement('div');insert.id='film-insert';insert.className='film-insert';insert.hidden=true;cinema.querySelector('.dialogue-box').before(insert);
 const macro=document.createElement('img');macro.id='film-prop';macro.className='film-prop';macro.src=ART.device;macro.alt='N–6：发光红色神经核心、黑银底座与短金属固定夹';macro.hidden=true;cinema.querySelector('.dialogue-box').before(macro);
 const texture=document.createElement('div');texture.className='film-texture';texture.setAttribute('aria-hidden','true');cinema.prepend(texture);
 const doors=document.createElement('div');doors.className='film-doors';doors.innerHTML='<i></i><i></i>';doors.setAttribute('aria-hidden','true');cinema.querySelector('.dialogue-box').before(doors);
 
 const controls=document.createElement('div');controls.className='film-controls';
-controls.innerHTML='<button id="film-prev" title="回看上一镜">← 上一镜</button><button id="film-auto" aria-pressed="false">自动放映</button><button id="film-sound" aria-pressed="false">声音关闭</button><button id="film-brief" aria-expanded="false">任务卡</button>';
+controls.innerHTML='<button id="film-prev" title="回看上一镜">← 上一镜</button><button id="film-auto" aria-pressed="false">自动推演</button><button id="film-sound" aria-pressed="false">声音关闭</button><button id="film-brief" aria-expanded="false">任务卡</button>';
 $('skip-story').before(controls);
 const filmBrief=document.createElement('div');filmBrief.className='film-brief';filmBrief.id='film-brief-panel';filmBrief.hidden=true;cinema.querySelector('.dialogue-box').before(filmBrief);
 let filmAuto=false,filmTimer=null,filmHum=null;
@@ -113,6 +138,56 @@ function recordEchoFrame(st,frame,speaker){
  f.transcript=f.transcript.slice(-140);
 }
 
+/* Recompute progressive unit-reveal state up to current story frame index (supports ← 上一镜 & 下一镜) */
+function syncSandtableReveal(st){
+ sandtableJustArrived=new Set();
+ if(!st||!S){sandtableRevealed=null;sandtableActiveFrame=null;return;}
+ const frames=st.frames||[];
+ const hasProgressive=frames.some(fr=>Array.isArray(fr.revealUnits));
+ sandtableActiveFrame=frames[st.index]||null;
+ if(!hasProgressive){
+  if(S.round===1&&(S.quest?.stage||0)===0&&!S.outcome&&frames.length>=3){
+   const rev=new Set();
+   for(let i=0;i<=st.index;i++){
+    const fr=frames[i];if(!fr)continue;
+    const newly=new Set();
+    if(i===frames.length-1){
+     S.units.forEach(u=>{if(onBoard(u)){if(!rev.has(u.uid))newly.add(u.uid);rev.add(u.uid);}});
+    }else if(fr.who){
+     S.units.forEach(u=>{if(onBoard(u)&&u.char===fr.who){if(!rev.has(u.uid))newly.add(u.uid);rev.add(u.uid);}});
+    }
+    if(i===st.index)sandtableJustArrived=newly;
+   }
+   sandtableRevealed=rev;
+   return;
+  }
+  sandtableRevealed=null;
+  return;
+ }
+ const rev=new Set();
+ for(let i=0;i<=st.index;i++){
+  const fr=frames[i];if(!fr)continue;
+  const newly=new Set();
+  if(Array.isArray(fr.revealUnits)){
+   if(fr.revealUnits.includes('ALL')){
+    S.units.forEach(u=>{if(onBoard(u)){if(!rev.has(u.uid))newly.add(u.uid);rev.add(u.uid);}});
+   }else{
+    for(const token of fr.revealUnits){
+     S.units.forEach(u=>{
+      if(!onBoard(u))return;
+      if(u.uid===token||u.char===token||u.kind===token){
+       if(!rev.has(u.uid))newly.add(u.uid);
+       rev.add(u.uid);
+      }
+     });
+    }
+   }
+  }
+  if(i===st.index)sandtableJustArrived=newly;
+ }
+ sandtableRevealed=rev;
+}
+
 const echoShowFrame=showStoryFrame;
 showStoryFrame=function(){
  echoShowFrame();const st=storyState;if(!st)return;
@@ -120,15 +195,38 @@ showStoryFrame=function(){
  if(f.filmTitle)$('cinema-title').querySelector('h2').textContent=f.filmTitle;
  cinema.dataset.kind=kind;cinema.dataset.axis=f.axis||'right';cinema.dataset.recording=speaker.archive?'yes':'no';
  cinema.dataset.speakerSide=speaker.side;
+
+ // Update CG Showcase vs Live Sandtable Mode
+ const sceneKey=f.scene||SCENE_ART[S?.mid||0]||'station';
+ if(f.cgBanner||st.choices){
+  cinema.dataset.stageMode=f.cgBanner?'cg':'choice';
+  document.body.dataset.sandtableMode=f.cgBanner?'cg':'choice';
+  cgShowcase.hidden=!f.cgBanner;
+  if(f.cgBanner){
+   $('cg-showcase-img').src=ART[sceneKey]||ART.station;
+   $('cg-showcase-title').textContent=f.cgBanner.title||MISSIONS[S?.mid||0]?.name||'剧情CG';
+   $('cg-showcase-sub').textContent=f.cgBanner.sub||'';
+  }
+ }else{
+  cinema.dataset.stageMode='sandtable';
+  document.body.dataset.sandtableMode='sandtable';
+  cgShowcase.hidden=true;
+ }
+ document.body.classList.toggle('sandtable-cinema-open',!cinema.hidden);
+
+ // Synchronize progressive unit reveal & mission markers on the live 8x8 board
+ syncSandtableReveal(st);
+ if(S)renderBoard();
+
  insert.hidden=!f.insert;macro.hidden=kind!=='macro';
  if(f.insert)insert.innerHTML=`<span>${esc(f.insert.label)}</span><strong>${esc(f.insert.value)}</strong><div>${(f.insert.rows||[]).map(r=>`<p>${esc(r)}</p>`).join('')}</div>`;
  const pInfo=PERSONA[speaker.id];
  $('dialogue-direction').textContent=(f.caption||`${MISSIONS[S.mid].location} / ${speaker.source}`);
- if(kind==='record'||kind==='exit'||f.systemVoice){$('speaker-name').textContent=f.systemVoice?'战术简报':'现场记录';$('speaker-code').textContent=f.caption||'TACTICAL BRIEFING';}
+ if(kind==='record'||kind==='exit'||f.systemVoice){$('speaker-name').textContent=f.systemVoice?'战术简报':'战场沙盘推演';$('speaker-code').textContent=f.caption||'TACTICAL DEDUCTION';}
  else{$('speaker-name').textContent=(speaker.archive?speaker.source+' · ':'')+CHAR[speaker.id].name;$('speaker-code').textContent=CHAR[speaker.id].code+' / '+CHAR[speaker.id].role+(pInfo?' · '+pInfo.archetype:'');}
  $('film-prev').disabled=st.index===0||!!st.choices;$('film-auto').disabled=!!st.choices;$('film-brief').disabled=!!S.outcome;
- $('film-auto').textContent=filmAuto?'暂停放映':'自动放映';$('film-auto').setAttribute('aria-pressed',String(filmAuto));$('film-sound').textContent=soundEnabled?'声音开启':'声音关闭';$('film-sound').setAttribute('aria-pressed',String(soundEnabled));
- $('next-dialogue').innerHTML=(st.index===st.frames.length-1?(S.outcome?'继续':'返回战场'):'下一镜')+' <span>↗</span>';
+ $('film-auto').textContent=filmAuto?'暂停推演':'自动推演';$('film-auto').setAttribute('aria-pressed',String(filmAuto));$('film-sound').textContent=soundEnabled?'声音开启':'声音关闭';$('film-sound').setAttribute('aria-pressed',String(soundEnabled));
+ $('next-dialogue').innerHTML=(st.index===st.frames.length-1?(S.outcome?'继续':'开始作战'):'下一步推演')+' <span>↗</span>';
  filmBrief.hidden=true;$('film-brief').setAttribute('aria-expanded','false');
  recordEchoFrame(st,f,speaker);filmSound(f.sound);
  if(!reducedMotion){
@@ -138,15 +236,22 @@ showStoryFrame=function(){
  scheduleFilm();
 };
 const echoPlayStory=playStory;
-playStory=function(frames,onDone,title){stopFilmTimer();filmBrief.hidden=true;$('result').hidden=true;echoPlayStory(frames,onDone,title);startFilmHum();};
+playStory=function(frames,onDone,title){stopFilmTimer();filmBrief.hidden=true;$('result').hidden=true;document.body.classList.add('sandtable-cinema-open');echoPlayStory(frames,onDone,title);startFilmHum();};
 const echoPlayChoice=playChoice;
-playChoice=function(frame,choices){echoPlayChoice(frame,choices);stopFilmTimer();$('film-prev').disabled=true;$('film-auto').disabled=true;$('film-brief').disabled=true;};
+playChoice=function(frame,choices){document.body.classList.add('sandtable-cinema-open');echoPlayChoice(frame,choices);cinema.dataset.stageMode='choice';document.body.dataset.sandtableMode='choice';cgShowcase.hidden=true;stopFilmTimer();$('film-prev').disabled=true;$('film-auto').disabled=true;$('film-brief').disabled=true;};
 const echoHideStory=hideStory;
-hideStory=function(){stopFilmTimer();stopFilmHum();filmBrief.hidden=true;echoHideStory();};
+hideStory=function(){
+ stopFilmTimer();stopFilmHum();filmBrief.hidden=true;
+ sandtableRevealed=null;sandtableJustArrived=new Set();sandtableActiveFrame=null;
+ document.body.classList.remove('sandtable-cinema-open');
+ delete document.body.dataset.sandtableMode;
+ echoHideStory();
+ if(S)renderBoard();
+};
 $('film-prev').onclick=()=>{if(!storyState||storyState.choices||storyState.index===0)return;storyState.index--;showStoryFrame();};
-$('film-auto').onclick=()=>{if(storyState?.choices)return;filmAuto=!filmAuto;$('film-auto').textContent=filmAuto?'暂停放映':'自动放映';$('film-auto').setAttribute('aria-pressed',String(filmAuto));scheduleFilm();};
+$('film-auto').onclick=()=>{if(storyState?.choices)return;filmAuto=!filmAuto;$('film-auto').textContent=filmAuto?'暂停推演':'自动推演';$('film-auto').setAttribute('aria-pressed',String(filmAuto));scheduleFilm();};
 $('film-sound').onclick=()=>{toggleAudio();$('toast').classList.remove('show');clearTimeout(toastTimer);$('film-sound').textContent=soundEnabled?'声音开启':'声音关闭';$('film-sound').setAttribute('aria-pressed',String(soundEnabled));if(soundEnabled)startFilmHum();else stopFilmHum();};
-$('film-brief').onclick=()=>{if(!S||S.outcome)return;filmBrief.hidden=!filmBrief.hidden;$('film-brief').setAttribute('aria-expanded',String(!filmBrief.hidden));if(!filmBrief.hidden){filmBrief.innerHTML=`<span>OPERATION CARD / 任务卡</span><h3>${esc(ACT_NAMES[C.side][S.mid][S.quest?.stage||0])}</h3>${actGoals(S).map(g=>`<p><i>${g.done?'✓':'○'}</i>${esc(g.text)}</p>`).join('')}<small>${esc(questHint(S))}</small>`;stopFilmTimer();}else scheduleFilm();};
+$('film-brief').onclick=()=>{if(!S||S.outcome)return;filmBrief.hidden=!filmBrief.hidden;$('film-brief').setAttribute('aria-expanded',String(!filmBrief.hidden));if(!filmBrief.hidden){filmBrief.innerHTML=`<span>OPERATION CARD / 当前阶段任务</span><h3>${esc(ACT_NAMES[C.side][S.mid][S.quest?.stage||0])}</h3>${actGoals(S).map(g=>`<p><i>${g.done?'✓':'○'}</i>${esc(g.text)}</p>`).join('')}<small>${esc(questHint(S))}</small>`;stopFilmTimer();}else scheduleFilm();};
 
 const echoOpenModal=openModal,echoCloseModal=closeModal;
 openModal=function(...args){stopFilmTimer();echoOpenModal(...args);};
@@ -154,13 +259,40 @@ closeModal=function(){echoCloseModal();scheduleFilm();};
 $('close-modal').onclick=()=>closeModal();
 document.addEventListener('visibilitychange',()=>{if(document.hidden){stopFilmTimer();stopFilmHum();}else if(storyState){scheduleFilm();startFilmHum();}});
 
-/* Clean Header Navigation Buttons */
+/* Clean Header Navigation Buttons + CG Gallery Button */
+const cgBtn=document.createElement('button');cgBtn.id='cg-gallery-btn';cgBtn.textContent='剧情CG';cgBtn.title='查看五大章节全画幅二次元剧情事件CG';
 const starmapBtn=document.createElement('button');starmapBtn.id='starmap-btn';starmapBtn.textContent='战役星图';starmapBtn.title='查看15个战术小关与三大分支路线';
 starmapBtn.onclick=()=>{if(typeof showCampaignMap==='function')showCampaignMap();};
-$('archive-btn').before(starmapBtn);
+$('archive-btn').before(cgBtn,starmapBtn);
 
 const caseButton=document.createElement('button');caseButton.id='casefile-btn';caseButton.textContent='调查卷宗';$('archive-btn').before(caseButton);
 $('archive-btn').textContent='角色图鉴';
+
+const CG_GALLERY_ITEMS=[
+ {id:'station',code:'CG 01 · 第一章',title:'死寂接舷：胸口正中的赤色梦魇',desc:'先遣侦察员【璃雀】在 A–01 检疫气闸遭赤红机械蜘蛛正面扑击，八根合金倒钩刺入胸甲正中，猩红脉冲瞬间覆写双眸。'},
+ {id:'garden',code:'CG 02 · 第二章（α线）',title:'绝命温室：孵化环的激光与电浆火网',desc:'工程师【弥砂】与战地医官【白栖】在生态冷却环死守阀门，迎战漫天袭来的赤红机械蜘蛛与高处受控狙击官【雾棘】。'},
+ {id:'bridge',code:'CG 03 · 第三章（β线）',title:'断轨天桥：地球上空的苍穹与赤巢之刃',desc:'指挥官【零音】与先锋【绛刃】在万米高空的轨道天桥挥剑迎战胸口嵌着红蜘蛛的【朔夜】与【绯夜】，脚下即是蔚蓝地球。'},
+ {id:'archive',code:'CG 04 · 第四章',title:'镜室叛歌：王座之上的总架构师朔夜',desc:'天穹站总架构师【朔夜】悬浮于 D–00 中枢镜像库同步王座之上，胸口正中的初代赤蛛王向全场辐射猩红神经缆线。'},
+ {id:'reactor',code:'CG 05 · 终章',title:'赤巢零点：粉碎无限增殖内核',desc:'苍穹防线机娘小队突入 Ω–00 母巢反应堆核心腔，磁轨重炮与高周波光束正面轰碎正在孵化赤蛛的【E8 赤巢无限内核】。'}
+];
+
+function showCGGallery(){
+ openModal('天穹空间站 · 二次元全画幅剧情事件 CG 画廊','ANIME EVENT CG GALLERY / 05 FULL-BLEED STORY SCENES',`
+  <div class="cg-gallery-grid">
+   ${CG_GALLERY_ITEMS.map(item=>`
+    <article class="cg-gallery-card">
+     <div class="cg-gallery-img-wrap">
+      <img src="${ART[item.id]}" alt="${esc(item.title)}" loading="lazy">
+      <span class="cg-gallery-tag">${esc(item.code)}</span>
+     </div>
+     <div class="cg-gallery-info">
+      <h3>${esc(item.title)}</h3>
+      <p>${esc(item.desc)}</p>
+     </div>
+    </article>`).join('')}
+  </div>`);
+}
+cgBtn.onclick=showCGGallery;
 
 function evidenceResolved(id){return id==='manifest'?hasEvidence('downlink'):['signature','downlink'].includes(id)?!!C?.flags.disclosure:hasEvidence('signature');}
 function showCasefile(){
@@ -231,7 +363,8 @@ $('home').querySelector('.chapter-preview').innerHTML='<span><i>01</i>死寂接�
 const homeLinks=document.createElement('div');homeLinks.className='hero-quick-links';
 const homeEvidence=document.createElement('button');homeEvidence.className='hero-case-link';homeEvidence.textContent='十八名美少女机娘 / 深度人设与独创走法图鉴 ↗';homeEvidence.onclick=showArchive;
 const homeStarMap=document.createElement('button');homeStarMap.className='hero-case-link starmap-link';homeStarMap.textContent='十五个战术小关与三大分支路线星图 ↗';homeStarMap.onclick=showCampaignMap;
-homeLinks.append(homeEvidence,homeStarMap);
+const homeCG=document.createElement('button');homeCG.className='hero-case-link cg-link';homeCG.textContent='五大章节全画幅二次元剧情事件 CG 画廊 ↗';homeCG.onclick=showCGGallery;
+homeLinks.append(homeEvidence,homeStarMap,homeCG);
 $('home').querySelector('.hero-buttons').after(homeLinks);
 
 const heroProp=document.createElement('div');heroProp.className='hero-prop';heroProp.innerHTML=`<img src="${ART.device}" alt="放大的发光N–6控制器"><div><span>PARASITE CORE / N–6</span><strong>胸口寄生机械蜘蛛</strong><small>CRIMSON CHEST CONTROLLER</small></div>`;$('home').append(heroProp);

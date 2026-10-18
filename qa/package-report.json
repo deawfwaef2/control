@@ -1,14 +1,13 @@
 {
-  "milestone": "M12",
+  "milestone": "M13",
   "date": "2026-10-18",
-  "index_html_sha256": "4304b1b7d50aa38a44df4d8a93c8ef0a09f41d1ed414212bd8cc08e754cd7877",
-  "start_game_html_sha256": "4304b1b7d50aa38a44df4d8a93c8ef0a09f41d1ed414212bd8cc08e754cd7877",
-  "byte_identical_html": true,
-  "zip_sha256": "efd03716c9177c9f53d311c8add0335681268027f15849477863febc644cd145",
-  "zip_members": [
-    "开始游戏.html",
-    "打开说明.txt",
-    "音乐署名与许可.md"
-  ],
-  "zip_crc_ok": true
+  "html_bytes": 14773255,
+  "html_sha256": "7dae5ee468c190bdd14c484bb75db7ba5e825a6777a07f6a7c898791dbf003ae",
+  "cn_html_sha256": "7dae5ee468c190bdd14c484bb75db7ba5e825a6777a07f6a7c898791dbf003ae",
+  "zip_bytes": 10979432,
+  "zip_sha256": "f9cdae07c239c4b1046054402d83db61982b20ea8161b037e32b2ebe6d4e1aa9",
+  "passed": 85,
+  "total": 85,
+  "runtimeErrors": [],
+  "externalRequests": []
 }
