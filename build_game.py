@@ -24,8 +24,9 @@ def atomic(path, data):
 
 raw=html.encode('utf-8')
 for filename in ('index.html','开始游戏.html'): atomic(ROOT/filename,raw)
-# Keep the user's previous workspace deliverable current, too.
-atomic(ROOT.parent/'机械病毒-赤巢协议.html',raw)
+# Keep the user's previous workspace deliverable current when running inside a subfolder.
+if os.access(ROOT.parent, os.W_OK):
+    atomic(ROOT.parent/'机械病毒-赤巢协议.html',raw)
 readme='机械病毒：赤巢协议\n\n双击“开始游戏.html”即可离线游玩。无需服务器、网络或安装依赖。\n选择阵营 → 接入作战。点击己方棋子，再点击高亮格。\n只有红蜘蛛吃到机娘才永久夺控；其他棋子吃子击杀。无法解救。\n每单位每阶段行动一次，你行动 N 次，敌方获得 N 次额度。\n右上角作战手册可查完整规则。首次真实点击后启用音乐与音效；右上角♫可分别静音与调整音量。\n进度保存到当前浏览器；系统菜单可导出/导入 JSON 存档。\n若预览器禁止存储，请下载本 ZIP，解压后使用浏览器打开 HTML。\n这是持续更新的原型，不是已完成商业游戏。\n仓库：https://github.com/deawfwaef2/control\n'
 archive=io.BytesIO()
 with zipfile.ZipFile(archive,'w',zipfile.ZIP_DEFLATED,compresslevel=6) as z:
