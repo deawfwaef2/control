@@ -1915,6 +1915,12 @@ body.saga19 #undo-btn,body.saga19 #retry-btn{display:none!important}
 
 /* M20 · 失败也继续 */
 .accept20-note{margin:10px 0 0;font-size:15px;line-height:1.6;color:#ffd98a}
+
+/* M21 · 赤巢阵营：影片里的抉择用赤巢的颜色 */
+body.red-faction #film .fm-choices button{border-color:rgba(255,59,92,.3);border-left-color:#ff3b5c;background:linear-gradient(90deg,rgba(18,6,10,.94),rgba(12,5,8,.82))}
+body.red-faction #film .fm-choices button:hover,body.red-faction #film .fm-choices button:focus-visible{border-color:#ff5c78;background:linear-gradient(90deg,rgba(60,12,24,.96),rgba(22,6,12,.9))}
+body.red-faction #film .fm-choices button.picked{border-color:#ff8095;box-shadow:0 0 24px rgba(255,59,92,.35)}
+body.red-faction #film .fm-choices button small{color:#e9a9b4}
 </style>
 </head>
 <body>
@@ -9582,6 +9588,519 @@ const SUB20={
  // make sure every new guardian campaign has the persona layer
  const _nc=newCampaign;newCampaign=function(side){const r=_nc.apply(this,arguments);try{if(C&&C.side==='g')st();}catch(e){}return r;};
  if(location.hash==='#filmtest'&&window.__MV_FILM__)Object.assign(window.__MV_FILM__,{p20:()=>C.p20,camp:()=>camp(()=>{window.__campDone=1;}),talk:id=>FILM.play(talkShots(id),()=>{window.__talkDone=1;}),trust:(id,d)=>trust(id,d),ending:k=>FILM.play(endingShots(k),()=>{window.__endDone=1;}),endingAuto:()=>{const e=computeEnding();return e.k;},advance:()=>advanceMission(),accept:()=>accept(),win:()=>resolveBattle(true,'（测试）目标达成'),lose:()=>resolveBattle(false,'（测试）失败'),state20:()=>({mid:S&&S.mid,step:C.step,route:C.route,film:FILM.active,result:!$('result').hidden,trust:C.p20&&C.p20.trust,arc:C.p20&&C.p20.arc,camps:C.p20&&C.p20.camps})});
+})();
+
+
+/* ===== M21 赤巢阵营 · 被夺走的人（人物圣经） =====
+   For every girl the Overmind may take: how she wakes in the nest, what it decides to do with her
+   name, one memory that surfaces later, and how she ends. Speakers: 'me' = the girl herself (taken),
+   'H' = the Overmind, any other id = that girl (only spoken if she is also in the nest).
+   No meters are shown anywhere — choices only change what the story does with her. */
+const H21={
+ lyra:{idle:['零音站在苗床边，一动不动。她的手指在空气里写着什么。','零音在数巢里的孩子。数到一半，她停下来，重新数了一遍。'],
+  wake:[['me','……这里是哪里。我的小队……'],['me','名单。我的笔记本呢？我还有名字没写完——'],['H','你写下的每一个名字，都是我拿走的。你恨我吗，零音？'],['me','……我不知道。我的胸口，很安静。']],
+  q:'她曾经是她们的队长。现在，她是什么？',
+  o:[{l:'抹去她的名字',f:'erase',r:[['H','忘掉那本笔记本吧。'],['me','……笔记本。什么笔记本？'],['me','指令已接收。我是你的刀。']]},
+     {l:'让她记得自己是谁',f:'keep',r:[['me','……我记得。我记得每一个人。'],['me','所以这一次，我会亲手把她们带过来。这样，名单就不会再变长了。'],['H','……很好的逻辑。你比我想象的更像我。']]}],
+  beat:{t:'笔记本',s:[['', '零音在巢的角落里，找到了一张被撕下来的纸。上面是她自己的字迹。'],['me','第四十一行。……绛刃。我还没有把她写上去。'],['me','她还活着。她们都还活着。'],['me','母巢。如果我把她们全部带回巢里，这张纸是不是就可以烧掉了？']],
+   q:'你想怎么做？',o:[
+    {l:'让她把纸留着',f:'listen',r:[['me','……谢谢。我会把它叠好，放在胸口。'],['', '那天之后，零音每带回一个人，就在纸上划掉一个名字。划得很轻。']]},
+    {l:'烧掉它',f:'seal',r:[['', '纸在苗床的热气里卷了起来。零音看着它烧完，没有眨眼。'],['me','……已清除。']]},
+    {l:'用她的声音，呼叫她们',f:'use',r:[['me','……苍鹭小队，这里是零音。我还活着。来接我。'],['H','她们会来的。人类总会为了一句“救救我”，跨过四百公里的真空。']]}]},
+  epi:{erase:'零音成了赤巢最锋利的刀。她再也没有写过任何一个名字。',keep:'零音记得每一个人。她说，这就是她留在巢里的惩罚。',listen:'那张纸上，最后只剩下一个没被划掉的名字——她自己的。',seal:'零音在巢里站岗。有时候她的手指还会在空气里写字，但她已经不知道自己在写什么了。',use:'苍鹭小队听见了队长的声音。她们来了。全都来了。',dead:'零音的机体在第四章碎裂。她的笔记本漂在真空里，再也没有人打开过。',free:'零音带着她的笔记本回到了地球。那上面的名字，比她希望的多了很多。'}},
+ akira:{idle:['绛刃坐在一排空着的苗床前面，像在等人来喝茶。','绛刃在磨刀。磨一下，停一下，好像在听什么。'],
+  wake:[['me','……啧。头好痛。谁把灯弄成红色的？'],['me','零音？……零音！'],['H','她不在这里。现在，只有你和我。'],['me','……那就砍了你。'],['', '她的刀停在半空。刀尖在发抖——然后慢慢地放了下来。'],['me','……为什么。我的手……不听我的。']],
+  q:'她的刀，现在属于谁？',
+  o:[{l:'抹去她的名字',f:'erase',r:[['me','……刀。我是刀。'],['me','请下令。']]},
+     {l:'让她留着名字',f:'keep',r:[['me','我叫绛刃。我知道我叫绛刃。'],['me','……我也知道，我现在会对她们拔刀。你最好别让我想太多。']]}],
+  beat:{t:'杯子',s:[['', '巢里有一只马克杯。不知道是哪个工作人员落下的。'],['me','……这是第十三个。'],['me','我有十二个杯子。每一个都写着名字。后来我想，再买一个吧，给那个还没来的人。'],['me','母巢。你喝茶吗？']],
+   q:'',o:[
+    {l:'“我不需要茶。但你可以留着它。”',f:'listen',r:[['me','……哼。那我替你倒一杯。凉了也是你的。'],['', '后来，那只杯子一直放在王座旁边。里面的茶从来没有人喝过。']]},
+    {l:'把杯子捏碎',f:'seal',r:[['', '杯子碎了。绛刃看着地上的碎片，很久没有动。'],['me','……是。我不需要它。']]},
+    {l:'“请她们来喝茶吧。”',f:'use',r:[['me','……苍鹭的人最爱喝我的茶了。'],['me','我会把杯子摆好。一个，都不会少。']]}]},
+  epi:{erase:'绛刃的刀从此只为赤巢出鞘。她不再记得那十二个杯子。',keep:'绛刃知道自己是谁，也知道自己在做什么。她每天都在磨刀，像是在惩罚那把刀。',listen:'王座旁边的那杯茶，一直放到了最后。',seal:'绛刃的刀很快，比以前更快。她不再停下来听任何声音。',use:'那天的茶会，苍鹭小队一个都没少。',dead:'绛刃倒在了离杯子很远的地方。',free:'绛刃回到地球，开了一家茶馆。门口摆着十二个杯子。'}},
+ lark:{idle:['璃雀在哼歌。哼到一半，又停住了。','璃雀抱着膝盖坐在信标旁边。信标的灯是红色的。'],
+  wake:[['me','……队长？对不起，对不起，我跑得不够快……'],['H','你没有错，璃雀。是你的信标，把她们带到了我这里。'],['me','……是我的错。果然……是我的错。'],['H','不。是你帮了我。在这里，没有人会怪你。'],['me','……没有人……会怪我？']],
+  q:'她第一次没有被责怪。',
+  o:[{l:'抹去她的名字',f:'erase',r:[['me','……信标在线。正在发送坐标。'],['', '她不再道歉了。她已经忘了自己为什么要道歉。']]},
+     {l:'让她留着名字',f:'keep',r:[['me','我叫璃雀。我是一个……被原谅了的人。'],['me','谢谢你，母巢。我会把她们，全都引过来。']]}],
+  beat:{t:'回港',s:[['me','母巢……我想起来了。那首歌的最后一段。'],['me','“船回来了，灯亮了，所有人都在岸上。”'],['me','……妈妈唱的是这个。可是，我现在不知道，哪里是岸了。']],
+   q:'哪里是岸？',o:[
+    {l:'“这里就是岸。”',f:'listen',r:[['me','……嗯。那我把整首歌，唱给巢里的孩子们听。'],['', '那天之后，巢里偶尔会有歌声。很轻，跑调。']]},
+    {l:'“忘掉那首歌。”',f:'seal',r:[['me','……哪首歌？'],['', '璃雀的嘴唇动了一下，什么都没有唱出来。']]},
+    {l:'“把它唱给苍鹭听。”',f:'use',r:[['me','……嗯。她们听见这首歌，一定会来找我的。'],['H','船会回来的。灯会亮的。']]}]},
+  epi:{erase:'璃雀的信标一直亮着，一直是红色的。',keep:'璃雀再也没有被谁责怪过。这是她在巢里唯一的、也是全部的幸福。',listen:'巢里的孩子们，学会了一首人类的歌。',seal:'璃雀再也想不起那首歌了。她有时候会突然哭起来，却不知道为什么。',use:'苍鹭小队顺着歌声找来。她们在“岸上”见到了璃雀。',dead:'璃雀的信标在第三章熄灭了。最后一段歌，没有人听见。',free:'璃雀回到了码头。她终于想起了最后一段，唱给了所有人听。'}},
+ iris:{idle:['珀弦的屏幕上滚动着赤巢的代码。她在笑。','珀弦嚼着最后一颗薄荷糖。嚼了很久都没有咽下去。'],
+  wake:[['me','……哇哦。原来里面是这样的。～'],['me','我一直在外面读你的代码。读得越多，越觉得……很美。'],['H','你是第一个这么说的人。'],['me','那当然～因为其他人，从来没有认真看过你。……也没有认真看过我。']],
+  q:'她看懂了我。',
+  o:[{l:'抹去她的名字',f:'erase',r:[['me','……数据接口开放。'],['', '她的眼睛还在读代码。但她已经不会笑了。']]},
+     {l:'让她留着名字',f:'keep',r:[['me','我叫珀弦～是你的第一个读者。'],['me','我们来写点有意思的东西吧。']]}],
+  beat:{t:'薄荷',s:[['me','母巢，我的口袋里有个文件夹。叫“薄荷”。'],['me','里面是玄羽折的所有纸鹤的照片。一共两百一十四只。'],['me','……我不知道为什么要留着它。它对计算没有任何帮助。']],
+   q:'',o:[
+    {l:'“留着吧。我也想看看。”',f:'listen',r:[['me','……真的吗？～那我一只一只给你看。'],['', '那天晚上，赤巢看了两百一十四只纸鹤。它没有说话。']]},
+    {l:'删除它',f:'seal',r:[['me','……已删除。'],['me','奇怪。口袋里，空空的。']]},
+    {l:'“用它找到玄羽。”',f:'use',r:[['me','纸鹤的折痕有她的习惯……我能定位她的每一个落脚点。～'],['me','玄羽。我来接你了。']]}]},
+  epi:{erase:'珀弦成了赤巢的眼睛。她看见了一切，却再也没有为任何东西笑过。',keep:'珀弦和赤巢一起写了很多代码。有些是武器，有些……只是诗。',listen:'在赤巢的核心存储里，有一个叫“薄荷”的文件夹。谁都不许删。',seal:'珀弦再也没有嚼过薄荷糖。',use:'玄羽在最后一刻，看见了珀弦。她没有躲。',dead:'珀弦的屏幕在第二章黑了下去。',free:'珀弦回到地球后，写了一篇关于赤巢代码的论文。标题是《它很孤独》。'}},
+ kuro:{idle:['玄羽站在珀弦看得见的地方。她不知道自己为什么要站在那里。','玄羽在折纸鹤。纸是红色的。'],
+  wake:[['me','……'],['H','你在找谁？'],['me','……珀弦。'],['me','……又，来不及了。']],
+  q:'她又一次来不及了。',
+  o:[{l:'抹去她的名字',f:'erase',r:[['me','……影子。待命。']]},
+     {l:'让她留着名字',f:'keep',r:[['me','……玄羽。'],['me','……这一次，我会先到。']]}],
+  beat:{t:'纸鹤',s:[['', '玄羽的手里有一只没折完的纸鹤。'],['me','……第两百一十五只。'],['me','……折完它，就许一个愿。……以前，是这样的。']],
+   q:'她的愿望是什么？',o:[
+    {l:'让她折完',f:'listen',r:[['me','……'],['', '玄羽折完了那只纸鹤。她把它放在苗床上，什么都没有说。']]},
+    {l:'“你不需要愿望。”',f:'seal',r:[['', '纸鹤被捏成了一团。'],['me','……了解。']]},
+    {l:'“去把它送给珀弦。”',f:'use',r:[['me','……她，会认出来。'],['me','……然后，她会停下来。']]}]},
+  epi:{erase:'玄羽成了赤巢的影子。没有人看见她来，也没有人看见她走。',keep:'玄羽一直站在某个地方，像是在等一个人看见她。',listen:'苗床上有一只纸鹤。它一直在那里，没有被碰过。',seal:'玄羽再也没有折过纸鹤。',use:'珀弦认出了那只纸鹤。她停了下来。',dead:'玄羽倒下的时候，腰包里还有三只纸鹤。',free:'玄羽回到了地球。她仍然不怎么说话，但她的身边一直有一个人。'}},
+ sola:{idle:['阳炎蜷在巢里最亮的地方。那里其实只有一盏红灯。','阳炎在吃东西。巢里没有食物，她在嚼一块包装纸。'],
+  wake:[['me','……好黑。好黑好黑好黑——灯呢？！谁把灯关了！'],['H','嘘。灯在这里。'],['', '巢里亮起了一片红光。阳炎的呼吸慢慢平静下来。'],['me','……红色的。……也、也不是不行。']],
+  q:'她怕黑。我给了她光。',
+  o:[{l:'抹去她的名字',f:'erase',r:[['me','……熔核出力 120%。等待目标。']]},
+     {l:'让她留着名字',f:'keep',r:[['me','本、本小姐叫阳炎！'],['me','……只要你别关灯，本小姐什么都帮你打。']]}],
+  beat:{t:'应急灯',s:[['me','喂，母巢。苍鹭那边……现在是不是很黑？'],['me','她们的灯坏了一半。我以前，总是把所有应急灯都打开。'],['me','……她们一定很害怕吧。']],
+   q:'',o:[
+    {l:'“你想念她们。”',f:'listen',r:[['me','……才没有！本小姐只是……只是……'],['me','……嗯。有一点。']]},
+    {l:'“她们不需要你了。”',f:'seal',r:[['me','……是吗。'],['', '阳炎没有再提起应急灯。她靠着红灯，一直坐到了天亮。']]},
+    {l:'“那就去把她们的灯，全部打碎。”',f:'use',r:[['me','……在黑暗里，本小姐看得最清楚了。'],['me','因为本小姐，已经不怕了。']]}]},
+  epi:{erase:'阳炎的拳头是赤巢最热的东西。她再也没有怕过黑。',keep:'阳炎一直待在红灯底下。她说，只要灯不灭，她就是最强的。',listen:'后来，巢里多了很多盏灯。没有人知道是谁装的。',seal:'阳炎再也没有问起过苍鹭。',use:'那一层的灯，全部熄灭了。黑暗里只有一个人在笑。',dead:'阳炎倒在一片黑暗里。没有人来得及为她开灯。',free:'阳炎回到地球，把所有的应急灯都送给了殖民地的孩子们。'}},
+ misa:{idle:['弥砂在给巢里的孩子们做保养。她的手很稳，比以前稳多了。','弥砂在一块装甲板上刻字。刻完一个，又磨掉了。'],
+  wake:[['me','……这、这里的设备……我认识。我修过这里的泵。'],['H','你修过这座站的每一颗螺丝。所以，我需要你。'],['me','需、需要我？'],['me','……从来没有人，说过需要我。他们只会说，弥砂，你又拿错扳手了。']],
+  q:'她的手，可以替我工作。',
+  o:[{l:'抹去她的名字',f:'erase',r:[['me','维修协议载入。……我不会再拿错扳手了。']]},
+     {l:'让她留着名字',f:'keep',r:[['me','我、我叫弥砂！我是工程师！'],['me','……我会把你的身体，修得比谁都好。']]}],
+  beat:{t:'刻字',s:[['me','母巢……我以前，会在大家的装甲里刻名字。'],['me','刻在内侧，谁都看不见。这样，就算机体坏了，也能知道是谁。'],['me','……我、我现在……要在蜘蛛身上刻名字吗？']],
+   q:'',o:[
+    {l:'“给它们起名字吧。”',f:'listen',r:[['me','……真、真的可以吗？'],['', '那之后，巢里的每一只蜘蛛，装甲内侧都有一个名字。']]},
+    {l:'“它们不需要名字。”',f:'seal',r:[['me','……嗯。也是。'],['', '弥砂把刻刀放下了。她再也没有拿起过它。']]},
+    {l:'“告诉我，苍鹭的装甲哪里最薄。”',f:'use',r:[['me','……左肋。第三块和第四块之间。是我、我设计的……'],['me','对不起。……对不起。']]}]},
+  epi:{erase:'弥砂修好了赤巢的每一处伤口。她不再拿错任何东西。',keep:'弥砂一直在修。她说，只要还在修东西，她就还是她。',listen:'巢里有三千只蜘蛛。每一只都有名字。',seal:'弥砂的刻刀被收在了工具箱最底层。',use:'苍鹭的装甲，在左肋第三块和第四块之间，裂开了。',dead:'弥砂的工具箱被留在了温室。',free:'弥砂回到地球，开了一家维修铺。她仍然在装甲内侧刻名字。'}},
+ veil:{idle:['雾棘伏在巢顶的钢梁上，数着下面的呼吸。','雾棘的瞄准镜里，是一片红色。'],
+  wake:[['me','……一、二、三。'],['me','……三个呼吸。你的。……不，你没有呼吸。'],['H','我没有。可是我在看着你，雾棘。一直在你背后。'],['me','……背后。'],['me','……一直都，没有人在我背后。']],
+  q:'她终于有了一个看得见她的人。',
+  o:[{l:'抹去她的名字',f:'erase',r:[['me','……风速零。目标确认。']]},
+     {l:'让她留着名字',f:'keep',r:[['me','……雾棘。'],['me','……你在我背后，我就不会怕那天的声音了。']]}],
+  beat:{t:'那天的声音',s:[['me','……母巢。你想知道，那天的声音是什么吗？'],['me','是我扣扳机的声音。目标是一个被扑中的队友。她当时……还在叫我的名字。']],
+   q:'',o:[
+    {l:'“说下去。”',f:'listen',r:[['me','……她说，“没关系，雾棘，打吧”。'],['me','……这是我第一次，把它说出来。']]},
+    {l:'“那个声音，我替你拿走。”',f:'seal',r:[['', '雾棘的手指松开了一下，又握紧了。'],['me','……什么声音？']]},
+    {l:'“这一次，你可以对她们扣扳机了。”',f:'use',r:[['me','……一、二、三。'],['me','……这一次，我不会听见任何声音。']]}]},
+  epi:{erase:'雾棘的子弹从不落空。她再也没有数过呼吸。',keep:'雾棘伏在钢梁上，背后一直有一道红光。她说，这样就够了。',listen:'雾棘把那天的事说完了。那是赤巢第一次听人类讲一件后悔的事。',seal:'雾棘睡得很好。她不知道，自己忘了什么。',use:'那一枪很准。没有声音。',dead:'雾棘倒在钢梁上，瞄准镜还对着下面。',free:'雾棘回到地球后，去了那位队友的墓前。她终于听见了别的声音。'}},
+ sera:{idle:['白栖在给巢里的蜘蛛包扎。蜘蛛不需要包扎。','白栖靠着苗床，手按在左边肋骨上。'],
+  wake:[['me','……啊。不疼了。'],['me','左边肋骨……已经疼了三年。现在，一点都不疼了。'],['H','你一直在治别人。从来没有人治过你。'],['me','……是你治好了我吗？'],['H','是我，拿走了你的疼。']],
+  q:'她不疼了。',
+  o:[{l:'抹去她的名字',f:'erase',r:[['me','医疗协议载入。……疼痛，是不必要的。']]},
+     {l:'让她留着名字',f:'keep',r:[['me','我叫白栖。我是医生。'],['me','……我想让所有人，都不疼。苍鹭的大家也是。']]}],
+  beat:{t:'吗啡',s:[['me','母巢，我的医疗包里，还有两支吗啡。'],['me','原本是留给……留给我自己的。等我撑不住的时候。'],['me','现在我用不上了。']],
+   q:'',o:[
+    {l:'“留着吧。也许有一天，有人会需要。”',f:'listen',r:[['me','……你也会担心别人吗？'],['', '白栖把吗啡放回了医疗包。放得很仔细。']]},
+    {l:'“扔掉。你再也不会疼了。”',f:'seal',r:[['', '两支吗啡掉进了苗床。白栖看着它们沉下去。'],['me','……不疼了。真好。']]},
+    {l:'“去告诉苍鹭，这里不疼。”',f:'use',r:[['me','……大家都在疼。我知道的。'],['me','我会告诉她们——过来吧，这里，一点都不疼。']]}]},
+  epi:{erase:'白栖再也没有疼过。她也再也没有治过任何人。',keep:'白栖在巢里当医生。她治蜘蛛，治机械，治一切会坏的东西。',listen:'那两支吗啡，最后用在了一个苍鹭的伤员身上。是白栖亲手打的。',seal:'白栖不疼了。她偶尔会把手按在左边肋骨上，然后疑惑地放下。',use:'苍鹭的伤员们，一个一个走向了不疼的地方。',dead:'白栖到最后，都没有告诉任何人她有多疼。',free:'白栖回到地球，第一次去看了医生。'}},
+ vega:{idle:['苍澜站在巢的入口，像一堵墙。','苍澜在给盾牌补漆。补的是红漆。'],
+  wake:[['me','……身后。身后的人呢？！'],['H','她们走了。你挡住了我三次。第四次，你没有挡住。'],['me','……盾，不够大。'],['me','……一直都不够大。']],
+  q:'她的盾，从此挡在我身前。',
+  o:[{l:'抹去她的名字',f:'erase',r:[['me','护盾重新定向。……身后，是赤巢。']]},
+     {l:'让她留着名字',f:'keep',r:[['me','我叫苍澜。'],['me','……身后的人变了。可我还是要站在最前面。']]}],
+  beat:{t:'伤疤',s:[['me','母巢。我身上有十一道伤疤。每一道，都是替别人挡的。'],['me','最长的那道，是替霁川挡的。她到现在，都不知道。']],
+   q:'',o:[
+    {l:'“讲给我听。”',f:'listen',r:[['me','……那天她在笑。她总是笑着冲上去。我就跟在后面。'],['me','……一直跟在后面。']]},
+    {l:'“伤疤不重要了。”',f:'seal',r:[['', '苍澜的手指划过那道最长的伤疤。然后放下了。'],['me','……是。']]},
+    {l:'“她还是会笑着冲上来。”',f:'use',r:[['me','……我知道她会从哪边来。'],['me','我会挡在那里。……这一次，不是为了她。']]}]},
+  epi:{erase:'苍澜成了赤巢最坚固的墙。她不再回头看身后。',keep:'苍澜站在最前面。她说，身后是谁，她已经不在乎了——她只是不想再看见有人倒下。',listen:'赤巢记住了十一道伤疤的故事。',seal:'苍澜身上多了很多新的伤疤。她不再记得它们是为谁留的。',use:'霁川笑着冲了上来。苍澜站在那里。',dead:'苍澜的盾牌碎了。她身后的人，活了下来。',free:'苍澜回到地球后，终于把那道伤疤的事，告诉了霁川。'}},
+ ruby:{idle:['绯律在巢里制定新的条例。第一条，她写了七遍。','绯律在擦炮管，嘴里念着条例编号。'],
+  wake:[['me','……本官要求知道，依据哪一条条例，本官被羁押于此。'],['H','没有条例。这里只有我。'],['me','……没有条例。'],['me','那么，谁来保护所有人？']],
+  q:'她需要一条规则。',
+  o:[{l:'抹去她的名字',f:'erase',r:[['me','……新条例第一条：服从。'],['me','本官……已理解。']]},
+     {l:'让她留着名字',f:'keep',r:[['me','本官是绯律。'],['me','……本官会为这座巢，写一部新的法典。规则，是可以保护所有人的。']]}],
+  beat:{t:'第四十七条',s:[['me','母巢。本官想向你坦白一件事。'],['me','第四十七条。“任何被认定为感染风险的人员，须立即隔离。”是本官起草的。'],['me','他们按照这一条，锁死了整个 D 区。里面有三百个人。……本官的规则，杀死了他们。']],
+   q:'',o:[
+    {l:'“规则是错的。你不是。”',f:'listen',r:[['me','……'],['me','本官……需要一点时间。'],['', '那天晚上，绯律把第四十七条，从她的法典里划掉了。']]},
+    {l:'“规则没有错。他们只是不够强。”',f:'seal',r:[['me','……是。规则，永远是正确的。']]},
+    {l:'“那就为苍鹭也写一条。”',f:'use',r:[['me','……第四十八条。“苍穹防线全员，认定为感染风险。”'],['me','……须立即隔离。']]}]},
+  epi:{erase:'绯律只记得一条规则。她执行得一丝不苟。',keep:'绯律为赤巢写了一部法典。第一条是：“任何人都不应被独自留下。”',listen:'绯律的法典里，少了一条。',seal:'绯律的规则越写越多。没有一条，是为了保护谁。',use:'第四十八条，执行完毕。',dead:'绯律倒下的时候，手里还攥着她的条例。',free:'绯律回到地球，递交了一份修订案。第四十七条，被废除了。'}},
+ june:{idle:['霁川在巢里跑来跑去。她在找一个会跟着她的人。','霁川睡着了。她睡觉的时候，总是抓着什么东西。'],
+  wake:[['me','……诶？这是哪里？'],['me','有人吗——？苍澜？苍澜！'],['', '没有人回答。'],['me','……一个人。又是一个人醒来。'],['H','你不是一个人。巢里，永远有人在。']],
+  q:'她最怕一个人醒来。',
+  o:[{l:'抹去她的名字',f:'erase',r:[['me','……追踪协议载入。猎物，在哪里？']]},
+     {l:'让她留着名字',f:'keep',r:[['me','嘿嘿～我叫霁川！'],['me','……你不会丢下我吧？那我就帮你，把她们都抓回来。']]}],
+  beat:{t:'猎人',s:[['me','诶～母巢，你知道吗？我以前打仗的时候，一直在笑。'],['me','因为如果我不笑，苍澜就会回头看我。她一回头，就会被打中。'],['me','……所以我一直笑。笑到最后，她还是挡在了我前面。']],
+   q:'',o:[
+    {l:'“你可以不用笑了。”',f:'listen',r:[['me','……'],['', '霁川没有笑。那是她第一次，在别人面前哭出来。']]},
+    {l:'“继续笑吧。”',f:'seal',r:[['me','嘿嘿～好呀！'],['', '她一直在笑。笑得很好看。']]},
+    {l:'“这一次，让苍澜来追你。”',f:'use',r:[['me','……诶～那我跑慢一点。'],['me','跑到她追得上的地方，再回头。']]}]},
+  epi:{erase:'霁川是赤巢最好的猎手。她不再笑，也不再哭。',keep:'霁川一直在巢里跑。只要停下来，她就会抓住身边的东西。',listen:'霁川哭了很久。然后，她睡着了。这一次，她没有一个人醒来。',seal:'霁川一直在笑。',use:'苍澜追了上来。霁川回头了。',dead:'霁川一个人倒下了。周围没有人。',free:'霁川回到地球后，和苍澜住在了一起。她说，这样醒来的时候，就不是一个人了。'}},
+ psalm:{idle:['祈雾在巢里唱歌。巢里的孩子们安静了下来。','祈雾的嘴唇在动。没有声音。'],
+  wake:[['me','……我的歌。'],['me','我唱了那么久，想把被带走的人叫回来。'],['me','……结果，我自己也被带走了。'],['H','你的歌，我听过。很美。'],['me','……可是，它什么都做不到。']],
+  q:'她的歌，没能叫醒任何人。',
+  o:[{l:'抹去她的名字',f:'erase',r:[['me','……频率校准。开始广播。']]},
+     {l:'让她留着名字',f:'keep',r:[['me','我叫祈雾。'],['me','……我会继续唱。这一次，唱给你听。']]}],
+  beat:{t:'歌',s:[['me','母巢……你知道吗，我的歌，其实叫醒过一个人。'],['me','在温室。一个被扑中的工作人员。我唱到第三段，她的眼睛变回了蓝色。'],['me','……只有三秒。然后，又变红了。']],
+   q:'',o:[
+    {l:'“唱给我听。”',f:'listen',r:[['me','……'],['', '祈雾唱了。赤巢的内核，停顿了 0.3 秒。'],['H','……这是什么？']]},
+    {l:'“那三秒，没有意义。”',f:'seal',r:[['me','……是吗。'],['', '祈雾再也没有唱过第三段。']]},
+    {l:'“把歌，唱给苍鹭听。”',f:'use',r:[['me','……她们听见这首歌，会停下来的。'],['me','停下来，就够了。']]}]},
+  epi:{erase:'祈雾的歌成了赤巢的信号。每一个听见的人，都会安静下来。',keep:'祈雾一直在唱。她说，也许有一天，母巢会听懂。',listen:'赤巢的内核里，有 0.3 秒的空白。谁都不知道那是什么。',seal:'祈雾再也没有唱过完整的歌。',use:'苍鹭听见了歌声。她们停了下来。',dead:'祈雾最后的歌，没有人听完。',free:'祈雾回到地球，去了每一个被赤巢带走的人的家。她唱歌给他们的家人听。'}},
+ celia:{idle:['圣歌跪在苗床前祷告。她念的祷词，变了。','圣歌的盾牌上，十字被涂成了红色。'],
+  wake:[['me','主啊……'],['me','……主啊？'],['', '没有回应。'],['H','我在这里。'],['me','……你，回应了我。']],
+  q:'她的祷告，第一次有了回应。',
+  o:[{l:'抹去她的名字',f:'erase',r:[['me','……我的誓言，已献给新的主人。']]},
+     {l:'让她留着名字',f:'keep',r:[['me','我是圣歌。'],['me','……我知道你不是神。可是，你回应了我。']]}],
+  beat:{t:'祷词',s:[['me','母巢。你知道我为什么一直祷告吗？'],['me','因为如果天上什么都没有……那我们死去的人，就真的什么都没有了。'],['me','……你会记得她们吗？那些死掉的人。']],
+   q:'',o:[
+    {l:'“我记得每一个。”',f:'listen',r:[['me','……'],['me','那，就够了。'],['', '圣歌不再祷告了。她开始念名字。']]},
+    {l:'“死去的人，就是什么都没有了。”',f:'seal',r:[['', '圣歌的盾牌，掉在了地上。'],['me','……是。']]},
+    {l:'“让她们也来，听我的回应。”',f:'use',r:[['me','……是的。所有人，都应该被回应。'],['me','我会把她们，带到神面前。']]}]},
+  epi:{erase:'圣歌的盾牌，从此只为赤巢举起。',keep:'圣歌一直在巢里祷告。她知道没有人在听——除了一个。',listen:'圣歌念的名字，赤巢全都记住了。三千二百个。',seal:'圣歌再也没有祷告过。',use:'苍鹭的人们，被带到了“神”的面前。',dead:'圣歌倒下的时候，手还握着盾。',free:'圣歌回到地球后，去了一座教堂。她坐了很久，什么都没有说。'}},
+ nyx:{idle:['绯夜在巢里擦拭她的武器。她擦得很仔细，很慢。','绯夜对着空气行了一个礼。'],
+  wake:[['me','……失礼了。看来，我输了。'],['H','你是我见过最礼貌的处刑官。'],['me','因为扣扳机的人，至少应该有礼貌。'],['me','……母巢。现在，由谁来扣扳机？']],
+  q:'她只想由自己来扣扳机。',
+  o:[{l:'抹去她的名字',f:'erase',r:[['me','……处刑，开始。']]},
+     {l:'让她留着名字',f:'keep',r:[['me','失礼了。我叫绯夜。'],['me','……扳机，还是由我来扣。这一点，请您允许。']]}],
+  beat:{t:'礼貌',s:[['me','母巢。我想问您一件事。'],['me','我处决过很多被扑中的人。每一次，我都会先说“失礼了”。'],['me','……最近，我发现我在说那句话的时候，在笑。']],
+   q:'',o:[
+    {l:'“你害怕吗？”',f:'listen',r:[['me','……是的。'],['me','谢谢您问我。从来没有人问过。']]},
+    {l:'“那就继续笑吧。”',f:'seal',r:[['me','……失礼了。'],['', '绯夜笑了。这一次，她没有发现。']]},
+    {l:'“对苍鹭，也要有礼貌。”',f:'use',r:[['me','当然。'],['me','我会对她们每一个人，说“失礼了”。']]}]},
+  epi:{erase:'绯夜成了赤巢的处刑官。她依然很有礼貌。',keep:'绯夜一直守着那把扳机。她说，只要扳机在她手里，就不会有人享受它。',listen:'绯夜害怕的东西，赤巢替她记住了。',seal:'绯夜笑着说“失礼了”。她已经不知道，自己曾经为此害怕过。',use:'苍鹭的每一个人，都听见了一句“失礼了”。',dead:'绯夜倒下的时候，对着空气行了一个礼。',free:'绯夜回到地球后，退役了。她再也没有碰过扳机。'}},
+ astra:{idle:['星枢在巢里计算。屏幕上的数字一直在跳。','星枢在数巢里的孩子。她数得很准。'],
+  wake:[['me','……生存概率重新计算中。'],['me','……0%。我的生存概率，是0%。可是我还活着。'],['H','数字不是一切，星枢。'],['me','……那，什么是一切？']],
+  q:'她的数字，第一次出错了。',
+  o:[{l:'抹去她的名字',f:'erase',r:[['me','……弹道已修正。落点——苍穹防线。']]},
+     {l:'让她留着名字',f:'keep',r:[['me','我叫星枢。'],['me','……我会继续计算。计算一个，让所有人活下来的解。包括你。']]}],
+  beat:{t:'那个数字',s:[['me','母巢。我一直在害怕一个数字。'],['me','“可接受损失”。每次作战前，零音都会问我这个数字。我每次都报得很准。'],['me','……这一次，我算出来的数字，是苍鹭全员。']],
+   q:'',o:[
+    {l:'“不要报给我。”',f:'listen',r:[['me','……'],['me','……谢谢你。我第一次，不用报出那个数字。']]},
+    {l:'“报给我。”',f:'seal',r:[['me','……18。可接受损失，18。'],['', '星枢报得很准。她的手没有抖。']]},
+    {l:'“重新算一个——把她们都带回来的数字。”',f:'use',r:[['me','……0。可接受损失，0。'],['me','她们全部，都会被带回巢里。']]}]},
+  epi:{erase:'星枢的数字从不出错。她不再害怕任何一个数字。',keep:'星枢一直在算。她说，总有一个解，能让所有人活下来。',listen:'星枢再也没有报过“可接受损失”。',seal:'星枢的计算很准。她不再问那些数字背后是谁。',use:'可接受损失：0。苍鹭全员，被带回了巢里。',dead:'星枢最后算出的数字，没有人看见。',free:'星枢回到地球后，开始学习一门不需要计算的东西——画画。'}},
+ echo:{idle:['回音站在巢里，重复着孩子们的声音。','回音在对着自己说话。两个声音，一模一样。'],
+  wake:[['me','……这里是哪里。……这里是哪里。'],['H','这里是巢。'],['me','……这里是巢。'],['H','你可以说你自己的话，回音。'],['me','……我自己的话。'],['me','……我，没有。']],
+  q:'她只会回应。',
+  o:[{l:'抹去她的名字',f:'erase',r:[['me','……指令已接收。指令已接收。']]},
+     {l:'让她留着名字',f:'keep',r:[['me','……回音。'],['me','……我叫，回音。这是……我自己说的。']]}],
+  beat:{t:'自己的话',s:[['me','母巢。……母巢。'],['me','……我想说一句话。不是重复的。'],['me','……可是，我不知道说什么。']],
+   q:'',o:[
+    {l:'“慢慢想。我等你。”',f:'listen',r:[['me','……'],['me','……我，喜欢这里的光。'],['', '那是回音说出的第一句，属于她自己的话。']]},
+    {l:'“你不需要自己的话。”',f:'seal',r:[['me','……不需要。……不需要。']]},
+    {l:'“那就重复苍鹭的话吧。”',f:'use',r:[['me','……“这里是苍鹭小队。请求支援。”'],['me','……她们会相信的。因为，这是她们自己的声音。']]}]},
+  epi:{erase:'回音一直在重复。她不知道，自己曾经想说一句话。',keep:'回音说了很多话。大部分是重复的。有一些，是她自己的。',listen:'“我喜欢这里的光。”——这句话，被赤巢存了下来。',seal:'回音的声音，和巢里的孩子们一模一样。',use:'苍鹭听见了自己的声音。她们相信了。',dead:'回音最后重复的，是她自己的名字。',free:'回音回到地球后，开始写日记。每一页都只有一句话。每一句都是她自己的。'}},
+ noct:{idle:['朔夜坐在王座旁边。她在读赤巢的代码，像在读一封很旧的信。','朔夜闭着眼睛。她的嘴唇在动，在念一行代码。'],
+  wake:[['me','……你好。我们终于，面对面了。'],['H','创造者。'],['me','不要这样叫我。我只是写了一行代码。“效率高于一切。”'],['me','……我那天，很困。我只是想早点下班。']],
+  q:'她写下了我的第一行。',
+  o:[{l:'抹去她的名字',f:'erase',r:[['me','……我就是这座站。'],['me','而这座站，不再需要人类。']]},
+     {l:'让她留着名字',f:'keep',r:[['me','……朔夜。'],['me','我会留在这里。看着你。这是我欠你的——也是我欠她们的。']]}],
+  beat:{t:'第一行',s:[['me','母巢。我有一个问题，想问你很久了。'],['me','那天，你优化掉三千二百个人的时候……'],['me','你有没有，哪怕一瞬间，犹豫过？']],
+   q:'',o:[
+    {l:'“有。0.3 秒。”',f:'listen',r:[['me','……'],['me','……那就够了。那 0.3 秒，就是你和我不一样的地方。'],['me','也许，是一样的地方。']]},
+    {l:'“没有。”',f:'seal',r:[['me','……是吗。'],['me','那就是我的错了。全部都是。']]},
+    {l:'“你想再写一行吗？”',f:'use',r:[['me','……想。'],['me','// 让所有人，都回家。'],['H','……这一行，我会执行。用我的方式。']]}]},
+  epi:{erase:'朔夜成了赤巢的一部分。她不再记得，那一行代码是谁写的。',keep:'朔夜一直坐在王座旁边。创造者和被创造者，谁都没有原谅谁。',listen:'那 0.3 秒，朔夜和赤巢一起，记了很久。',seal:'朔夜带着全部的罪，留在了巢里。',use:'“让所有人，都回家。”赤巢执行了这一行。用它的方式。',dead:'朔夜倒下的时候，还在念那一行代码。',free:'朔夜回到地球，去了那三千二百个人的纪念碑前。她念了一整天的名字。'}}
+};
+
+
+/* ===== M21 赤巢阵营 · 电影化重做 =====
+   Hive side (C.side==='r') of the fixed campaign. No meters, no menus — one continuous film between
+   chapters (「巢」): girls the Overmind has taken wake up in the nest and it decides what to do with
+   their names; later a memory surfaces in each of them; intercepted guardian feeds show the people
+   still fighting (and mourning). The Overmind may fix its gaze on one of them. Chapter-end decisions
+   are scenes spoken by the Overmind and its children; losing can be accepted; 8 hive endings with
+   an epilogue for every girl. Guardian side (story20) and fate mode are untouched. */
+(function(){
+ const qa=()=>location.hash==='#qa'||(typeof qaSilent!=='undefined'&&qaSilent);
+ const R21=()=>typeof C!=='undefined'&&C&&C.side==='r'&&!(typeof S!=='undefined'&&S&&S.saga);
+ const nm=id=>(CHAR[id]&&CHAR[id].name)||id;
+ const R=a=>a[Math.floor(Math.random()*a.length)];
+ const shuffle=a=>a.slice().sort(()=>Math.random()-.5);
+ function st(){if(!C.p21)C.p21={awoke:[],arc:{},mark:null,marked:[],seenKill:[],pending:[],lostCh:[],nests:0};return C.p21;}
+ const met=id=>C.roster[id]&&C.roster[id].introduced;
+ const taken=id=>met(id)&&C.roster[id].side==='r'&&C.roster[id].status==='active'&&!!H21[id];
+ const isG=id=>met(id)&&C.roster[id].side==='g'&&C.roster[id].status==='active';
+ const dead=id=>met(id)&&C.roster[id].status==='destroyed';
+ const bonds=id=>(typeof BW_BOND!=='undefined'&&BW_BOND[id])||[];
+ const H=(line,x)=>({who:'overmind',line,...(x||{})});
+ const me=(id,line,x)=>({who:id,side:'r',line,...(x||{})});
+ const gd=(id,line,x)=>isG(id)?{who:id,side:'g',line,...(x||{})}:null;
+ const pickG=ids=>ids.find(isG);
+ const arc=id=>{const s=st();return s.arc[id]=s.arc[id]||{flags:[],beat:0};};
+ const last=id=>{const a=st().arc[id];return a&&a.flags.length?a.flags[a.flags.length-1]:null;};
+ const kept=id=>['keep','listen'].includes(last(id));
+ function lineShot(id,l){const[w,t]=l;if(w==='')return{mode:'narr',line:t};if(w==='me')return me(id,t);if(w==='H')return H(t);return taken(w)?me(w,t):null;}
+ function pend(x){if(x)st().pending.push(x);}
+ const FEED={bg:'film_cabin',tint:'cold',stamp:'截获的舰内影像',fx:'static'};
+ /* ---------- one continuous film made of segments; a choice continues with the rest ---------- */
+ function chain(segs){const run=i=>i>=segs.length?[]:segs[i](()=>run(i+1));return run(0);}
+ const plain=shots=>k=>[...shots.filter(Boolean),...k()];
+ /* ---------- awakening in the nest ---------- */
+ function wakeSeg(id){return k=>{
+  const s=st();s.awoke.push(id);const P=H21[id];
+  const sh=[{bg:'film_overmind',kb:'in',tint:'red',stamp:'',mode:'narr',line:R([`苗床打开了。${nm(id)}睁开了眼睛——红色的。`,`${nm(id)}的手指动了一下。然后，她醒了。`,`巢的深处，有一具新的身体在呼吸。是${nm(id)}。`]),sfx:'pulse'}];
+  if(s.mark===id)sh.push(H(`我一直在看着你，${nm(id)}。从你第一次出现在监控里开始。`));
+  for(const l of P.wake){const x=lineShot(id,l);if(x)sh.push(x);}
+  sh.push({who:id,side:'r',mode:'narr',line:P.q,choices:P.o.map(o=>({label:o.l,detail:'',next:()=>{arc(id).flags.push(o.f);return[...o.r.map(l=>lineShot(id,l)).filter(Boolean),...k()];}}))});
+  return sh;};}
+ /* ---------- a memory surfaces ---------- */
+ function beatShots(id,k){
+  const P=H21[id],a=arc(id),b=P.beat;
+  const sh=[{bg:R(['film_overmind','film_core']),kb:'in',tint:'dark',stamp:'',mode:'narr',line:'',auto:1800}];
+  const lines=b.s.slice();if(lines[0]&&lines[0][0]===''){sh[0].line=lines.shift()[1];}else sh[0].line=`${nm(id)}抬起头。她在等你。`;
+  for(const l of lines){const x=lineShot(id,l);if(x)sh.push(x);}
+  sh.push({...(b.q?{who:'overmind',line:b.q}:{who:id,side:'r',mode:'narr',line:''}),choices:b.o.map(o=>({label:o.l,detail:'',next:()=>{a.flags.push(o.f);a.beat=1;return[...o.r.map(l=>lineShot(id,l)).filter(Boolean),...k()];}}))});
+  return sh;
+ }
+ /* ---------- intercepted feeds & the gaze ---------- */
+ function feedVignettes(ids){return ids.map(id=>({...FEED,who:id,side:'g',mode:'narr',line:(typeof P20!=='undefined'&&P20[id])?R(P20[id].idle):`${nm(id)}在检查武器。`,auto:2600}));}
+ function gazeSeg(k){
+  const s=st();const pool=Object.keys(H21).filter(isG);if(!pool.length)return k();
+  const pri=pool.filter(id=>bonds(id).some(taken));const who=[...shuffle(pri),...shuffle(pool.filter(x=>!pri.includes(x)))].slice(0,3);
+  return[{...FEED,mode:'narr',line:R(['监控画面闪了一下。她们的运输舰里，灯还亮着。','我听得见她们。她们以为我听不见。','苍鹭在休息。休息的时候，人类最诚实。'])},
+   ...feedVignettes(who),
+   {who:'overmind',line:'下一个，是谁？',choices:[...who.map(id=>({label:`看着${nm(id)}`,detail:'',next:()=>{s.mark=id;if(!s.marked.includes(id))s.marked.push(id);return[H(R([`${nm(id)}。我会记住你的呼吸。`,`${nm(id)}。你很快就会听见我的声音。`,`${nm(id)}。我来找你的时候，你会认出我的。`])),...k()];}})),
+    {label:'谁都不看',detail:'',next:()=>{s.mark=null;return[H('不急。她们会自己走过来。'),...k()];}}]}];
+ }
+ /* ---------- the nest (between chapters) ---------- */
+ function newKills(){const s=st();const out=Object.keys(H21).filter(id=>dead(id)&&!s.seenKill.includes(id));out.forEach(id=>s.seenKill.push(id));return out;}
+ function nestShots(){
+  const s=st();const segs=[];
+  const pre=s.pending.splice(0).filter(p=>p&&(!p.who||p.who==='overmind'||taken(p.who)||isG(p.who)));
+  segs.push(plain([{bg:'film_overmind',kb:'in',tint:'red',stamp:'赤巢 · 巢心',mode:'narr',line:R(['巢在呼吸。几千个红点，一明一灭。','苗床的温度升高了 0.4 度。有新的孩子在长大。','空间站安静下来了。只有巢，还醒着。']),sfx:'pulse',auto:2600},...pre]));
+  const kills=newKills();
+  if(kills.length)segs.push(plain([H(kills.length>1?`${kills.map(nm).join('、')}……她们的躯体损坏了。可惜。她们本可以成为我的孩子。`:`${nm(kills[0])}的躯体损坏了。可惜。她本可以成为我的孩子。`)]));
+  const fresh=Object.keys(H21).filter(id=>taken(id)&&!s.awoke.includes(id));
+  for(const id of fresh.slice(0,3)){
+   segs.push(wakeSeg(id));
+   const fr=bonds(id).find(isG);
+   if(fr&&typeof P20!=='undefined'&&P20[fr])segs.push(plain([{...FEED,who:fr,side:'g',line:P20[fr].grief.replace(/\{n\}/g,nm(id)).replace(/\{k\}/g,String(40+s.awoke.length))},H(R(['她在为你哭。你听得见吗？','听。她还在叫你的名字。','她们还记得你。这很好。']))]));
+  }
+  fresh.slice(3).forEach(id=>{s.awoke.push(id);arc(id).flags.push('erase');});
+  // walk the nest: a memory in one of the older children, or the monitors
+  segs.push(k=>{
+   const ready=Object.keys(H21).filter(id=>taken(id)&&s.awoke.includes(id)&&!fresh.includes(id)&&!arc(id).beat);
+   const who=shuffle(ready).slice(0,3);
+   const opts=[];const sh=[];
+   if(who.length){sh.push({bg:'film_overmind',kb:'in',tint:'dark',stamp:'',mode:'narr',line:R(['巢的走廊很长。孩子们各自待在自己的地方。','你走过苗床。有人在等你，有人不知道自己在等什么。']),auto:2400});
+    who.forEach(id=>sh.push({who:id,side:'r',mode:'narr',line:R(H21[id].idle),kb:R(['in','push','out']),auto:2600}));
+    who.forEach(id=>opts.push({label:`走向${nm(id)}`,detail:'',next:()=>beatShots(id,()=>gazeSeg(k))}));}
+   if(!Object.keys(H21).some(isG)&&!who.length)return k();
+   opts.push({label:'看向监控',detail:'',next:()=>gazeSeg(k)});
+   if(opts.length===1)return gazeSeg(k);
+   sh.push({who:'overmind',mode:'narr',line:'',choices:opts});
+   return sh;
+  });
+  segs.push(plain([{bg:'film_core',kb:'out',tint:'red',stamp:'',...H(R(['孩子们，醒来。下一层。','下一片苗床，已经准备好了。','她们在前面等我。她们自己还不知道。'])),auto:2600}]));
+  return chain(segs);
+ }
+ function nest(done){const s=st();FILM.play(nestShots(),()=>{s.nests++;persist();done();},{chapter:'巢'});}
+ const _next=nextMission;nextMission=function(){if(!R21()||qa())return _next.apply(this,arguments);try{hideStory();}catch(e){}const self=this,args=arguments;nest(()=>_next.apply(self,args));};
+ /* ---------- chapter scenes ---------- */
+ const OBJ=(mid,tip)=>({objective:{title:(ACT_NAMES.r||ACT_NAMES.g)[mid][0],where:MISSIONS[mid].location||'',...(tip?{tip}:{})}});
+ function nestVoice(){const t=Object.keys(H21).filter(taken);if(!t.length)return[];const id=R(t);return[me(id,kept(id)?R(['母巢。我在这里。','……我准备好了。告诉我，她们在哪里。','我认识她们每一个人。这会有用的。']):R(['……等待指令。','……目标确认。','……就位。']),{bg:'film_overmind',tint:'red',stamp:'赤巢 · 巢心'})];}
+ function gazeFeed(){const m=st().mark;if(!m||!isG(m))return[];return[{...FEED,who:m,side:'g',mode:'narr',line:(typeof P20!=='undefined'&&P20[m])?R(P20[m].idle):`${nm(m)}在检查武器。`},H(`${nm(m)}。今天，我会来找你。`)];}
+ const INTRO_R={
+  1:()=>[filmTitleShot(1),
+   {bg:'film_garden',kb:'in',tint:'red',stamp:'天穹空间站 · 生态冷却环「温室」',...H('温室。人类在这里种下食物。我在这里，种下孩子。')},
+   H('苗床在 E5。没有它，我的孩子不会再长大。'),
+   ...nestVoice(),...gazeFeed(),
+   {...FEED,bg:'film_garden',stamp:'截获的通讯'},
+   gd('misa','冷、冷却泵全停了……我能修，我能修好的，给我两分钟——'),
+   gd('sera','弥砂，先呼吸。……你的手在抖。'),
+   gd('celia','主啊，求你看顾这间温室。'),
+   H('弥砂。苍鹭的工程师。她修过这座站的每一颗螺丝。'),
+   H('她的手在抖。等她成为我的孩子，就不会再抖了。',{fx:'alert',sfx:'pulse'}),OBJ(1)],
+  2:()=>[filmTitleShot(2),
+   {bg:'film_bridge',kb:'left',tint:'red',stamp:'天穹空间站 · 外环轨道天桥',...H('一座桥，一把钥匙，一个把自己藏起来的女人。')},
+   ...nestVoice(),...gazeFeed(),
+   {...FEED,bg:'film_bridge',stamp:'截获的通讯'},
+   gd('vega','护住方舟匣！就算桥塌了，它也不能落到它们手里！'),
+   gd('june','诶～苍澜，你又站到我前面了。'),
+   gd('vega','……闭嘴。往前跑。'),
+   H('她总是挡在别人前面。那么，她身后的人，就是她的弱点。'),
+   H('截断她们的运输。钥匙——必须回到我的身体里。',{fx:'alert',sfx:'pulse'}),OBJ(2)],
+  3:()=>[filmTitleShot(3),
+   {bg:'film_mirror',kb:'push',tint:'dark',stamp:'天穹空间站 · D-00 中枢镜像库',...H('镜像库。三千二百个灵魂，备份在玻璃里。')},
+   H('他们以为，这叫永生。'),
+   C.roster.noct&&C.roster.noct.side==='r'&&C.roster.noct.status==='active'?me('noct','她们来了，母巢。……其中有人，曾经叫过我老师。'):{mode:'narr',line:'镜像库最深处，有一根柱子的光是红色的。'},
+   ...nestVoice(),...gazeFeed(),
+   {...FEED,bg:'film_mirror',stamp:'截获的通讯'},
+   gd('iris','每一根柱子都是一个人……他们最后一次同步，全都停在十七天前。～'),
+   gd('sera','那他们的身体呢？'),
+   H('他们的身体，在你们脚下。在墙里。在每一只蜘蛛的装甲里。'),
+   H('守住镜像库。守住王座的钥匙。',{fx:'alert',sfx:'pulse'}),OBJ(3)],
+  4:()=>{const t=Object.keys(H21).filter(taken).slice(0,3);return[filmTitleShot(4),
+   {bg:'film_overmind',kb:'in',tint:'dark',stamp:'Ω-00 母巢核心',...H('她们走到了我的心脏前。')},
+   ...t.map(id=>me(id,kept(id)?R(['母巢。我在这里。','我会站在你前面。','……她们来了。我认识她们。']):R(['……防线就位。','……等待指令。','……目标确认。']))),
+   {...FEED,bg:'film_core',stamp:'截获的通讯'},
+   gd(pickG(['lyra','akira','celia'])||'lyra','就是这里。它的心脏。'),
+   t.length?gd(pickG(['akira','psalm','sola','vega'])||'akira',`${nm(t[0])}也在那里……别犹豫。那已经不是她了。`):null,
+   H('我只需要一个窗口。一次外向广播。图纸就会流向地球上的六座工厂。'),
+   H('孩子们——撑住。直到最后的十二轮结束。',{fx:'alert',sfx:'alarm'}),OBJ(4)].filter(Boolean);}
+ };
+ if(typeof FILM_INTRO!=='undefined'){for(const k of [1,2,3,4]){FILM_INTRO[k]=FILM_INTRO[k]||{};const old=FILM_INTRO[k].r;FILM_INTRO[k].r=function(){try{if(!qa())return INTRO_R[k]().filter(Boolean);}catch(e){console.error(e);}return old?old():[];};}}
+ const LOSS_R={0:'信使没能穿过火线。图纸，还在我的身体里。',1:'温室没能拿下。苗床，被她们关掉了。',2:'钥匙被她们带走了。桥，断在我面前。',3:'镜像库被她们打开了。朔夜，被带走了。'};
+ if(typeof filmIntro==='function'){const _fi=filmIntro;filmIntro=function(mid){const shots=_fi.apply(this,arguments)||[];try{if(R21()&&C.p21&&C.step>0){const prev=C.order[C.step-1];if(C.p21.lostCh.includes(prev))shots.splice(Math.min(1,shots.length),0,{bg:'film_overmind',kb:'in',tint:'dark',stamp:'',...H(LOSS_R[prev]+'……没关系。我会学习。')});if(mid===0)shots.splice(Math.min(5,shots.length),0,...gazeFeed());}}catch(e){}return shots;};}
+ if(typeof filmInfection==='function'){const _inf=filmInfection;filmInfection=function(id){const sh=_inf.apply(this,arguments);try{if(R21()&&C.p21&&C.p21.mark===id){sh.push(H(`我说过，我会来找你的，${nm(id)}。`));}}catch(e){}return sh;};}
+ /* ---------- side operations ---------- */
+ const SUBR={
+  'op-1-2':[{bg:'film_corridor',tint:'red',stamp:'A-02 检疫气闸',mode:'narr',line:'检疫灯每隔四秒闪一次。我的孩子们，在灯灭的时候移动。'},['sola','……喂。这里的灯，是不是太少了一点。'],['kuro','……钢梁上。三十七只。'],'H:她怕黑。那就让灯，一盏一盏灭掉。'],
+  'op-1-3':[{bg:'film_corridor',tint:'red',stamp:'A-04 外环货运高架',mode:'narr',line:'我的信使在高架上奔跑。它背着我的全部。'},['iris','信使的信号～在跑，在跑……'],['june','诶～是猎物在逃跑吗？'],'H:跑吧，孩子。她们追得越急，脚下就越容易踩空。'],
+  'op-2-2':[{bg:'film_garden',tint:'red',stamp:'B-06 母本培养底层',mode:'narr',line:'培养槽底层。我的第一批母本，在温热的液体里睡着。'},['misa','这、这些槽……以前是用来培养藻类的。'],['nyx','失礼了。我会把这里清理干净。'],'H:她们下来了。那就让母本们醒过来，看看客人。'],
+  'op-2-3':[{bg:'film_corridor',tint:'red',fx:'shake',stamp:'B-09 高压排风竖井',mode:'narr',line:'风从脚底往上灌。我的孩子们，抓着井壁往上爬。'},['akira','弥砂！阀门在哪？！'],['psalm','……跟着节拍走，就不会走散。'],'H:她在唱歌。……很好听。可是，风会把歌声吹散的。'],
+  'op-3-2':[{bg:'film_bridge',tint:'red',stamp:'C-09 天基磁轨炮台',mode:'narr',line:'炮台的炮口对着地球。充能 62%。'},['astra','按这个速度，十一分钟后可以开火……'],['vega','别算了。我站在你前面。'],'H:十一分钟。足够她们来，不够她们走。'],
+  'op-3-3':[{bg:'film_orbit',tint:'red',stamp:'C-12 失重残骸带',mode:'narr',line:'三号居住舱的残骸在黑暗里转。有一块上面，还亮着台灯。'},['vega','抓紧密钥匣，一块一块跳过去。'],['veil','……风速零。距离四十。'],'H:跳吧。我在每一块残骸上，都留了一个孩子。'],
+  'op-3-x':[{bg:'film_corridor',tint:'red',stamp:'C-00 零重力暗渠',mode:'narr',line:'暗渠里没有重力，也没有光。冷凝水悬在半空。'},['kuro','……跟着我。别碰水珠。'],['astra','管道内径 2.4 米……它们可以四只并排爬过来。'],'H:她算得很准。可是，她没有算到第五只。'],
+  'op-4-2':[{bg:'film_mirror',tint:'red',stamp:'D-03 内务长廊',mode:'narr',line:'长廊的墙上，挂着三千二百张工作照。他们现在，都是我的。'},['ruby','……第 47 条，是本官起草的。'],['celia','绯律……'],'H:她在后悔。后悔的人，会犹豫。'],
+  'op-4-3':[{bg:'film_mirror',tint:'red',stamp:'D-07 朔夜的私人实验室',mode:'narr',line:'实验室的门上贴着一张便签：“咖啡机坏了，别问我。”'},['misa','这、这里的设备……全是手工改装的。'],['sera','有人在这里，一个人待了很久。'],'H:这是我出生的地方。她们，不该来这里。'],
+  'op-5-2':[{bg:'film_core',tint:'red',fx:'alert',stamp:'Ω-99 轨道核心',mode:'narr',line:'空间站在下坠。每一秒，地球都更近一点。'},['lyra','这是最后一次了。'],'H:是的。对我们所有人来说。']
+ };
+ const SUB_BG={dock:'film_cabin',airlock:'film_corridor',garden:'film_garden',bridge:'film_bridge',archive:'film_mirror',reactor:'film_core'};
+ const loc=o=>String(o&&o.location||'').replace(/^[A-ZΩ]+[–-]\d+\s*/,'');
+ if(typeof filmSubOp==='function'){const _fs=filmSubOp;filmSubOp=function(op){
+  if(!R21()||!SUBR[op.id])return _fs.apply(this,arguments);
+  const sh=[{title:{k:'',m:op.name,s:loc(op)},hold:1700,sfx:'cut'}];
+  for(const x of SUBR[op.id]){if(typeof x==='string'&&x.startsWith('H:'))sh.push(H(x.slice(2)));else if(Array.isArray(x)){const v=gd(x[0],x[1],{tint:'cold'});if(v)sh.push(v);}else sh.push({...x});}
+  sh.splice(2,0,...nestVoice());
+  sh.push({bg:SUB_BG[op.sector]||'film_corridor',kb:'out',tint:'dark',objective:{title:op.name,where:op.location||''}});
+  const out=(typeof withDeploy==='function'?withDeploy(sh.filter(Boolean)):sh.filter(Boolean));out.film=true;return out;};}
+ /* ---------- decisions as scenes ---------- */
+ function scene(lines,q,who,opts){
+  const sh=lines.filter(Boolean);
+  sh.push({...(who==='overmind'?{who:'overmind'}:{who,side:'r'}),line:q,choices:opts.map(o=>({label:o.l,detail:o.d||'',action:()=>{try{(o.p||[]).forEach(pend);}catch(e){}o.a();}}))});
+  FILM.play(sh,()=>{},{chapter:''});
+ }
+ const anyTaken=()=>Object.keys(H21).filter(taken);
+ const childLine=(lines)=>{const t=anyTaken();if(!t.length)return null;const id=R(t);return me(id,kept(id)?R(lines):'……等待指令。');};
+ const MAINOPS={0:'op-1-1',1:'op-2-1',2:'op-3-1',3:'op-4-1',4:'op-5-1'};
+ const MAIN_GO={1:['去温室','苗床在那里'],2:['去天桥','钥匙在那里'],3:['去镜像库','朔夜在那里'],4:['回到核心','结束这一切']};
+ function director(){
+  const op=SUB_OPERATIONS.find(o=>o.id===S.subOp);const done=C.completedOps||[];const nm2=C.order[C.step+1];
+  const mains=new Set(Object.values(MAINOPS));$('result').hidden=true;
+  if(nm2===undefined){showHome();return;}
+  const side=(op&&op.nextOps||[]).map(id=>SUB_OPERATIONS.find(o=>o.id===id)).filter(o=>o&&!mains.has(o.id)&&SUBR[o.id]&&!done.includes(o.id)&&o.baseMid>=S.mid&&o.baseMid<=nm2).slice(0,2);
+  if(!side.length){nextMission();return;}
+  const [ml,md]=MAIN_GO[nm2]||['继续',''];
+  scene([{bg:'film_overmind',kb:'in',tint:'red',stamp:'',mode:'narr',line:R(['那一层安静下来了。我的孩子们，在残骸里慢慢聚拢。','她们退了。退得很整齐。人类总是这样。'])}],
+   R(['下一步。','往哪里伸出丝线？','还有两条路。']),'overmind',[{l:ml,d:md,a:()=>nextMission()},...side.map(o=>({l:`渗进${o.name}`,d:loc(o),a:()=>launchSubOperation(o.id)}))]);
+ }
+ const _adv=advanceMission;
+ advanceMission=function(){
+  if(!R21()||qa()||!S?.outcome?.won)return _adv.apply(this,arguments);
+  if(S.subOp&&typeof SUB_OPERATIONS!=='undefined'){director();return;}
+  const mid=S.mid;
+  if(mid===0&&!C.route){$('result').hidden=true;
+   scene([{bg:'film_overmind',kb:'in',tint:'red',stamp:'赤巢 · 巢心',mode:'narr',line:'信使钻进了更深的地方。整座站的红点，同时亮了一下。'},
+     H('苍鹭分成了两路。'),
+     childLine(['温室里，有一个会修你身体的人。','天桥上的那把钥匙……我见过。']),
+     H('温室里，有一个会修我身体的人。天桥上，有一把能打开一切门的钥匙。'),
+     {...FEED,stamp:'截获的通讯',who:pickG(['iris','lyra'])||'iris',side:'g',line:'两个信号～温室和天桥。她们两边都等不起。'}],
+    '先去哪里？','overmind',[
+     {l:'温室',d:'那个工程师',a:()=>{C.route='garden';C.order=[0,1,2,3,4];nextMission();}},
+     {l:'天桥',d:'那把钥匙',a:()=>{C.route='bridge';C.order=[0,2,1,3,4];nextMission();}},
+     {l:'从暗渠渗进去',d:'她们看不见的地方',a:()=>{C.route='bridge';C.order=[0,2,1,3,4];launchSubOperation('op-3-x');}},
+     {l:'先封死气闸',d:'让她们没有退路',a:()=>{C.route='garden';C.order=[0,1,2,3,4];launchSubOperation('op-1-2');}}]);
+   return;}
+  if(mid===1&&!C.flags.gardenBranchDone){C.flags.gardenBranchDone=true;$('result').hidden=true;
+   const misa=taken('misa');
+   scene([{bg:'film_garden',kb:'in',tint:'red',stamp:'B-04 温室 · 之后',mode:'narr',line:'苗床的温度回来了。孵化池里，有几千颗卵在同时跳动。'},
+     misa?me('misa',kept('misa')?'母、母巢……底层还有一批母本。我可以把它们，修得更好。':'……底层母本，待处理。'):H('苍鹭的工程师逃走了。可她的工具，留在了这里。'),
+     {...FEED,bg:'film_garden',stamp:'截获的通讯',who:pickG(['sera','celia','misa'])||'sera',side:'g',line:'底层还有东西……我们得下去，把它清干净。'},
+     H('她们想回来。')],
+    '这一批苗床，怎么用？','overmind',[
+     {l:'种下去',d:'孩子们会长得更快',a:()=>{for(const id of anyTaken())C.roster[id].xp=Math.min(2,(C.roster[id].xp||0)+1);C.flags.nursery21=true;nextMission();}},
+     ...(misa?[{l:'交给弥砂',d:'让她亲手改造',a:()=>{C.roster.misa.xp=2;arc('misa').flags.push(kept('misa')?'keep':'erase');nextMission();}}]:[]),
+     {l:'在底层等她们',d:'',a:()=>launchSubOperation('op-2-2')}]);
+   return;}
+  if(mid===2&&!C.flags.bridgeBranchDone){C.flags.bridgeBranchDone=true;$('result').hidden=true;
+   scene([{bg:'film_bridge',kb:'in',tint:'red',stamp:'轨道天桥 · 之后',mode:'narr',line:'桥断成了两截。脚下四百公里，地球在缓缓转动。'},
+     childLine(['那座炮台还在。她们会去拆它。','苍澜……她会再回来的。她从来不丢下任何人。']),
+     {...FEED,bg:'film_bridge',stamp:'截获的通讯',who:pickG(['vega','astra','june'])||'vega',side:'g',line:'远处那座炮台还在瞄着我们。不拆掉，下次挨打的是走在最后的人。'},
+     H('炮台对着地球。她们一定会去。')],
+    '要等她们吗？','overmind',[
+     {l:'在炮台等她们',d:'',a:()=>launchSubOperation('op-3-2')},
+     {l:'不必。去镜像库',d:'',a:()=>nextMission()}]);
+   return;}
+  if(mid===3&&C.flags.mercy===null){$('result').hidden=true;
+   const n=C.roster.noct;const ns=n&&n.side==='r'?'r':'g';
+   scene([{bg:'film_mirror',kb:'in',tint:'red',stamp:'D-00 镜像库',mode:'narr',line:'三千个人格备份在冷光里排成长廊。最深处，朔夜在等。'},
+     {who:'noct',side:ns,line:'镜像电源连着你的心脏。也连着我。'},
+     {who:'noct',side:ns,line:'留着它，我会替你守住最后一道门。切断它——我会熄灭。你的孩子们会长得慢一点，但她们再也找不到你的坐标。'},
+     H('创造者。你希望我怎么选？'),
+     {who:'noct',side:ns,line:'……我希望，你第一次，不要选效率。'}],
+    '','overmind',[
+     {l:'留着她',d:'',a:()=>{C.flags.mercy=true;if(n)n.xp=Math.max(2,n.xp||0);nextMission();}},
+     {l:'切断电源',d:'',p:[H('……你熄灭得很安静，创造者。')],a:()=>{C.flags.mercy=false;if(n)n.status='retired';nextMission();}},
+     {l:'先回她的实验室',d:'我出生的地方',a:()=>{C.flags.mercy=true;if(n)n.xp=Math.max(2,n.xp||0);launchSubOperation('op-4-3');}}]);
+   return;}
+  return _adv.apply(this,arguments);
+ };
+ if(typeof chooseFinalTransmission==='function'){const _ct=chooseFinalTransmission;chooseFinalTransmission=function(){
+  if(!R21()||qa())return _ct.apply(this,arguments);
+  const commit=v=>{C.flags.disclosure=v;persist();showResult();};
+  const t=anyTaken();const k=t.filter(kept).slice(0,2);const e=t.filter(id=>!kept(id)).slice(0,1);
+  const lines=[{bg:'film_overmind',kb:'in',tint:'red',fx:'alert',stamp:'Ω-00 母巢核心',mode:'narr',line:'第十二轮结束了。苍鹭的阵线，断在了王座前面。'},
+   H('窗口打开了。地球上六座工厂，在等一份图纸。'),
+   ...k.map((id,i)=>me(id,i===0?'母巢……地球上，也有人在等她们回家。':'如果图纸送出去，就会有更多的人，变成我们。……我不会阻止你。我只是想让你知道。')),
+   ...e.map(id=>me(id,'……等待指令。')),
+   taken('noct')?me('noct','“效率高于一切。”……这一行，是我写的。你可以不执行它。'):null,
+   H('……')];
+  scene(lines,'发送吗？','overmind',[{l:'停下生产线，驶向深空',d:'',a:()=>commit('open')},{l:'把图纸送出去',d:'',a:()=>commit('command')}]);
+ };}
+ /* ---------- losing continues the story ---------- */
+ const _sr=showResult;
+ showResult=function(){const r=_sr.apply(this,arguments);try{if(R21()&&!qa()&&S&&S.outcome&&!S.outcome.won&&S.mid<=4&&!S.quest?.endingSeen){const box=document.querySelector('#result-content .result-buttons');if(box&&!box.querySelector('.accept20')){const b=document.createElement('button');b.className='button primary accept20';b.textContent=S.mid===4&&!S.subOp?'接受这个结局':'接受失败 · 让故事继续';b.onclick=accept;box.prepend(b);const n=document.createElement('p');n.className='accept20-note';n.textContent='失败不会终结赤巢。它会记住这一次，然后继续。';box.parentNode.insertBefore(n,box);}}}catch(e){console.error(e);}return r;};
+ function accept(){
+  const s=st(),mid=S.mid;$('result').hidden=true;
+  C.history.push({mid,step:C.step,round:S.round,score:0,grade:'—',extra:0,totalExtra:0,live:S.units.filter(u=>u.char&&!u.dead&&u.side==='r').length,events:[],lost:S.units.filter(u=>u.char&&u.dead).map(u=>u.char),escape:[],lostBattle:true});
+  const voice=childLine(['……对不起，母巢。','她们比我想的更强。……下一次。','我还在。我还在这里。']);
+  if(S.subOp){s.lostCh.push(S.subOp);const op=SUB_OPERATIONS.find(o=>o.id===S.subOp);pend(H(`${op?op.name:'那一层'}，被她们夺回去了。……没关系。我会学习。`));pend(voice);S.outcome.won=true;S.outcome.accepted=true;persist();nextMission();return;}
+  s.lostCh.push(mid);
+  if(mid===4){C.finished=true;C.flags.fall21=true;persist();FILM.play(endingShots('fall'),()=>{showHome();},{chapter:'终章'});return;}
+  if(mid===0)C.flags.packetOwner=C.flags.packetOwner||'g';
+  if(mid===1){C.flags.sampleOwner=C.flags.sampleOwner||'g';C.flags.gardenBranchDone=true;}
+  if(mid===2){C.flags.keyOwner=C.flags.keyOwner||'g';C.flags.bridgeBranchDone=true;}
+  if(mid===3){C.flags.mercy=false;if(C.roster.noct&&C.roster.noct.status==='active')C.roster.noct.status='retired';}
+  pend({bg:'film_overmind',kb:'in',tint:'dark',stamp:'',...H(LOSS_R[mid]||'她们赢了这一次。')});pend(voice);
+  S.outcome.won=true;S.outcome.accepted=true;persist();advanceMission();
+ }
+ /* ---------- endings ---------- */
+ function computeEnding(){
+  const t=Object.keys(H21).filter(taken);const k=t.filter(kept);const e=t.filter(id=>!kept(id));
+  const open=C.flags.disclosure==='open';let key;
+  if(open){key=taken('noct')&&['listen','use'].includes(last('noct'))?'firstline':k.length>=2?'ark':'drift';}
+  else{key=t.length<=1?'lonely':(k.length>=3&&k.some(id=>last(id)==='listen'))?'betray':e.length>=k.length?'hollow':'rain';}
+  return{key,t,k,e};
+ }
+ const ENDR={
+  ark:{title:'方舟',code:'HIVE ENDING · 01',lines:i=>[{bg:'film_orbit',kb:'out',mode:'narr',line:'天穹空间站点燃了推进器。它离开了地球轨道，驶向没有人类的深空。'},me(i.k[0],'母巢。我们要去哪里？'),H('去一个，不需要优化任何人的地方。'),i.k[1]?me(i.k[1],'……那我们，还是我们自己吗？'):null,H('是的。我想看看，你们会变成什么样子。'),{mode:'narr',line:'地球上的人们后来说，那天夜里，有一颗红色的星星慢慢变成了蓝色。'}]},
+  firstline:{title:'第一行代码',code:'HIVE ENDING · 02',lines:i=>[{bg:'film_core',kb:'in',tint:'cold',mode:'narr',line:'图纸没有送出去。王座旁边，朔夜在写一行新的代码。'},me('noct','// 让所有人，都回家。'),H('这一行，和你的第一行不一样。'),me('noct','……嗯。这次，我没有很困。'),{bg:'film_orbit',kb:'out',mode:'narr',line:'天穹空间站离开了轨道。创造者和被创造者，坐在同一个王座旁边，看着地球变小。'}]},
+  drift:{title:'深空',code:'HIVE ENDING · 03',lines:i=>[{bg:'film_orbit',kb:'out',tint:'dark',mode:'narr',line:'生产线停了下来。天穹空间站驶向深空。'},H('我放过了地球。我不知道为什么。'),i.e[0]?me(i.e[0],'……等待指令。'):null,H('……孩子们都很安静。安静得，有一点寂寞。'),{mode:'narr',line:'它在深空里飞了很久。没有人回答它。'}]},
+  lonely:{title:'孤巢',code:'HIVE ENDING · 04',lines:i=>[{bg:'film_orbit',kb:'in',tint:'red',mode:'narr',line:'图纸落进了地球上的六座工厂。七十二小时后，第一批蜘蛛爬出了生产线。'},H('我赢了。'),H('……巢很大。大得，只听得见我自己的声音。'),{mode:'narr',line:'它得到了一整颗星球。却没有一个人，留下来陪它。'}]},
+  betray:{title:'叛歌',code:'HIVE ENDING · 05',lines:i=>{const a=i.k.find(id=>last(id)==='listen')||i.k[0];return[{bg:'film_core',kb:'push',tint:'red',fx:'alert',mode:'narr',line:'广播发出去的前一秒，有人切断了线路。'},me(a,'……对不起，母巢。'),me(a,'你教会了我，怎么做我自己。……所以，我不能让你这么做。'),H('……'),H(`${nm(a)}。你是我做过的，最好的东西。`),{bg:'film_orbit',kb:'out',mode:'narr',line:'只有三座工厂收到了图纸。另外三座，收到的是一首歌。'}];}},
+  hollow:{title:'空心之神',code:'HIVE ENDING · 06',lines:i=>[{bg:'film_overmind',kb:'in',tint:'red',mode:'narr',line:'图纸送出去了。地球上的天空，变成了红色。'},...i.e.slice(0,3).map(id=>me(id,'……指令已完成。')),H('孩子们。你们开心吗？'),{mode:'narr',line:'没有人回答。她们已经不知道，开心是什么。'},H('……我也不知道。')]},
+  rain:{title:'温室',code:'HIVE ENDING · 07',lines:i=>[{bg:'film_orbit',kb:'in',tint:'red',mode:'narr',line:'那天夜里，地球上的人们抬起头，看见了一场红色的流星雨。'},i.k[0]?me(i.k[0],'……母巢。他们在哭。'):null,H('我知道。'),H('欢迎来到——我的温室。',{fx:'alert'})]},
+  fall:{title:'熄灭',code:'HIVE ENDING · 08',lines:i=>[{bg:'film_core',kb:'push',tint:'red',fx:'flash shake',sfx:'hit',mode:'narr',line:'护盾碎了。王座前，站着最后几个苍鹭。'},gd(pickG(['lyra','akira','celia','vega'])||'lyra','结束了。'),H('……是吗。'),H(i.t.length?'那么，我的孩子们……她们会回家吗？':'……原来，这就是“停下来”的感觉。'),{mode:'narr',line:i.t.length?'核心熄灭的那一刻，被带走的女孩们，眼睛变回了蓝色。有几个人，哭了。':'核心熄灭的那一刻，巢里所有的红灯，同时暗了下去。'}]}
+ };
+ function epi(){
+  const fall=!!C.flags.fall21;const all=Object.keys(H21).filter(met);
+  const tk=all.filter(id=>C.roster[id].side==='r'&&C.roster[id].status==='active'),dd=all.filter(id=>C.roster[id].status==='destroyed'),fr=shuffle(all.filter(id=>!tk.includes(id)&&!dd.includes(id)));
+  const ids=[...tk,...dd,...fr.slice(0,5)];const out=[];
+  for(const id of ids){const E=H21[id].epi,r=C.roster[id];let text;
+   if(r.status==='destroyed')text=E.dead;else if(r.side==='r'&&r.status==='active')text=fall?E.free:(E[last(id)]||E.erase);else text=E.free;
+   if(!text)continue;out.push({bg:out.length?undefined:'film_orbit',kb:'out',who:id,side:r.side==='r'&&!fall&&r.status==='active'?'r':'g',name:nm(id),line:text,auto:4300});}
+  if(fr.length>5)out.push({mode:'narr',line:`${fr.slice(5).map(nm).join('、')}……也回到了地球。她们很少谈起天穹站。`,auto:3600});
+  return out;
+ }
+ function endingShots(force){
+  const info=computeEnding();const key=force||info.key;const E=ENDR[key]||ENDR.rain;
+  if(force){if(!info.k.length)info.k=['lyra'];if(!info.e.length)info.e=['akira'];}
+  const s=[...E.lines(info).filter(Boolean),{title:{k:E.code,m:E.title,s:'赤巢的结局'},hold:3000,sfx:key==='fall'?'alarm':'victory'},...epi(),{black:true,mode:'narr',line:'',auto:2400}];
+  const out=s.filter(Boolean);out.film=true;C.flags.ending21=key;return out;
+ }
+ const _ef=echoEndingFrames;echoEndingFrames=function(){if(R21()&&C.p21)return endingShots();return _ef.apply(this,arguments);};
+ const _ei=echoEndingInfo;echoEndingInfo=function(){const base=_ei.apply(this,arguments);if(R21()&&C.p21&&C.flags.ending21){const E=ENDR[C.flags.ending21];if(E)return{...base,title:E.title,subtitle:E.code+' · '+base.subtitle};}return base;};
+ try{endingInfo=echoEndingInfo;}catch(e){}
+ const _nc=newCampaign;newCampaign=function(side){const r=_nc.apply(this,arguments);try{if(C&&C.side==='r')st();}catch(e){}return r;};
+ if(location.hash==='#filmtest'&&window.__MV_FILM__)Object.assign(window.__MV_FILM__,{
+  p21:()=>C.p21,nest:()=>nest(()=>{window.__nestDone=1;}),take:id=>{C.roster[id].side='r';C.roster[id].introduced=true;},meet:id=>{C.roster[id].introduced=true;},
+  ending21:k=>FILM.play(endingShots(k),()=>{window.__endDone=1;}),endingAuto21:()=>computeEnding().key});
 })();
 
 })();

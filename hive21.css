@@ -1,0 +1,5 @@
+/* M21 · 赤巢阵营：影片里的抉择用赤巢的颜色 */
+body.red-faction #film .fm-choices button{border-color:rgba(255,59,92,.3);border-left-color:#ff3b5c;background:linear-gradient(90deg,rgba(18,6,10,.94),rgba(12,5,8,.82))}
+body.red-faction #film .fm-choices button:hover,body.red-faction #film .fm-choices button:focus-visible{border-color:#ff5c78;background:linear-gradient(90deg,rgba(60,12,24,.96),rgba(22,6,12,.9))}
+body.red-faction #film .fm-choices button.picked{border-color:#ff8095;box-shadow:0 0 24px rgba(255,59,92,.35)}
+body.red-faction #film .fm-choices button small{color:#e9a9b4}
