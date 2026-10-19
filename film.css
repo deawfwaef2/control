@@ -138,3 +138,5 @@
 #film .fm-choices b{display:block;font-size:clamp(16px,1.3vw,19px);letter-spacing:.06em;color:#f2f6f9;margin-bottom:4px}
 #film .fm-choices small{display:block;font-size:14px;line-height:1.6;color:#9fb0bd}
 @media (max-width:760px){#film .fm-choices{bottom:calc(8.5vh + 170px)}#film .fm-choices small{font-size:12px}}
+
+#film.deploying{opacity:0!important;pointer-events:none!important;transition:opacity .45s}

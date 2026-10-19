@@ -7,7 +7,8 @@
     line:'text', mode:'narr|sys|voice|hive', fx:'flash|redflash|shake|static|alert' (space-separated),
     sfx:'cut|pulse|alarm|latch|knock|hit|capture|commit|victory', objective:{title,where,tip,go}}
    NEVER put design notes / requirement text into lines. Lines must read like film dialogue. */
-let filmShotHook=null;
+let filmShotHook=null,filmDeployHook=null;
+function withDeploy(shots){if(!Array.isArray(shots))return shots;const out=shots.slice();let i=-1;for(let k=out.length-1;k>=0;k--){if(out[k]&&typeof out[k]==='object'&&out[k].objective){i=k;break;}}if(i<0)return shots;out.splice(i,0,{deploy:true});if(shots.film)out.film=true;return out;}
 const FILM=(()=>{
  let root=null,st=null,auto=false;
  try{auto=localStorage.getItem('mv-film-auto')==='1';}catch(e){}
@@ -36,6 +37,7 @@ const FILM=(()=>{
   window.addEventListener('keydown',e=>{
    if(!st||root.hidden)return;
    const k=e.key;
+   if(st.deploying)return;
    if(st.choosing&&(k===' '||k==='Enter'||k==='ArrowRight'||k==='Escape')){if(document.activeElement&&document.activeElement.dataset&&document.activeElement.dataset.choice!==undefined&&k!=='ArrowRight'&&k!=='Escape')return;e.preventDefault();e.stopImmediatePropagation();return;}
    if(k===' '||k==='Enter'||k==='ArrowRight'){e.preventDefault();e.stopImmediatePropagation();if(st.objective&&k!=='ArrowRight')finish();else advance();}
    else if(k==='Escape'){e.preventDefault();e.stopImmediatePropagation();skip();}
@@ -102,6 +104,12 @@ const FILM=(()=>{
   if(typeof shot==='function')shot=shot();
   if(!shot){advance(true);return;}
   st.shot=shot;
+  if(shot.deploy){
+   if(typeof filmDeployHook!=='function'){advance(true);return;}
+   st.deploying=true;root.classList.add('deploying');clearTimers();const me=st;
+   setTimeout(()=>{if(st!==me)return;try{filmDeployHook(()=>{if(st!==me)return;st.deploying=false;root.classList.remove('deploying');advance(true);});}catch(e){console.error(e);st.deploying=false;root.classList.remove('deploying');advance(true);}},450);
+   return;
+  }
   q('.fm-progress').style.width=`${(st.i+1)/st.shots.length*100}%`;
   const title=q('.fm-title'),sub=q('.fm-sub'),obj=q('.fm-obj');
   obj.classList.remove('show');st.objective=false;st.choosing=false;q('.fm-ctl').style.visibility='';q('.fm-choices').classList.remove('show');q('.fm-choices').innerHTML='';
@@ -161,7 +169,8 @@ const FILM=(()=>{
  }
  function skip(){
   if(!st||st.choosing||(st.shot&&st.shot.choices))return;
-  const idx=st.shots.findIndex((s,i)=>i>st.i&&s&&typeof s==='object'&&s.objective);
+  if(st.deploying)return;
+  const idx=st.shots.findIndex((s,i)=>i>st.i&&s&&typeof s==='object'&&(s.objective||s.deploy));
   if(idx>=0&&!st.objective){st.i=idx;show();return;}
   finish();
  }

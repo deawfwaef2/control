@@ -276,6 +276,6 @@ function filmSubOp(op){
   s.push(H('孩子们，去把她们带回来。一个都不要少。'));
  }
  s.push({bg,kb:'out',tint:'dark',objective:{title:op.name,where:op.location||''}});
- const out=s.filter(Boolean);out.film=true;return out;
+ const out=withDeploy(s.filter(Boolean));out.film=true;return out;
 }
 if(location.hash==='#filmtest')window.__MV_FILM__.sub=id=>launchSubOperation(id);

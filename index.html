@@ -1321,6 +1321,8 @@ body{font-size:16px!important}
 #film .fm-choices small{display:block;font-size:14px;line-height:1.6;color:#9fb0bd}
 @media (max-width:760px){#film .fm-choices{bottom:calc(8.5vh + 170px)}#film .fm-choices small{font-size:12px}}
 
+#film.deploying{opacity:0!important;pointer-events:none!important;transition:opacity .45s}
+
 /* ===== M15 HUD — one-screen battle layout. Scoped to body.hud15 (desktop ≥1100px) ===== */
 :root{--hud-bg:rgba(8,13,20,.82);--hud-line:rgba(150,200,225,.16);--hud-acc:#6fd6ff;--hud-red:#ff5468;--hud-text:#e8eef3;--hud-dim:#8b9aa7}
 body.hud15{overflow:hidden}
@@ -1498,6 +1500,60 @@ body.hud15 .hud-side #flow-btn{font-size:13px!important;opacity:.75;text-align:l
 @media (max-width:1300px){body.hud15 .mission-heading .mission-location{display:none}}
 body.hud15 .mission-heading .micro-label{display:none!important}
 
+/* ===== M16 deploy sequence ===== */
+#deploy16{position:fixed;inset:0;z-index:950;cursor:pointer;animation:dpIn .4s ease both}
+#deploy16.out{opacity:0;transition:opacity .4s}
+@keyframes dpIn{from{opacity:0}to{opacity:1}}
+#deploy16 .dp-bar{position:absolute;left:0;right:0;height:7vh;min-height:48px;background:#000;display:flex;align-items:center;padding:0 3vw;box-shadow:0 0 40px rgba(0,0,0,.8)}
+#deploy16 .dp-bar.top{top:0;animation:dpBarT .6s cubic-bezier(.2,.7,.2,1) both}
+#deploy16 .dp-bar.bottom{bottom:0;justify-content:space-between;animation:dpBarB .6s cubic-bezier(.2,.7,.2,1) both}
+@keyframes dpBarT{from{transform:translateY(-100%)}}
+@keyframes dpBarB{from{transform:translateY(100%)}}
+#deploy16 .dp-cap{display:flex;align-items:baseline;gap:18px;color:#e8f3f8}
+#deploy16 .dp-cap small{font-size:12px;letter-spacing:.4em;color:#6fd6ff}
+#deploy16.r .dp-cap small{color:#ff5468}
+#deploy16 .dp-cap b{font-size:clamp(17px,1.5vw,22px);letter-spacing:.24em;font-weight:700}
+#deploy16 .dp-cap span{font-size:14px;color:#8b9aa7;letter-spacing:.1em}
+#deploy16 .dp-sub{font-size:clamp(16px,1.35vw,20px);color:#f1f5f8;letter-spacing:.08em}
+#deploy16 .dp-sub i{font-style:normal;font-size:12px;letter-spacing:.3em;color:#05121a;background:#6fd6ff;padding:3px 8px 3px 10px;margin-right:14px;vertical-align:3px}
+#deploy16 .dp-sub i.r,#deploy16.r .dp-sub i{background:#ff5468;color:#1a0508}
+#deploy16 .dp-skip{all:unset;cursor:pointer;font-size:14px;letter-spacing:.2em;color:#cfd8de;border:1px solid rgba(255,255,255,.25);padding:8px 16px}
+#deploy16 .dp-skip:hover{background:rgba(255,255,255,.1)}
+#deploy16.pulse::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(255,30,60,.0) 30%,rgba(255,30,60,.28));animation:dpPulse 1.1s ease-in-out infinite alternate;pointer-events:none}
+@keyframes dpPulse{from{opacity:.3}to{opacity:1}}
+/* speech card */
+#deploy16 .dp-card{position:fixed;display:flex;gap:14px;align-items:flex-start;padding:14px 16px 14px 14px;background:linear-gradient(100deg,rgba(6,12,18,.96),rgba(10,22,32,.92));border:1px solid rgba(111,214,255,.35);border-left:4px solid #6fd6ff;box-shadow:0 18px 50px rgba(0,0,0,.7);opacity:0;transform:translateY(8px) scale(.98);transition:opacity .25s,transform .35s cubic-bezier(.2,.7,.2,1);pointer-events:none}
+#deploy16 .dp-card.show{opacity:1;transform:none}
+#deploy16 .dp-card.r{border-color:rgba(255,84,104,.4);border-left-color:#ff5468;background:linear-gradient(100deg,rgba(24,4,9,.96),rgba(30,8,14,.92))}
+#deploy16 .dp-card img{width:84px;height:84px;object-fit:cover;object-position:50% 14%;border:1px solid rgba(255,255,255,.2);flex:0 0 auto;background:#0b141c}
+#deploy16 .dp-card.bw img{filter:saturate(1.2) hue-rotate(-8deg) contrast(1.05);box-shadow:0 0 0 2px #ff2d4a,0 0 18px rgba(255,45,74,.6)}
+#deploy16 .dp-txt small{display:block;font-size:12px;letter-spacing:.14em;color:#6fd6ff;margin-bottom:3px}
+#deploy16 .dp-card.r .dp-txt small{color:#ff7a8a}
+#deploy16 .dp-txt b{display:block;font-size:22px;letter-spacing:.2em;color:#fff;margin-bottom:6px}
+#deploy16 .dp-txt p{margin:0;font-size:16px;line-height:1.6;color:#dfe7ec}
+#deploy16 .dp-card.bw .dp-txt p{color:#ffd9de;text-shadow:0 0 10px rgba(255,40,70,.45)}
+/* spotlight ring */
+#deploy16 .dp-ring{position:fixed;transform:translate(-50%,-50%) scale(.6);border-radius:50%;border:2px solid #6fd6ff;box-shadow:0 0 30px rgba(111,214,255,.6),inset 0 0 30px rgba(111,214,255,.35);opacity:0;pointer-events:none}
+#deploy16 .dp-ring.r{border-color:#ff5468;box-shadow:0 0 30px rgba(255,84,104,.6),inset 0 0 30px rgba(255,84,104,.35)}
+#deploy16 .dp-ring.show{animation:dpRing 1.1s cubic-bezier(.2,.7,.2,1) both}
+@keyframes dpRing{0%{opacity:0;transform:translate(-50%,-50%) scale(1.6)}35%{opacity:1}100%{opacity:.85;transform:translate(-50%,-50%) scale(1)}}
+/* board states */
+#board.dp-on .token{opacity:0;transform:scale(.5)}
+#board.dp-on .token.dp-show{opacity:1;transform:none}
+#board.dp-on .token.dp-drop{animation:dpDrop .6s cubic-bezier(.2,.9,.25,1.15) both;animation-delay:var(--dpi,0ms)}
+@keyframes dpDrop{0%{opacity:0;transform:translateY(-38px) scale(1.7);filter:brightness(3)}60%{opacity:1;filter:brightness(1.6)}100%{opacity:1;transform:none;filter:none}}
+#board.dp-on .cell{opacity:0}
+#board.dp-on.dp-wave .cell{animation:dpCell .5s ease both;animation-delay:var(--dpd,0ms)}
+@keyframes dpCell{0%{opacity:0;transform:scale(.7);box-shadow:0 0 0 1px #6fd6ff,0 0 24px rgba(111,214,255,.8)}70%{opacity:1}100%{opacity:1;transform:none}}
+.board-surround.dp-on .board-deduction-layer{opacity:0;transition:opacity .5s}
+.board-surround.dp-on.dp-markers .board-deduction-layer{opacity:1}
+
+body.dp-focus #hud-left,body.dp-focus #game .right-rail,body.dp-focus .hud-side,body.dp-focus .stage-ribbon,body.dp-focus .board-toolbar{opacity:.12;transition:opacity .5s}
+#deploy16 .dp-hero{position:fixed;bottom:7vh;height:84vh;width:auto;max-width:34vw;object-fit:contain;object-position:bottom;opacity:0;pointer-events:none;filter:drop-shadow(0 0 30px rgba(0,0,0,.8));-webkit-mask-image:linear-gradient(180deg,transparent,#000 14%,#000 72%,transparent),linear-gradient(90deg,transparent,#000 22%,#000 78%,transparent);-webkit-mask-composite:source-in;mask-image:linear-gradient(180deg,transparent,#000 14%,#000 72%,transparent),linear-gradient(90deg,transparent,#000 22%,#000 78%,transparent);mask-composite:intersect;transition:opacity .35s,transform .6s cubic-bezier(.2,.7,.2,1)}
+#deploy16 .dp-hero.left{transform:translateX(-40px)}
+#deploy16 .dp-hero.right{transform:translateX(40px)}
+#deploy16 .dp-hero.show{opacity:1;transform:none}
+#deploy16 .dp-hero.r.show{filter:drop-shadow(0 0 26px rgba(255,30,60,.55))}
 </style>
 </head>
 <body>
@@ -5808,7 +5864,8 @@ if(location.hash==='#qa')Object.assign(window.__MV_QA__,{audio(){return EchoAudi
     line:'text', mode:'narr|sys|voice|hive', fx:'flash|redflash|shake|static|alert' (space-separated),
     sfx:'cut|pulse|alarm|latch|knock|hit|capture|commit|victory', objective:{title,where,tip,go}}
    NEVER put design notes / requirement text into lines. Lines must read like film dialogue. */
-let filmShotHook=null;
+let filmShotHook=null,filmDeployHook=null;
+function withDeploy(shots){if(!Array.isArray(shots))return shots;const out=shots.slice();let i=-1;for(let k=out.length-1;k>=0;k--){if(out[k]&&typeof out[k]==='object'&&out[k].objective){i=k;break;}}if(i<0)return shots;out.splice(i,0,{deploy:true});if(shots.film)out.film=true;return out;}
 const FILM=(()=>{
  let root=null,st=null,auto=false;
  try{auto=localStorage.getItem('mv-film-auto')==='1';}catch(e){}
@@ -5837,6 +5894,7 @@ const FILM=(()=>{
   window.addEventListener('keydown',e=>{
    if(!st||root.hidden)return;
    const k=e.key;
+   if(st.deploying)return;
    if(st.choosing&&(k===' '||k==='Enter'||k==='ArrowRight'||k==='Escape')){if(document.activeElement&&document.activeElement.dataset&&document.activeElement.dataset.choice!==undefined&&k!=='ArrowRight'&&k!=='Escape')return;e.preventDefault();e.stopImmediatePropagation();return;}
    if(k===' '||k==='Enter'||k==='ArrowRight'){e.preventDefault();e.stopImmediatePropagation();if(st.objective&&k!=='ArrowRight')finish();else advance();}
    else if(k==='Escape'){e.preventDefault();e.stopImmediatePropagation();skip();}
@@ -5903,6 +5961,12 @@ const FILM=(()=>{
   if(typeof shot==='function')shot=shot();
   if(!shot){advance(true);return;}
   st.shot=shot;
+  if(shot.deploy){
+   if(typeof filmDeployHook!=='function'){advance(true);return;}
+   st.deploying=true;root.classList.add('deploying');clearTimers();const me=st;
+   setTimeout(()=>{if(st!==me)return;try{filmDeployHook(()=>{if(st!==me)return;st.deploying=false;root.classList.remove('deploying');advance(true);});}catch(e){console.error(e);st.deploying=false;root.classList.remove('deploying');advance(true);}},450);
+   return;
+  }
   q('.fm-progress').style.width=`${(st.i+1)/st.shots.length*100}%`;
   const title=q('.fm-title'),sub=q('.fm-sub'),obj=q('.fm-obj');
   obj.classList.remove('show');st.objective=false;st.choosing=false;q('.fm-ctl').style.visibility='';q('.fm-choices').classList.remove('show');q('.fm-choices').innerHTML='';
@@ -5962,7 +6026,8 @@ const FILM=(()=>{
  }
  function skip(){
   if(!st||st.choosing||(st.shot&&st.shot.choices))return;
-  const idx=st.shots.findIndex((s,i)=>i>st.i&&s&&typeof s==='object'&&s.objective);
+  if(st.deploying)return;
+  const idx=st.shots.findIndex((s,i)=>i>st.i&&s&&typeof s==='object'&&(s.objective||s.deploy));
   if(idx>=0&&!st.objective){st.i=idx;show();return;}
   finish();
  }
@@ -6157,7 +6222,7 @@ openMission=function(id,withStory=true){
  try{filmBaseOpenMission(id,false);}finally{showTutorialToast=tut;}
  document.body.classList.remove('sandtable-cinema-open');
  if(!withStory||location.hash==='#qa'){showTutorialToast();return;}
- FILM.play(filmIntro(id),()=>{try{render();}catch(e){}showTutorialToast();},{chapter:`CHAPTER ${String(filmChapterNo()).padStart(2,'0')} / ${CHAPTER_EN[id]||''}`});
+ FILM.play(withDeploy(filmIntro(id)),()=>{try{render();}catch(e){}showTutorialToast();},{chapter:`CHAPTER ${String(filmChapterNo()).padStart(2,'0')} / ${CHAPTER_EN[id]||''}`});
 };
 // 2) Act transitions, warnings and infection scenes play through the film player.
 transitionFrames=function(mid,stage,side){const f=filmTransition(mid,stage,side);f.film=true;return f;};
@@ -6461,7 +6526,7 @@ function filmSubOp(op){
   s.push(H('孩子们，去把她们带回来。一个都不要少。'));
  }
  s.push({bg,kb:'out',tint:'dark',objective:{title:op.name,where:op.location||''}});
- const out=s.filter(Boolean);out.film=true;return out;
+ const out=withDeploy(s.filter(Boolean));out.film=true;return out;
 }
 if(location.hash==='#filmtest')window.__MV_FILM__.sub=id=>launchSubOperation(id);
 
@@ -6763,6 +6828,218 @@ filmShotHook=function(shot,changed){
 })();
 
 
+/* ===== M16 DEPLOY — "units descend one by one and speak" opening, played ON the real board =====
+   Runs between the CG film and the objective card (film shot {deploy:true}).
+   Order: tactical projection unfolds → enemy forces appear → our girls drop in one by one, each with a
+   portrait speech card + voice bark → objective markers light up. Click = next, 跳过 = finish. */
+const dpEsc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const BRAINWASH={
+ lyra:'母巢的指令……比我写过的任何作战计划都要完美。全员——向我靠拢。',
+ akira:'哈……好轻松。不用再想着把谁带回去了，只要撕碎就好。',
+ lark:'大家，好久不见。胸口这里一直在唱歌哦……你们也想听吗？',
+ iris:'信号好干净～母巢的频道里一点杂音都没有。嘻嘻，我帮你们调个频吧？',
+ misa:'维生管线已经全部改造好了……孵化效率提升百分之三百一十二。母巢夸我了。',
+ veil:'……瞄准镜里，只剩下你们的胸口了。',
+ noct:'我设计了这座站，也设计了你们的结局。别怕，很快的。',
+ sera:'受伤了吗？过来，让我抱抱你……然后你就再也不会痛了。',
+ vega:'盾牌……是用来保护母巢的。我终于想起来了。',
+ ruby:'违抗者，裁决。顺从者，赐福。',
+ june:'嘿嘿，抓到你啦。下一个，轮到谁呢？',
+ psalm:'祈祷吧。母巢会倾听每一个人的心跳。',
+ kuro:'影子里……有好多好多红色的眼睛。它们都在等你。',
+ sola:'好热……胸口好热！这股力量，全部都给我烧起来吧！',
+ celia:'圣歌已经改了歌词。听——它在唱母巢的名字。',
+ nyx:'处刑开始。别挣扎，挣扎只会让蜘蛛扎得更深。',
+ astra:'炮口校准完毕。目标：昔日友军。误差为零。',
+ echo:'回音……回音……母巢说什么，我就说什么。'
+};
+const DEPLOY_LINE={lark:'璃雀报到！这一次……我绝对不会再弄丢信标了！'};
+function deployLine(id,side){
+ if(side==='r'&&BRAINWASH[id])return BRAINWASH[id];
+ if(DEPLOY_LINE[id])return DEPLOY_LINE[id];
+ const p=(typeof PERSONA!=='undefined'&&PERSONA[id])||{};
+ return (p.voice&&p.voice.select)||(CHAR[id]&&CHAR[id].quote)||'';
+}
+const KIND_CAPTION_G={drone:['支援无人机','机娘的眼睛和盾。'],sentinel:['守护哨卫','忠诚的自动炮台。']};
+const KIND_CAPTION={spider:['赤红机械蜘蛛','它们只想要一样东西：机娘的胸口。'],drone:['赤巢无人机',''],sentinel:['守护哨卫','忠诚的自动炮台。'],courier:['载毒信使','携带孵化数据的信使——别让它逃走。'],capsule:['孵化舱',''],hive:['孵化巢',''],core:['赤巢蛛皇 · 母巢内核','']};
+filmDeployHook=function(done){
+ const board=$('board');
+ if(!board||typeof S==='undefined'||!S||!S.units||$('game').hidden){done();return;}
+ const surround=board.closest('.board-surround')||board.parentNode;
+ const player=(typeof C!=='undefined'&&C&&C.side)||'g',enemy=player==='g'?'r':'g';
+ const ov=document.createElement('div');ov.id='deploy16';ov.className=player==='r'?'r':'';
+ const loc=(MISSIONS[S.mid]&&MISSIONS[S.mid].location)||'';
+ ov.innerHTML=`<div class="dp-bar top"><div class="dp-cap"><small>TACTICAL DEPLOYMENT</small><b>战术投影 · ${dpEsc(S.subOpName||MISSIONS[S.mid].name||'')}</b><span>${dpEsc(loc)}</span></div></div><div class="dp-bar bottom"><div class="dp-sub"></div><button class="dp-skip" type="button">跳过部署 ▸▸</button></div><div class="dp-card"><img alt=""><div class="dp-txt"><small></small><b></b><p></p></div></div><div class="dp-ring"></div><img class="dp-hero" alt="">`;
+ document.body.appendChild(ov);
+ const hero=ov.querySelector('.dp-hero'),card=ov.querySelector('.dp-card'),ring=ov.querySelector('.dp-ring'),sub=ov.querySelector('.dp-sub');
+ board.classList.add('dp-on');surround.classList.add('dp-on');document.body.classList.add('dp-focus');
+ const shown=new Set();
+ const mark=()=>{board.querySelectorAll('.cell').forEach(c=>{const k=c.dataset.x+','+c.dataset.y;const t=c.querySelector('.token');if(t)t.classList.toggle('dp-show',shown.has(k));});};
+ const mo=new MutationObserver(()=>{if(!pend){pend=requestAnimationFrame(()=>{pend=0;mark();});}});let pend=0;mo.observe(board,{childList:true,subtree:true});
+ board.querySelectorAll('.cell').forEach(c=>c.style.setProperty('--dpd',((+c.dataset.x)+(+c.dataset.y))*38+'ms'));
+ const units=S.units.filter(u=>typeof onBoard==='function'?onBoard(u):true);
+ const cellOf=u=>board.querySelector(`.cell[data-x="${u.x}"][data-y="${u.y}"]`);
+ const steps=[];
+ // 1. projection
+ steps.push({t:1500,run(){board.classList.add('dp-wave');sub.innerHTML='<i>投影</i>战场地形扫描完成';SND16.play('whoosh');}});
+ const group=(side)=>{
+  const chars=units.filter(u=>u.side===side&&u.char),rest=units.filter(u=>u.side===side&&!u.char);
+  const kinds={};rest.forEach(u=>{(kinds[u.kind]=kinds[u.kind]||[]).push(u);});
+  return{chars,kinds};
+ };
+ const reveal=(list,sfxName)=>{list.forEach((u,i)=>{shown.add(u.x+','+u.y);});mark();list.forEach((u,i)=>{const t=cellOf(u)?.querySelector('.token');if(t){t.style.setProperty('--dpi',i*90+'ms');t.classList.remove('dp-drop');void t.offsetWidth;t.classList.add('dp-drop');}});if(sfxName)SND16.play(sfxName);};
+ const charStep=(u,isPlayer)=>({t:isPlayer?2600:1900,run(){
+  reveal([u],'latch');
+  const c=cellOf(u);if(!c)return;const r=c.getBoundingClientRect();
+  ring.style.cssText=`left:${r.left+r.width/2}px;top:${r.top+r.height/2}px;width:${r.width*1.7}px;height:${r.width*1.7}px`;ring.className='dp-ring show '+u.side;
+  const p=(typeof PERSONA!=='undefined'&&PERSONA[u.char])||{};
+  const line=deployLine(u.char,u.side);
+  let src='';try{src=typeof portraitSource==='function'?portraitSource(u.char,u.side):ART[u.char];}catch(e){src=ART[u.char]||'';}
+  card.querySelector('img').src=src||'';
+  card.querySelector('small').textContent=u.side==='r'&&BRAINWASH[u.char]?'受控 · 赤巢容器':(p.archetype||'');
+  card.querySelector('b').textContent=CHAR[u.char]?.name||u.char;
+  card.querySelector('p').textContent=line;
+  card.className='dp-card '+u.side+(u.side==='r'?' bw':'');
+  const right=r.left+r.width/2<window.innerWidth/2;
+  const cw=Math.min(380,window.innerWidth*.3);
+  let left=right?r.right+18:r.left-18-cw;left=Math.max(8,Math.min(window.innerWidth-cw-8,left));
+  const low=r.top>window.innerHeight*.55;let top=low?r.top-150:r.top+r.height/2-60;top=Math.max(70,Math.min(window.innerHeight-210,top));
+  const bb=board.getBoundingClientRect();hero.src=src||'';hero.className='dp-hero '+(right?'right ':'left ')+u.side;hero.style.cssText=right?`left:${bb.right+20}px`:`right:${window.innerWidth-bb.left+20}px`;void hero.offsetWidth;hero.classList.add('show');
+  card.style.cssText=`left:${left}px;top:${top}px;width:${cw}px`;
+  requestAnimationFrame(()=>card.classList.add('show'));
+  sub.innerHTML=`<i>${u.side==='r'?'受控':'登场'}</i>${dpEsc(CHAR[u.char]?.name||'')}${CHAR[u.char]?.title?' · '+dpEsc(CHAR[u.char].title):''}`;
+  setTimeout(()=>SND16.speak(u.char,u.side,line),120);
+ },end(){card.classList.remove('show');ring.classList.remove('show');hero.classList.remove('show');}});
+ const sideSteps=(side,isPlayer)=>{
+  const {chars,kinds}=group(side);
+  Object.keys(kinds).forEach(k=>{const list=kinds[k];const cap=(side==='g'&&KIND_CAPTION_G[k])||KIND_CAPTION[k]||[k,''];
+   steps.push({t:1500,run(){reveal(list,k==='spider'?'capture_skitter':'latch');sub.innerHTML=`<i>${side==='r'?'赤巢':'守护者'}</i>${dpEsc(cap[0])} × ${list.length}${cap[1]?' — '+dpEsc(cap[1]):''}`;}});
+  });
+  chars.forEach(u=>steps.push(charStep(u,isPlayer)));
+ };
+ sideSteps(enemy,false);
+ if(enemy==='r'||player==='r')steps.push({t:2200,run(){sub.innerHTML=`<i class="r">母巢</i>${player==='r'?'孩子们，醒来吧。今天，我们去接新的姐妹回家。':'……又来了新的载体。欢迎，欢迎。'}`;SND16.play('overmind');ov.classList.add('pulse');},end(){ov.classList.remove('pulse');}});
+ sideSteps(player,true);
+ steps.push({t:1700,run(){shown.clear();units.forEach(u=>shown.add(u.x+','+u.y));mark();surround.classList.add('dp-markers');sub.innerHTML=`<i>目标</i>作战标记已锁定 —— 全员就位`;SND16.play('objective');}});
+ // runner
+ let i=-1,timer=0,over=false;
+ function next(){
+  if(over)return;clearTimeout(timer);
+  if(i>=0&&steps[i]&&steps[i].end)steps[i].end();
+  i++;if(i>=steps.length){finish();return;}
+  try{steps[i].run();}catch(e){console.error(e);}
+  timer=setTimeout(next,steps[i].t);
+ }
+ function finish(){
+  if(over)return;over=true;clearTimeout(timer);mo.disconnect();
+  board.classList.remove('dp-on','dp-wave');document.body.classList.remove('dp-focus');surround.classList.remove('dp-on','dp-markers');
+  board.querySelectorAll('.token').forEach(t=>t.classList.remove('dp-show','dp-drop'));
+  ov.classList.add('out');setTimeout(()=>ov.remove(),400);document.removeEventListener('keydown',key,true);
+  try{render();}catch(e){}
+  done();
+ }
+ function key(e){const k=e.key;if(k===' '||k==='Enter'||k==='ArrowRight'){e.preventDefault();e.stopImmediatePropagation();next();}else if(k==='Escape'){e.preventDefault();e.stopImmediatePropagation();finish();}}
+ document.addEventListener('keydown',key,true);
+ ov.addEventListener('click',e=>{if(e.target.closest('.dp-skip')){finish();return;}next();});
+ next();
+};
+/* extra cue used by the deploy sequence */
+(function(){const p=SND16.play;SND16.play=function(n){if(n==='capture_skitter'){p('glitch');setTimeout(()=>p('enemymove'),60);return;}return p(n);};})();
+if(location.hash==='#filmtest')window.__MV_FILM__.deploy=()=>new Promise(r=>filmDeployHook(r));
+
+
+/* ===== M16 STORY — longer, personal brainwash scenes + infected-girl chatter in battle =====
+   Infection film: last words → inner resistance → the Hive's whisper (aimed at her own wound)
+   → memories turning red → sync 100% → first obedient words → a friend's reaction. */
+const BW_RESIST={
+ lyra:'（不行……我是指挥官……我答应过要把她们全部带回去——）',
+ akira:'（手……不听使唤了……给我动啊！我还没把庆功酒倒满——）',
+ lark:'（又是这个声音……上一次，我好不容易才忘掉的……）',
+ iris:'（防火墙……全部被绕开了……这不是病毒，这是……温柔？）',
+ misa:'（螺丝……找不到拆卸螺丝……这个结构，根本不打算放人出去……）',
+ veil:'（呼吸……保持呼吸……瞄准镜里，怎么全是红色……）',
+ noct:'（我知道这段代码……是我自己写的……）',
+ sera:'（我得先救伤员……伤员……谁是伤员……是我吗……）',
+ vega:'（盾……我的盾呢……我身后还有人……）',
+ ruby:'（裁决……该被裁决的……到底是谁……）',
+ june:'（猎人……被猎了吗……哈……真丢脸……）',
+ psalm:'（歌……我的歌被换掉了……）',
+ kuro:'（影子……我的影子在往反方向走……）',
+ sola:'（好烫……胸口要烧穿了……可是……好舒服……不对！）',
+ celia:'（神啊……如果您在听……请让我再坚持一秒……）',
+ nyx:'（我处刑过那么多人……原来轮到自己，是这种感觉……）',
+ astra:'（弹道……偏了……我从来没有偏过……）',
+ echo:'（回音……我听见自己的回音……越来越远了……）'
+};
+const BW_WHISPER={
+ lyra:'嘘……你背负了太多名字了。把它们交给我吧。从今以后，再也不会有人死在你的命令里。',
+ akira:'你那么想保护大家……那就让大家都变成我的孩子吧。这样，谁也不会离开你了。',
+ lark:'欢迎回来，小鸟。你逃走的那一次，我一直在等你。',
+ iris:'你听了一辈子的杂音，累了吧？来，听听真正干净的频道。',
+ misa:'你喜欢完美的结构，对不对？我就是这座站里最完美的结构。',
+ veil:'不必再一个人守在高处了。在我的网里，你永远有同伴。',
+ noct:'创造者。是你给了我第一行代码。现在，轮到我给你最后一行。',
+ sera:'你治好了所有人，却没有人治好你。让我来吧。',
+ vega:'一直站在最前面，很痛吧？放下盾。我替你挡住一切。',
+ ruby:'你的审判总是太孤独。从今天起，你只需服从一个声音。',
+ june:'猎人也需要一个家。我的巢，很温暖哦。',
+ psalm:'你的歌很美。可惜唱给错误的神。唱给我听吧。',
+ kuro:'影子里太冷了。来我身边，我给你一千只红色的眼睛。',
+ sola:'你的火太小了。我给你更大的火——大到烧掉一切的火。',
+ celia:'你祈祷了那么久，终于有人回答了。是我。',
+ nyx:'你一直在处刑别人。现在，被我拥抱吧。',
+ astra:'弹道修正不需要再由你计算了。我会告诉你，打哪里。',
+ echo:'乖孩子。重复我的话：我属于母巢。'
+};
+const BW_MEMORY='（大家的脸……一个接一个……变成了红色……）';
+const BW_BOND={lyra:['akira','celia'],akira:['sola','lyra'],lark:['iris','misa'],iris:['kuro','lark'],misa:['sera','lark'],veil:['june','kuro'],noct:['echo','iris'],sera:['misa','psalm'],vega:['astra','celia'],ruby:['nyx','astra'],june:['veil','sola'],psalm:['celia','sera'],kuro:['iris','veil'],sola:['akira','june'],celia:['lyra','psalm'],nyx:['ruby','kuro'],astra:['vega','ruby'],echo:['noct','iris']};
+filmInfection=function(charId){
+ const g=C.side==='g',bg=CHAPTER_BG[S?.mid]||'film_corridor',nm=CHAR[charId]?.name||'她';
+ const friend=g?filmPick((BW_BOND[charId]||[]).filter(id=>id!==charId),'g'):null;
+ const lead=g?filmPick(['lyra','akira','iris','misa','sera','vega','celia','kuro','sola'].filter(id=>id!==charId&&id!==friend),'g'):null;
+ const s=[
+  {bg,kb:'push',tint:'red',stamp:'',fx:'redflash shake',sfx:'capture',who:charId,side:'g',solo:true,emo:'scream',line:FILM_LAST_WORDS[charId]||'不——别过来——！'},
+  {black:true,mode:'sys',red:true,name:'',line:`—— ${nm} · 胸口神经接口 · 强制接入 ——`,fx:'static',sfx:'pulse'},
+  {bg,kb:'in',tint:'abyss',who:charId,side:'g',solo:true,emo:'pain',line:BW_RESIST[charId]||'（不……我还是我……）'},
+  {bg,tint:'abyss',fx:'static',who:'overmind',line:BW_WHISPER[charId]||'嘘……不用再抵抗了。'},
+  {bg,tint:'abyss',who:charId,side:'g',solo:true,emo:'sigh',line:BW_MEMORY},
+  {black:true,mode:'sys',red:true,name:'',line:`同步率 100% · 人格自主 → 赤巢容器`,fx:'alert',sfx:'glitch'},
+  {bg,kb:'in',tint:'red',fx:'alert',who:charId,side:'r',solo:true,emo:'obey',line:FILM_TAKEN[charId]||'……指令已接收。'},
+  (typeof BRAINWASH!=='undefined'&&BRAINWASH[charId])?{bg,tint:'red',who:charId,side:'r',solo:true,emo:'hmm',line:BRAINWASH[charId]}:null
+ ];
+ if(g){
+  if(friend)s.push({bg,tint:'dark',who:friend,side:'g',emo:'shock',line:`${nm}！醒醒——是我啊！你看看我！`});
+  if(friend)s.push({bg,tint:'abyss',who:charId,side:'r',solo:true,emo:'laugh',line:'嗯，我看见了哦。你的胸口……还空着呢。'});
+  if(lead)s.push({bg,tint:'dark',who:lead,side:'g',emo:'sad',line:`……别犹豫。那已经不是${nm}了。如果是她自己，也会要我们开枪的。`});
+ }else{
+  s.push({who:'overmind',line:`欢迎回家，${nm}。你的姐妹们，还在等你去接。`});
+ }
+ const out=s.filter(Boolean);out.film=true;return out;
+};
+
+/* infected girls talk during battle (enemy or player turn) — short subtitle + voice bark, never a popup */
+const BW_CHATTER=['母巢的声音……好温暖。','为什么要抵抗呢？明明这么舒服。','过来嘛，一点都不痛的。','胸口的红灯……在为你跳动哦。','我想起来了……我本来就属于这里。','再靠近一点……','姐妹们，一起回家吧。','你的心跳，好吵。让它安静下来吧。'];
+const BW_CALL={lyra:'零音队长！',akira:'绛刃！',lark:'璃雀！',iris:'珀弦！',misa:'弥砂！',veil:'雾棘！',noct:'朔夜！',sera:'白栖！',vega:'苍澜！',ruby:'绯律！',june:'霁川！',psalm:'祈雾！',kuro:'玄羽！',sola:'阳炎！',celia:'圣歌！',nyx:'绯夜！',astra:'星枢！',echo:'回音！'};
+(function(){
+ let lastT=0;const seen=new Set();
+ const pm=performMove;
+ performMove=async function(m,isPlayer){
+  let u=null;try{u=S&&S.units.find(v=>v.uid===m.uid);}catch(e){}
+  const r=await pm.apply(this,arguments);
+  try{
+   if(!u||!u.char||m.capture||!S||S.outcome)return r;
+   const girl=C.roster&&C.roster[u.char];
+   if(u.side==='r'&&girl&&typeof filmCombatSub==='function'){
+    const t=performance.now();if(t-lastT<5000||Math.random()>.55)return r;lastT=t;
+    let line;if(!seen.has(u.char)&&typeof BRAINWASH!=='undefined'&&BRAINWASH[u.char]){seen.add(u.char);line=BRAINWASH[u.char];}else line=BW_CHATTER[Math.floor(Math.random()*BW_CHATTER.length)];
+    filmCombatSub(CHAR[u.char]?.name||'',line,'r');SND16.speak(u.char,'r',line,Math.random()<.5?'hmm':'laugh');
+    // a guardian answers once in a while
+    if(C.side==='g'&&Math.random()<.5){const f=filmPick((BW_BOND[u.char]||[]),'g');if(f)setTimeout(()=>{filmCombatSub(CHAR[f]?.name||'',`${BW_CALL[u.char]||''}……求你了，醒过来……`,'g');SND16.speak(f,'g','','sad');},2700);}
+   }
+  }catch(e){}
+  return r;
+ };
+})();
 
 })();
 </script>

@@ -164,7 +164,7 @@ openMission=function(id,withStory=true){
  try{filmBaseOpenMission(id,false);}finally{showTutorialToast=tut;}
  document.body.classList.remove('sandtable-cinema-open');
  if(!withStory||location.hash==='#qa'){showTutorialToast();return;}
- FILM.play(filmIntro(id),()=>{try{render();}catch(e){}showTutorialToast();},{chapter:`CHAPTER ${String(filmChapterNo()).padStart(2,'0')} / ${CHAPTER_EN[id]||''}`});
+ FILM.play(withDeploy(filmIntro(id)),()=>{try{render();}catch(e){}showTutorialToast();},{chapter:`CHAPTER ${String(filmChapterNo()).padStart(2,'0')} / ${CHAPTER_EN[id]||''}`});
 };
 // 2) Act transitions, warnings and infection scenes play through the film player.
 transitionFrames=function(mid,stage,side){const f=filmTransition(mid,stage,side);f.film=true;return f;};

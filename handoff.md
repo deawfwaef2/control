@@ -333,3 +333,8 @@
 - 配音（仿弹丸论破：只有语气词，绝不念整句）：voice/*.mp3（24 段，约 240KB），build_game.py 以 `VOICE_DATA` 内嵌。三个音色库：v1 元气（璃雀/阳炎/弥砂/霁川）、v2 被侵蚀/妖艳（绯夜/绯律/回音 + 所有被感染后的角色）、v3 凛然/温柔（其余，按角色 playbackRate 调音高）。赤巢蛛皇不用人声，用合成机械音 `overmind`。
 - 触发：film.js 新增 `filmShotHook`（每个镜头开始时调用）→ 台词开头配语气词，按台词情绪（！？/……/哈哈/对不起/冲…）选 ok/shock/sad/laugh/attack/think 等；换景 whoosh、标题卡 boom、目标卡 objective。战斗中：选中角色出语气词、吃子时攻击方喊声、被击杀/被感染方惨叫。
 - 语音生成：add_voice 选了 voice-01(元气) voice-02(妖艳) voice-03(温柔)；voice-00 被内容过滤拒绝，已放弃。切分脚本 /var/tmp/w/split2.py（需 PYTHONPATH=/var/tmp/w/py 的 soundfile）。
+
+## M16-3 棋盘部署开场（单位逐个登场说话）+ 洗脑剧情加长（追加）
+- film.js：新镜头类型 `{deploy:true}`——电影淡出，调用 `filmDeployHook(done)` 在真实棋盘上演出，结束后回到电影播放目标卡。`withDeploy(shots)` 会把它插在目标卡前；已用于每章开场（film-script openMission）和支线开场（filmSubOp）。"跳过"会跳到部署段（部署自带"跳过部署"）。
+- deploy.js/deploy.css：上下黑边 + 战术投影标题；棋盘格波浪展开 → 敌方单位按种类出现 → 母巢旁白 → 我方机娘逐个落下（聚光圈 + 侧边大立绘 + 头像台词卡 + 语气词配音）→ 目标标记点亮。两侧栏在部署时变暗。点击=下一步，Esc/按钮=跳过。`BRAINWASH[id]`：18 名角色被洗脑后的台词（部署卡、感染演出、战斗闲聊共用）。
+- story16.js：覆盖 `filmInfection`——最后的话 → 内心抵抗(BW_RESIST) → 母巢针对她心结的低语(BW_WHISPER) → 记忆变红 → 同步率 100% → 第一句服从台词 → 洗脑台词 → 挚友(BW_BOND)呼唤 → 她的回应 → 队长下令。战斗中被感染机娘移动时不定期出字幕+配音（BW_CHATTER），挚友偶尔回应呼唤。全部用 .fm-combat-sub 字幕，不弹窗。
