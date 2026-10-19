@@ -10238,6 +10238,7 @@ const H21={
    c.score=worst*.88+c.q*.12+c.b*.12+(c.follow||0)*.3;
   }
   top.sort((a,b)=>b.score-a.score);
+  if(choose22.list)return top;
   if(location.hash==='#filmtest')window.__T22=top.slice(0,6).map(c=>{const u=s.units.find(v=>v.uid===c.m.uid);return (u.char||u.kind)+'@'+u.x+','+u.y+'>'+c.m.x+','+c.m.y+(c.m.capture?'x':'')+' q'+Math.round(c.q)+' s'+Math.round(c.score)+' w'+Math.round(c.worst)+' n'+(c.nr||0)+' f'+Math.round(c.follow||0);});
   const best=top[0].score,tol=4+Math.abs(best)*.0015;
   const pool=top.filter(c=>c.score>=best-tol).slice(0,3);
@@ -10246,10 +10247,85 @@ const H21={
   for(let i=0;i<pool.length;i++){r-=ws[i];if(r<=0)return pool[i].m;}
   return pool[0].m;
  }
+
+ /* ---------------- M23 · 迭代加深 α-β 搜索（单步为一层，按阶段额度切换走子方） ----------------
+    叶节点用 eval22，叶上做一层吃子静止搜索；根节点先用完整评估预筛，再在时间预算内逐层加深。 */
+ const AB={ms:300};
+ function lite(s){const L=s.logs,E=s.events;s.logs=[];s.events=[];const c=clone(s);s.logs=L;s.events=E;return c;}
+ function gen(s,side,cap){
+  const out=[],foes=movers(s,enemyOf(side));
+  for(const u of movers(s,side)){
+   if(u.used)continue;const tg=strategicTarget(s,u);
+   for(const m of legalMoves(s,u)){
+    let o;
+    if(m.capture){const t=unitAt(s,m.x,m.y);o=1000+(t?valueOf(t)*(captureMode(u,t)==='infect'?2:1)*12:0)-valueOf(u);}
+    else{o=0;if(tg)o+=(distance(u,tg)-distance(m,tg))*6;
+     if(u.kind==='spider'&&side==='r'){for(const f of foes)if(f.char&&distance(m,f)===1){o+=45;break;}}
+     else if(u.char&&side==='g'){for(const f of foes)if(f.kind==='spider'&&distance(m,f)<=1){o-=40;break;}}}
+    out.push({m,o});
+   }
+   out.push({m:{uid:u.uid,x:u.x,y:u.y,type:'wait',capture:false},o:-30});
+  }
+  out.sort((a,b)=>b.o-a.o);
+  if(cap){const caps=out.filter(x=>x.m.capture),quiet=out.filter(x=>!x.m.capture);return caps.slice(0,5).concat(quiet.slice(0,Math.max(2,cap-Math.min(5,caps.length))));}
+  return out;
+ }
+ function step(s,side,left,B){ // 返回下一步的走子方和剩余额度（必要时切换阶段并重置 used）
+  if(left>0&&movers(s,side).some(u=>!u.used))return[side,left];
+  const o=enemyOf(side);for(const u of s.units)if(u.side===o)u.used=false;return[o,B];
+ }
+ function search23(s,side){
+  const P=persona(s,side),t0=performance.now(),dead=t0+AB.ms;
+  computeRetreat(s,side);
+  const left0=Math.max(1,(s.aiBudget||1)-(s.aiDone||0)),B=Math.max(1,Math.min(3,s.aiBudget||2));
+  choose22.list=true;let top;try{top=choose22(s,side);}finally{choose22.list=false;}
+  if(!top||!top.length)return null;
+  const R=top.slice(0,5).map(c=>({m:c.m,n:c.next,b:c.b||0,q:c.score}));
+  let nodes=0;const OUT={};
+  function leaf(n,toMove,left){
+   const rem=toMove===side?left:0;let v=eval22(n,side,P,rem);
+   // 静止搜索：轮到谁走、谁就可能立即吃子
+   const cs=gen(n,toMove,0).filter(x=>x.m.capture).slice(0,2);
+   for(const c of cs){const a=lite(n);applyBasic(a,c.m);const w=eval22(a,side,P,0);v=toMove===side?Math.max(v,w):Math.min(v,w);}
+   return v;
+  }
+  function ab(n,toMove,left,depth,alpha,beta){
+   if(++nodes%32===0&&performance.now()>dead)throw OUT;
+   if(n.outcome||depth===0)return leaf(n,toMove,left);
+   const max=toMove===side,ms=gen(n,toMove,depth>=2?7:6);
+   if(!ms.length)return leaf(n,toMove,left);
+   let best=max?-Infinity:Infinity;
+   for(const g of ms){
+    const a=lite(n);applyBasic(a,g.m);const u=a.units.find(v=>v.uid===g.m.uid);if(u)u.used=true;
+    const[ns,nl]=step(a,toMove,left-1,B);
+    const v=ab(a,ns,nl,depth-1,alpha,beta);
+    if(max){if(v>best)best=v;if(best>alpha)alpha=best;}else{if(v<best)best=v;if(best<beta)beta=best;}
+    if(alpha>=beta)break;
+   }
+   return best;
+  }
+  let done=R.map(c=>({c,score:c.q})),reached=0;
+  for(let depth=2;depth<=6;depth++){
+   const cur=[];
+   try{
+    let alpha=-Infinity;
+    for(const c of R){const a=lite(c.n);for(const v of a.units)if(v.side!==side&&false)v.used=false;const[ns,nl]=step(a,side,left0-1,B);const v=ab(a,ns,nl,depth,-Infinity,Infinity);cur.push({c,score:v*.5+c.q*.5});}
+   }catch(e){if(e!==OUT)throw e;break;}
+   cur.sort((a,b)=>b.score-a.score);done=cur;reached=depth;
+   R.sort((a,b)=>(cur.find(x=>x.c===b).score)-(cur.find(x=>x.c===a).score));
+   if(performance.now()>t0+AB.ms*.55)break;
+  }
+  AB.last={depth:reached,nodes,ms:Math.round(performance.now()-t0)};
+  const best=done[0].score,tol=3+Math.abs(best)*.001;
+  const pool=done.filter(x=>x.score>=best-tol).slice(0,3);
+  if(location.hash==='#filmtest')window.__T23=AB.last;
+  if(pool.length<2)return done[0].c.m;
+  return pool[Math.floor(rnd(s)*pool.length)].c.m;
+ }
  const legacyAI=chooseAI;
  chooseAI=function(s,side){
   if(qa22()||s.saga)return legacyAI(s,side);
-  try{return choose22(s,side)||legacyAI(s,side);}catch(e){console.warn('ai22',e);return legacyAI(s,side);}
+  try{return search23(s,side)||choose22(s,side)||legacyAI(s,side);}catch(e){console.warn('ai22',e);return legacyAI(s,side);}
  };
 
  /* ------------------------------------------------------------- 战场变数 */
@@ -10394,7 +10470,7 @@ const H21={
    C.step=mid;for(const r of Object.values(C.roster)){if(r.status!=='destroyed')r.status='active';}
    S=makeMission(mid);if(variant===false){S.var22=null;}
    const t0=performance.now();let moves=0,aiMs=0;
-   const pick=(side)=>{const t=performance.now();const m=side==='g'?(useNew?choose22(S,'g'):legacyAI(S,'g')):legacyAI(S,'r');aiMs+=performance.now()-t;return m;};
+   const pick=(side)=>{const t=performance.now();const m=side==='g'?(useNew==='m23'?search23(S,'g'):useNew?choose22(S,'g'):legacyAI(S,'g')):(window.__HIVEAI==='m22'?choose22(S,'r'):legacyAI(S,'r'));aiMs+=performance.now()-t;return m;};
    for(let r=0;r<rounds&&!S.outcome;r++){
     for(const side of ['r','g']){
      for(const u of S.units)if(u.side===side)u.used=false;
