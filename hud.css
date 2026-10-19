@@ -4,9 +4,9 @@ body.hud15{overflow:hidden}
 body.hud15 #game:not([hidden]){position:fixed!important;top:var(--hud-top,50px);left:0;right:0;bottom:0;max-width:none!important;margin:0!important;padding:10px 16px 10px!important;display:grid!important;grid-template-columns:minmax(250px,19vw) minmax(0,1fr) minmax(280px,21vw);grid-template-rows:auto minmax(0,1fr) auto;gap:10px 16px;overflow:hidden}
 body.hud15 #game .workspace{display:contents!important}
 body.hud15 #game .mission-heading{grid-column:1/-1;grid-row:1;padding:4px 4px 8px!important;margin:0!important;border-bottom:1px solid var(--hud-line);min-height:0}
-body.hud15 #game .mission-heading h2{font-size:24px!important;letter-spacing:.18em!important;font-weight:800!important}
-body.hud15 #game .chapter-number{font-size:34px!important}
-body.hud15 #game .mission-location{font-size:14px!important;color:var(--hud-dim)!important}
+body.hud15 .mission-heading h2{font-size:24px!important;letter-spacing:.18em!important;font-weight:800!important}
+body.hud15 .chapter-number{font-size:34px!important}
+body.hud15 .mission-location{font-size:14px!important;color:var(--hud-dim)!important}
 /* left rail */
 body.hud15 #hud-left{grid-column:1;grid-row:2;display:flex;flex-direction:column;gap:10px;min-height:0;overflow:auto;scrollbar-width:thin}
 body.hud15 #hud-left>*{margin:0!important;width:auto!important;flex:0 0 auto}
@@ -130,10 +130,47 @@ body.hud15 #game .board-pan{grid-column:1/-1;grid-row:2}
 body.hud15 #game .action-bar{grid-column:1/-1;grid-row:3;padding:6px 12px!important}
 body.hud15 #game .end-phase{min-height:42px!important}
 body.hud15 #game .mission-heading{padding:0 4px 6px!important}
-body.hud15 #game .mission-heading h2{font-size:21px!important}
-body.hud15 #game .chapter-number{font-size:28px!important;line-height:1!important}
+body.hud15 .mission-heading h2{font-size:21px!important}
+body.hud15 .chapter-number{font-size:28px!important;line-height:1!important}
 body.hud15 #game .mission-heading .micro-label{display:none!important}
 body.hud15 .token-name{font-size:clamp(10px,1.35vh,13px)!important;line-height:1.15!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;top:auto!important;bottom:2px!important;height:auto!important;left:2px!important;right:2px!important;width:auto!important;padding:1px 2px!important;background:rgba(0,0,0,.62)!important;border-radius:2px}
 body.hud15 #game .right-rail,body.hud15 #hud-left{position:relative!important;z-index:3!important}
 body.hud15 #game .mission-heading,body.hud15 #game .radio-bar{z-index:3!important}
 body.hud15 .token-name small{display:none!important}
+
+/* ===== M16 bigger board ===== */
+.hud-side{display:contents}
+body.hud15 #game:not([hidden]){grid-template-columns:minmax(230px,16vw) minmax(0,1fr) minmax(250px,18vw)!important;grid-template-rows:minmax(0,1fr) auto!important;padding:8px 14px 6px!important;gap:8px 14px!important}
+body.hud15 #hud-left,body.hud15 #game .battlefield,body.hud15 #game .right-rail{grid-row:1!important}
+body.hud15 #game .radio-bar{grid-row:2!important}
+body.hud15 .site-header .mission-heading{display:none!important}
+body.hud15 .site-header.in-game .mission-heading{display:flex!important;align-items:center;padding:0 0 0 28px!important;margin:0 auto 0 28px!important;border:0!important;border-left:1px solid var(--hud-line)!important;background:none!important;height:60%;min-width:0;overflow:hidden}
+body.hud15 .site-header.in-game .header-status{display:none!important}
+body.hud15 .mission-heading-left{display:flex!important;align-items:center;gap:12px;white-space:nowrap;overflow:hidden}
+body.hud15 .mission-heading-left>div:last-child{display:flex!important;align-items:baseline;gap:12px}
+body.hud15 .chapter-number{font-size:22px!important;color:var(--hud-acc)}
+body.hud15 .chapter-number small{display:none!important}
+body.hud15 .mission-heading h2{font-size:18px!important;letter-spacing:.2em!important;margin:0!important}
+body.hud15 .mission-location{font-size:13px!important}
+body.hud15.side-r .chapter-number{color:var(--hud-red)}
+body.hud15 #game .battlefield{grid-template-columns:minmax(0,1fr) clamp(132px,11vw,170px)!important;grid-template-rows:auto minmax(0,1fr)!important;gap:6px 10px!important}
+body.hud15 #game .stage-ribbon{grid-column:1/-1!important;grid-row:1!important;justify-self:start}
+body.hud15 #game .board-toolbar{grid-column:1/-1!important;grid-row:1!important;justify-self:end}
+body.hud15 #game .board-pan{grid-column:1!important;grid-row:2!important}
+body.hud15 .hud-side{grid-column:2;grid-row:2;display:flex;flex-direction:column;justify-content:flex-end;gap:10px;min-height:0;padding-bottom:4px}
+body.hud15 .hud-side .phase-indicator{display:flex!important;align-items:center;gap:8px;font-size:14px!important;letter-spacing:.12em;padding:10px 12px!important;background:var(--hud-bg);border:1px solid var(--hud-line);border-left:3px solid var(--hud-acc);border-radius:4px;color:var(--hud-text)!important;margin:0!important;white-space:normal}
+body.hud15.side-r .hud-side .phase-indicator{border-left-color:var(--hud-red)}
+body.hud15 .hud-side .round-indicator{display:flex!important;flex-direction:column;align-items:flex-start;gap:2px;padding:10px 12px!important;background:var(--hud-bg);border:1px solid var(--hud-line);border-radius:4px;margin:0!important}
+body.hud15 .hud-side .round-indicator span{font-size:11px!important;letter-spacing:.3em;color:var(--hud-dim)}
+body.hud15 .hud-side .round-indicator strong{font-size:26px!important;line-height:1}
+body.hud15 .hud-side>*{min-width:0!important;max-width:100%!important;box-sizing:border-box!important}
+body.hud15 .hud-side .action-bar{width:100%!important;grid-column:auto!important;grid-row:auto!important;display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:10px!important;padding:12px!important}
+body.hud15 .hud-side .action-count{display:flex;align-items:baseline;gap:8px}
+body.hud15 .hud-side .action-count span{font-size:13px!important}
+body.hud15 .hud-side .action-buttons{display:flex!important;flex-direction:column-reverse!important;gap:8px!important;align-items:stretch!important}
+body.hud15 .hud-side .end-phase{width:100%!important;min-width:0!important;box-sizing:border-box!important;white-space:nowrap;min-height:64px!important;padding:6px 10px!important;font-size:16px!important;letter-spacing:.14em;display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+body.hud15 .hud-side .end-phase svg{display:none}
+body.hud15 .hud-side #undo-btn{width:100%!important;height:34px!important}
+body.hud15 .hud-side #flow-btn{font-size:13px!important;opacity:.75;text-align:left;padding:2px 2px!important}
+@media (max-width:1300px){body.hud15 .mission-heading .mission-location{display:none}}
+body.hud15 .mission-heading .micro-label{display:none!important}

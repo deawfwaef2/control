@@ -107,3 +107,16 @@
  new MutationObserver(sync).observe(home,{attributes:true,attributeFilter:['hidden']});
  const cb=$('continue-btn');if(cb)new MutationObserver(sync).observe(cb,{attributes:true,attributeFilter:['hidden']});
 })();
+
+/* ===== M16 bigger board: chapter title goes into the top bar, turn/phase/actions into a slim side column ===== */
+(function(){
+ const bf=document.querySelector('#game .battlefield');if(!bf)return;
+ const side=document.createElement('div');side.className='hud-side';
+ const round=document.querySelector('#game .round-indicator'),phase=$('phase-label'),flow=$('flow-btn'),bar=document.querySelector('#game .action-bar');
+ [phase,round,bar,flow].forEach(e=>{if(e)side.appendChild(e);});
+ bf.appendChild(side);
+ const mh=document.querySelector('#game .mission-heading'),hdr=document.querySelector('.site-header'),game=$('game');
+ function place(){if(!mh||!hdr)return;const desk=document.body.classList.contains('hud15');if(desk&&mh.parentNode!==hdr)hdr.insertBefore(mh,hdr.querySelector('.header-actions'));else if(!desk&&mh.parentNode!==game)game.prepend(mh);hdr.classList.toggle('in-game',desk&&!game.hidden);}
+ place();window.addEventListener('resize',()=>requestAnimationFrame(place));new MutationObserver(place).observe(game,{attributes:true,attributeFilter:['hidden']});
+ setTimeout(()=>{try{refreshPieceSize();}catch(e){}},80);
+})();

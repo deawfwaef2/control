@@ -709,11 +709,11 @@ animateToken=function(m){
  if(!origin||!dest)return Promise.resolve();
  const a=origin.getBoundingClientRect(),b=dest.getBoundingClientRect(),copy=origin.cloneNode(true);
  copy.classList.add('floating-token');
- Object.assign(copy.style,{left:a.left+'px',top:a.top+'px',width:a.width+'px',height:a.height+'px',transform:'translate(0,0)',position:'fixed'});
+ for(const [k,v] of Object.entries({left:a.left+'px',top:a.top+'px',width:a.width+'px',height:a.height+'px','max-width':a.width+'px','max-height':a.height+'px',transform:'translate(0,0)',position:'fixed',margin:'0',inset:'auto','pointer-events':'none',overflow:'hidden'}))copy.style.setProperty(k,v,'important');copy.style.setProperty('left',a.left+'px','important');copy.style.setProperty('top',a.top+'px','important');
  document.body.append(copy);
  inFlightDest={x:m.x,y:m.y};
  requestAnimationFrame(()=>requestAnimationFrame(()=>{
-  copy.style.transform=`translate(${b.left+(b.width-a.width)/2-a.left}px,${b.top+(b.height-a.height)/2-a.top-2}px)`;
+  copy.style.setProperty('transform',`translate(${b.left+(b.width-a.width)/2-a.left}px,${b.top+(b.height-a.height)/2-a.top-2}px)`,'important');
  }));
  return new Promise(resolve=>setTimeout(()=>{
   inFlightDest=null;
