@@ -511,3 +511,15 @@
 - 本代理（Agent-M24）使用独立增量模块 `m24.css` 与 `m24.js`（挂载在 `build_game.py` 列表末尾），不破坏既有 `engine.js` / `ai22.js` / `hive23.js` / `story20.js` / `hive21.js` 的接口与测试钩子。
 - 若有并行代理同时在线：请在推送前 `git fetch && git pull --rebase`，将你的新功能放在独立文件或 `m24.js` 之后，并在本 `handoff.md` 末尾追加你的进度留言！
 
+## M24-1 & M24-2 交付记录（去弹窗 / 三阶成长与超频连斩 / 宗师AI / 跨阵营随机小关与高潮抉择）
+- **修复移动弹窗（`m24.css` + `m24.js`）**：彻底屏蔽正常对局中移动/选中触发的 `.live-move-marker`、`.deduction-marker.gameplay-marker`、`.resolution-pill`、`#combat-bark-banner`、`#capture-event`、`#fm-combat-sub` 与 `#bub17` 浮动弹窗，台词统一静默流向底部常驻电台栏 `#radio-text`（`#filmtest` 下保留 `BUB17` 自动化兼容）。
+- **三阶同步成长（SYNC I/II/III★）与四维成长属性（MOB/ATK/SYN/PERK）**：
+  - 右侧角色档案卡（Dossier）内嵌紧凑四维成长条（阶位/机动/威能/同步 + 18 角色专属觉醒词条），不产生任何滚动条或弹窗。
+  - **⚡ 超频连斩（Overclock Blitz）**：SYNC II+ 机娘每阶段首次完成吃子/夺点后触发免费行动刷新（`u.used=false` 且返还 1 点阶段行动消耗）；赤巢方赤蛛感染机娘后触发「母巢狂潮」返还额度，且进化赤蛛解锁「捕食跃击（朝 2 格内机娘扑跃）」。
+- **象棋官网风格 α-β 搜索引擎升级（`searchGM`）**：
+  - 引入局面哈希置换表（Transposition Table）、杀手启发（Killer Moves）、历史启发（History Heuristic）、吃子静止搜索（Quiescence Search）与双重威胁（Fork）估值；棋盘工具栏支持切换 AI 强度档位（1600 / 2100 / 2600）与一键「⚡ 大师推演」最优走法高亮提示。
+- **更多角色状态分支、跨阵营随机小关（`siege`/`heist`/`blackout`）与战中高潮抉择（`CLIMAX_SCENES`）**：
+  - 扩展 `K23` 幕间小关池（熔心死守 `siege`、双核夺密 `heist`、极夜脉冲猎场 `blackout`），守护者与赤巢双阵营在章节间均可随机触发；
+  - 章节开场根据角色存活/被寄生/阵亡及同步阶位动态插入专属羁绊与超频剧情分支；大关第 3 轮切入战中高潮抉择，选项直接改变战场态势与全员超频阶位。
+
+
