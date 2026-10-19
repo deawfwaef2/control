@@ -16,7 +16,8 @@
   wall:{safe:1.22,greed:.9,goal:1,pair:7},
   blade:{safe:.86,greed:1.32,goal:.95,pair:0},
   thread:{safe:1.02,greed:.95,goal:1.38,pair:3},
-  swarm:{safe:.92,greed:1.18,goal:1.1,pair:0}
+  swarm:{safe:.92,greed:1.18,goal:1.1,pair:0},
+  broken:{safe:.82,greed:.85,goal:.72,pair:0}
  };
  function persona(s,side){const d=(s.ai22&&s.ai22.doc)||(side==='r'?'swarm':'wall');let P={...(DOCS[d]||DOCS.wall)};
   if(s.mid===4&&side==='g'){P.safe*=.72;P.greed*=1.15;}
@@ -75,6 +76,7 @@
   if(s.mid===4&&side==='g'&&!sh){const core=s.units.find(u=>u.kind==='core'&&onBoard(u));if(core){const t=Tm.get(key(core.x,core.y));if(t)sc+=160;}}
   if(s.mid===1&&side==='g'){const m=charter(s,'misa');if(m&&onBoard(m)&&m.side==='g'){const t=To.get(key(m.x,m.y));if(t&&t.sp)sc-=60*P.safe;}}
   if(s.mid===3&&side==='g'){const n=charter(s,'noct');if(n&&onBoard(n)&&n.side==='r')sc-=bestDistance(movers(s,'g'),n)*5*P.goal;}
+  if(s.kind23&&typeof K23!=='undefined'&&K23[s.kind23]&&K23[s.kind23].ev)sc+=(side==='g'?1:-1)*K23[s.kind23].ev(s,side);
   return sc;
  }
  // 信使到 H8 的真实路径长度（四向、绕开舱壁与单位；被堵死记 9）
@@ -275,7 +277,7 @@
   const s=_mm.apply(this,arguments);
   try{
    if(!s.ai22)s.ai22={seed:(Math.random()*4294967296)>>>0,doc:null};
-   if(qa22()||s.saga)return s;
+   if(qa22()||s.saga||(typeof K23!=='undefined'&&K23.__building))return s;
    const aiSide=C.side==='r'?'g':'r';
    if(aiSide==='g'){
     const lead=Object.keys(LEAD).flatMap(d=>LEAD[d].map(c=>({d,c}))).filter(o=>s.units.some(u=>u.char===o.c&&u.side==='g'&&!u.dead));
