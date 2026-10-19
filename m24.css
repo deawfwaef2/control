@@ -1,0 +1,214 @@
+/* ===== M24 MASTER EDITION CSS =====
+   1) Zero-Popup Clean Movement & Selection (no floating boxes over the board when moving)
+   2) 3-Tier Sync & 4-Stat Growth Strip in Dossier (no page scroll)
+   3) Overclock Blitz & Spider Predator Leap token badges + Grandmaster Hint highlights
+*/
+
+/* 1. Eliminate all unwanted popups when moving/selecting on the board */
+html body #combat-bark-banner,
+html body #capture-event,
+html body .deduction-marker.live-move-marker,
+html body .deduction-marker.gameplay-marker,
+html body #board .cell .resolution-pill,
+html body:not(.m24-filmtest) #bub17,
+html body:not(.m24-filmtest) #fm-combat-sub {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Keep the deduction SVG vector arrows subtle and non-intrusive without text popups */
+html body #board-deduction-layer {
+  pointer-events: none !important;
+}
+
+/* 2. Token SYNC II / SYNC III / BLITZ / Spider Evolution Badges */
+html body #board .token .token-level {
+  position: absolute !important;
+  right: 3px !important;
+  top: 3px !important;
+  left: auto !important;
+  bottom: auto !important;
+  z-index: 4 !important;
+  padding: 2px 5px !important;
+  border-radius: 4px !important;
+  font-size: clamp(9px, 0.9vw, 12px) !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.04em !important;
+  line-height: 1.1 !important;
+  background: rgba(6, 20, 32, 0.92) !important;
+  color: #6fd6ff !important;
+  border: 1px solid rgba(111, 214, 255, 0.75) !important;
+  box-shadow: 0 0 8px rgba(111, 214, 255, 0.45) !important;
+  pointer-events: none !important;
+}
+
+html body #board .token.r .token-level {
+  background: rgba(34, 6, 14, 0.92) !important;
+  color: #ff8fa5 !important;
+  border-color: rgba(255, 59, 92, 0.8) !important;
+  box-shadow: 0 0 8px rgba(255, 59, 92, 0.5) !important;
+}
+
+html body #board .token .token-level.sync3 {
+  background: linear-gradient(135deg, #422006, #78350f) !important;
+  color: #fde047 !important;
+  border-color: #facc15 !important;
+  box-shadow: 0 0 12px rgba(250, 204, 21, 0.8) !important;
+  animation: m24PulseGold 1.5s ease-in-out infinite alternate !important;
+}
+
+html body #board .token.m24-blitz-active::before {
+  background: linear-gradient(145deg, #fef08a, #f59e0b 40%, #ef4444) !important;
+  box-shadow: 0 0 20px rgba(250, 204, 21, 0.95) !important;
+}
+
+@keyframes m24PulseGold {
+  from { transform: scale(0.96); filter: brightness(0.95); }
+  to { transform: scale(1.06); filter: brightness(1.2); }
+}
+
+/* Grandmaster Tactical Hint Highlights */
+html body #board .cell.m24-hint-from {
+  box-shadow: inset 0 0 0 2px #facc15, inset 0 0 18px rgba(250, 204, 21, 0.38) !important;
+}
+
+html body #board .cell.m24-hint-to {
+  box-shadow: inset 0 0 0 2.5px #fde047, inset 0 0 26px rgba(250, 204, 21, 0.55) !important;
+  animation: m24HintCell 1s ease-in-out infinite alternate !important;
+}
+
+@keyframes m24HintCell {
+  from { filter: brightness(1); }
+  to { filter: brightness(1.3); }
+}
+
+/* 3. Compact 4-Stat Growth Strip in Dossier (fits no-scroll rail) */
+.m24-growth-panel {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
+  padding: 6px 8px;
+  border-radius: 5px;
+  background: rgba(8, 16, 26, 0.85);
+  border: 1px solid rgba(111, 214, 255, 0.24);
+  margin: 2px 0;
+}
+
+body.side-r .m24-growth-panel,
+.m24-growth-panel.r {
+  background: rgba(24, 7, 14, 0.85);
+  border-color: rgba(255, 59, 92, 0.28);
+}
+
+.m24-stat-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.m24-stat-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: #94a3b8;
+  letter-spacing: 0.04em;
+}
+
+.m24-stat-head b {
+  color: #e2e8f0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10.5px;
+}
+
+.m24-stat-cell.max .m24-stat-head b {
+  color: #fde047;
+}
+
+.m24-stat-bar {
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+.m24-stat-bar > i {
+  display: block;
+  height: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #38bdf8, #a5f3fc);
+  transition: width 0.28s ease;
+}
+
+.m24-growth-panel.r .m24-stat-bar > i {
+  background: linear-gradient(90deg, #f43f5e, #fda4af);
+}
+
+.m24-stat-cell.max .m24-stat-bar > i {
+  background: linear-gradient(90deg, #f59e0b, #fef08a);
+}
+
+.m24-perk-line {
+  grid-column: 1 / -1;
+  font-size: 11.5px;
+  line-height: 1.35;
+  color: #bae6fd;
+  padding-top: 3px;
+  border-top: 1px solid rgba(148, 163, 184, 0.14);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.m24-growth-panel.r .m24-perk-line {
+  color: #fecdd3;
+}
+
+.m24-perk-line strong {
+  color: #fde047;
+  margin-right: 4px;
+}
+
+/* 4. Toolbar AI ELO Switch & Tactical Hint Button */
+.m24-toolbar-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 8px;
+}
+
+.m24-elo-btn,
+.m24-hint-btn {
+  background: rgba(12, 24, 36, 0.88);
+  border: 1px solid rgba(111, 214, 255, 0.35);
+  color: #dff4ff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 4px;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  transition: all 0.18s ease;
+}
+
+body.side-r .m24-elo-btn,
+body.side-r .m24-hint-btn {
+  background: rgba(28, 8, 15, 0.88);
+  border-color: rgba(255, 59, 92, 0.4);
+  color: #ffe4e8;
+}
+
+.m24-elo-btn:hover,
+.m24-hint-btn:hover {
+  border-color: #fde047;
+  color: #fde047;
+  box-shadow: 0 0 10px rgba(250, 204, 21, 0.28);
+}
+
+.m24-hint-btn {
+  border-color: rgba(250, 204, 21, 0.55);
+  color: #fde047;
+}
