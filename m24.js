@@ -59,6 +59,19 @@
     }catch(e){}
    };
   }
+  if(typeof renderBoardDeductionLayer==='function'){
+   const origDeduction=renderBoardDeductionLayer;
+   renderBoardDeductionLayer=function(b){
+    try{
+     if($('cinema')?.hidden){
+      liveMoveVector=null;
+      const layer=$('board-deduction-layer');
+      if(layer){layer.innerHTML='';return;}
+     }
+    }catch(e){}
+    return origDeduction.apply(this,arguments);
+   };
+  }
  }catch(e){console.warn('m24 popup clean',e);}
 
  /* =========================================================================
@@ -445,6 +458,18 @@
 
  function moveKey(m){return `${m.uid}:${m.x},${m.y},${m.type||'m'}`;}
 
+ // 8x8 Chess-Style Positional Square Table (rewards central control & active lanes)
+ const PST24=[
+  [ 2,  5,  8, 10, 10,  8,  5,  2],
+  [ 5, 10, 14, 18, 18, 14, 10,  5],
+  [ 8, 14, 22, 26, 26, 22, 14,  8],
+  [10, 18, 26, 32, 32, 26, 18, 10],
+  [10, 18, 26, 32, 32, 26, 18, 10],
+  [ 8, 14, 22, 26, 26, 22, 14,  8],
+  [ 5, 10, 14, 18, 18, 14, 10,  5],
+  [ 2,  5,  8, 10, 10,  8,  5,  2]
+ ];
+
  function tacticalEval24(s,side){
   let sc=goalPositionScore(s,side);
   const opp=enemyOf(side);
@@ -453,33 +478,46 @@
   const hz=imminentHazard(s);
   const sh=shielded(s);
 
-  let myPower=0,oppPower=0,forkBonus=0;
+  let myPower=0,oppPower=0,forkBonus=0,posBonus=0;
   for(const u of s.units){
    if(!onBoard(u))continue;
    const k=key(u.x,u.y);
-   const val=valueOf(u)*14+(u.char&&(u.xp||0)>=2?18:0);
+   const val=valueOf(u)*14+(u.char&&(u.xp||0)>=2?18:0)+((u.xp||0)>=4?22:0);
+   const pst=(PST24[u.y]&&PST24[u.y][u.x])||0;
    if(u.side===side){
     myPower+=val;
+    posBonus+=pst*0.55;
     if(hz.includes(k))sc-=val*2.8;
     if(oppThreats.has(k)&&!(u.kind==='core'&&sh)){
      const defended=myThreats.has(k);
      const isGirlThreatenedBySpider=u.char&&side==='g'&&s.units.some(sp=>onBoard(sp)&&sp.kind==='spider'&&sp.side==='r'&&distance(sp,u)<=2);
      sc-=isGirlThreatenedBySpider?val*1.95:(defended?val*0.52:val*1.25);
     }
+    // Synergy pair bonus (Lyra+Akira, Lark+Misa, Echo+Astra)
+    if(u.char==='akira'&&friendlyAdjacent(s,u,'lyra'))posBonus+=24;
+    if(u.char==='misa'&&friendlyAdjacent(s,u,'lark'))posBonus+=24;
+    if(u.char==='astra'&&friendlyAdjacent(s,u,'echo'))posBonus+=22;
     // Check forks (1 unit threatening 2+ enemy pieces)
     if(!u.used){
      const capTargets=legalMoves(s,u).filter(m=>m.capture);
-     if(capTargets.length>=2)forkBonus+=28*capTargets.length;
+     if(capTargets.length>=2)forkBonus+=30*capTargets.length;
     }
    }else{
     oppPower+=val;
+    posBonus-=pst*0.55;
     if(myThreats.has(k)&&!(u.kind==='core'&&sh)){
      const isInfectTarget=u.char&&opp==='g'&&side==='r';
      sc+=isInfectTarget?val*1.45:val*0.65;
     }
+    // Checkmate net: penalize enemy mecha girls that have 0 safe escape squares
+    if(u.char){
+     const safeEsc=legalMoves(s,u).filter(m=>!myThreats.has(key(m.x,m.y))).length;
+     if(safeEsc===0)posBonus+=45;
+     else if(safeEsc===1)posBonus+=18;
+    }
    }
   }
-  sc+=(myPower-oppPower)+forkBonus;
+  sc+=(myPower-oppPower)+forkBonus+posBonus;
   if(s.kind23&&typeof K23!=='undefined'&&K23[s.kind23]&&K23[s.kind23].ev){
    sc+=(side==='g'?1:-1)*K23[s.kind23].ev(s,side);
   }
@@ -1185,15 +1223,221 @@
      return[{mode:'narr',line:'强光刺破了走廊，赤蛛群退回通风管道。'}];
     }
    };
+
+   // 10 · 装甲列车截击 (Armored Convoy Escort / Intercept)
+   K23.convoy={
+    win:'through',w:2,base:2,name:'轨道列车截击',en:'ARMORED CONVOY',where:'C–02 环站磁浮轨',bg:'film_bridge',
+    cond:()=>activeGirls('g').length>=2,
+    setup(){return{gs:shuf24(activeGirls('g')).slice(0,3),ts:shuf24(activeGirls('r')).slice(0,2)};},
+    build(d){
+     const s=makeMission(2);
+     s.mid=2;s.units=[];s.walls=['1,2','6,2','1,5','6,5'];s.voids=[];s.relays=[];s.loot=[];
+     s.exits=[{x:3,y:0,side:'g'},{x:4,y:0,side:'g'}];s.delivery=[];
+     s.subOp='m24_convoy';s.subOpOpen=true;s.subOpName='轨道列车截击';s.where23='C–02 环站磁浮轨';
+     const cap=spawn(s,'capsule','g',3,5,null,'convoy-cap');if(cap)cap.flee=true;
+     d.gs.forEach((id,i)=>spawn(s,'mech','g',[2,4,5][i],6,id));
+     [[2,1],[3,1],[4,1],[5,1],[2,3],[5,3]].forEach(([x,y])=>spawn(s,'spider','r',x,y));
+     d.ts.forEach((id,i)=>spawn(s,'mech','r',i===0?0:7,2,id));
+     s.k23={limit:9};
+     return s;
+    },
+    goals(s){
+     const cap=s.units.find(u=>u.uid==='convoy-cap');
+     if(C.side==='g'){
+      return[
+       {text:`护送装甲核心匣抵达北端 D8/E8 接驳口，或全歼伏击敌军（${Math.min(s.round,9)}/9 轮）`,done:!!(cap&&cap.escaped)||movers(s,'r').length===0},
+       {text:'确保装甲核心匣不被赤巢摧毁',done:!!(cap&&!cap.dead)}
+      ];
+     }
+     return[
+      {text:`在装甲核心匣抵达北端 D8/E8 前将其摧毁，或感染至少 1 名护卫机娘（${Math.min(s.round,9)}/9 轮）`,done:!!(cap&&cap.dead)||s.flags.conversionsR.length>=1},
+      {text:'封锁中央磁浮轨道，阻止核心匣脱出',done:!(cap&&cap.escaped)}
+     ];
+    },
+    check(s){
+     const cap=s.units.find(u=>u.uid==='convoy-cap');
+     if(C.side==='g'){
+      if((cap&&cap.escaped)||movers(s,'r').length===0)return['win','through'];
+      if(!cap||cap.dead||movers(s,'g').length===0)return['lose','killed'];
+     }else{
+      if(!cap||cap.dead||s.flags.conversionsR.length>=1||movers(s,'g').length===0)return['win','infect'];
+      if(cap&&cap.escaped)return['lose','escaped'];
+      if(movers(s,'r').length===0)return['lose','nospider'];
+     }
+     return null;
+    },
+    timeout:'closed',
+    ev(s){
+     const cap=s.units.find(u=>u.uid==='convoy-cap');
+     if(!cap||cap.dead)return -700;
+     if(cap.escaped)return 700;
+     return (6-cap.y)*75;
+    },
+    target(s,u){
+     const cap=s.units.find(v=>v.uid==='convoy-cap');
+     if(u.uid==='convoy-cap')return s.exits[0];
+     if(u.side==='r'&&cap&&onBoard(cap))return cap;
+     return movers(s,enemyOf(u.side))[0]||null;
+    },
+    intro(d){
+     const g0=d.gs[0]||'akira';
+     return[
+      {bg:'film_bridge',kb:'in',tint:C.side==='r'?'red':'dark',stamp:'C–02 环站磁浮轨',mode:'narr',line:'载有神经中枢备份的装甲核心匣正在沿磁浮轨道北上，两侧走廊已布满红光。'},
+      C.side==='g'
+       ?{who:g0,side:'g',line:'护住核心匣！只要把它推进北端 D8 或 E8 气闸，我们就能掌握整座站的路线图！'}
+       :{who:'overmind',line:'砸碎那只匣子，或者把护送它的女孩留下来。'},
+      {bg:'film_bridge',kb:'out',tint:'dark',objective:{title:'轨道列车截击',where:'C–02 环站磁浮轨'}}
+     ];
+    },
+    after(s,res){
+     const won=res==='through'||res==='infect';
+     if(won){
+      for(const id of activeGirls(C.side))if(C.roster[id])C.roster[id].xp=Math.min(5,(C.roster[id].xp||0)+1);
+      return[{mode:'narr',line:'磁浮轨道的战斗落下帷幕，获胜方成功夺取了轨道控制权。'}];
+     }
+     return[{mode:'narr',line:'磁浮列车消失在轨道尽头，战线向下一扇区转移。'}];
+    }
+   };
+
+   // 11 · 三塔连锁过载 (Tri-Tower Overload / King of the Hill)
+   K23.overload={
+    win:'hold',w:2,base:1,name:'三塔连锁过载',en:'TRI-TOWER OVERLOAD',where:'B–07 高能电容阵列',bg:'film_garden',
+    cond:()=>activeGirls('g').length>=2,
+    setup(){return{gs:shuf24(activeGirls('g')).slice(0,3),ts:shuf24(activeGirls('r')).slice(0,2)};},
+    build(d){
+     const s=makeMission(1);
+     s.mid=1;s.units=[];s.walls=['3,3','4,4'];s.voids=[];s.loot=[];s.exits=[];s.delivery=[];
+     s.relays=[{x:1,y:2,owner:null,name:'B6 北电容塔'},{x:4,y:3,owner:null,name:'E5 中电容塔'},{x:6,y:5,owner:null,name:'G3 南电容塔'}];
+     s.subOp='m24_overload';s.subOpOpen=true;s.subOpName='三塔连锁过载';s.where23='B–07 高能电容阵列';
+     d.gs.forEach((id,i)=>spawn(s,'mech','g',[2,4,5][i],6,id));
+     spawn(s,'sentinel','g',1,6);
+     [[2,1],[4,1],[5,1],[6,2]].forEach(([x,y])=>spawn(s,'spider','r',x,y));
+     d.ts.forEach((id,i)=>spawn(s,'mech','r',i===0?1:6,1,id));
+     s.k23={limit:8};
+     return s;
+    },
+    goals(s){
+     const side=C.side,foe=enemyOf(side);
+     const myRel=s.relays.filter(r=>r.owner===side).length;
+     return[
+      {text:`第 3 轮起同时控制至少 2 座电容塔即可触发连锁过载制胜（当前控制 ${myRel}/3），或全歼敌军`,done:myRel>=2&&s.round>=3},
+      {text:`防止敌方在第 3 轮后同时控制 2 座以上电容塔（${Math.min(s.round,8)}/8 轮）`,done:s.relays.filter(r=>r.owner===foe).length<2}
+     ];
+    },
+    check(s){
+     const side=C.side,foe=enemyOf(side);
+     if((s.round>=3&&s.relays.filter(r=>r.owner===side).length>=2)||movers(s,foe).length===0)return['win','infect'];
+     if((s.round>=3&&s.relays.filter(r=>r.owner===foe).length>=2)||movers(s,side).length===0)return['lose','eggs'];
+     return null;
+    },
+    timeout:'closed',
+    ev(s){
+     return (s.relays.filter(r=>r.owner==='g').length-s.relays.filter(r=>r.owner==='r').length)*210;
+    },
+    target(s,u){
+     return s.relays.find(r=>r.owner!==u.side)||movers(s,enemyOf(u.side))[0]||null;
+    },
+    intro(d){
+     const g0=d.gs[0]||'misa';
+     return[
+      {bg:'film_garden',kb:'in',tint:C.side==='r'?'red':'dark',stamp:'B–07 高能电容阵列',mode:'narr',line:'三座高能电容塔呈三角阵列分布。从第 3 轮起，任何一方只要同时掌控两座电容塔，就能释放全域电弧终结战斗。'},
+      {who:g0,side:'g',line:'抢占 B6、E5、G3 三座电容塔中的任意两座！注意机动配合！'},
+      {bg:'film_garden',kb:'out',tint:'dark',objective:{title:'三塔连锁过载',where:'B–07 高能电容阵列'}}
+     ];
+    },
+    after(s,res){
+     if(res==='infect'){
+      for(const id of activeGirls(C.side))if(C.roster[id])C.roster[id].xp=Math.min(5,(C.roster[id].xp||0)+1);
+      return[{mode:'narr',line:'两座高能电容塔同时迸发耀眼电弧，敌军防线瞬间瓦解！'}];
+     }
+     return[{mode:'narr',line:'电容阵列过载结束，小队转移阵地。'}];
+    }
+   };
+
+   // 12 · 崩塌隔离区 (Collapsing Quarantine / Shrinking Arena)
+   K23.quarantine={
+    win:'infect',w:2,base:4,name:'崩塌隔离区',en:'COLLAPSING ZONE',where:'Ω–04 外环解体区',bg:'film_core',
+    cond:()=>activeGirls('g').length>=2,
+    setup(){return{gs:shuf24(activeGirls('g')).slice(0,3),ts:shuf24(activeGirls('r')).slice(0,2)};},
+    build(d){
+     const s=makeMission(4);
+     s.mid=4;s.units=[];s.walls=['2,2','5,2','2,5','5,5'];s.voids=['0,0','7,0','0,7','7,7'];s.loot=[];s.exits=[];s.delivery=[];
+     s.relays=[{x:3,y:3,owner:null,name:'D5 安定锚'},{x:4,y:4,owner:null,name:'E4 安定锚'}];
+     s.subOp='m24_quarantine';s.subOpOpen=true;s.subOpName='崩塌隔离区';s.where23='Ω–04 外环解体区';
+     d.gs.forEach((id,i)=>spawn(s,'mech','g',[2,5,3][i],6,id));
+     spawn(s,'drone','g',4,6);
+     [[2,1],[3,1],[4,1],[5,1]].forEach(([x,y])=>{const sp=spawn(s,'spider','r',x,y);if(sp)sp.xp=2;});
+     d.ts.forEach((id,i)=>spawn(s,'mech','r',i===0?1:6,2,id));
+     s.k23={limit:8};
+     return s;
+    },
+    goals(s){
+     const side=C.side,foe=enemyOf(side);
+     const myRel=s.relays.filter(r=>r.owner===side).length;
+     return[
+      {text:`向中央高地收缩推进：同时占领 D5 与 E4 安定锚（${myRel}/2）或歼灭/感染全部敌军`,done:myRel===2||movers(s,foe).length===0},
+      {text:`存活至最后（剩余敌军 ${movers(s,foe).length}）`,done:movers(s,foe).length===0}
+     ];
+    },
+    check(s){
+     const side=C.side,foe=enemyOf(side);
+     if(s.relays.filter(r=>r.owner===side).length===2||movers(s,foe).length===0)return['win','infect'];
+     if(movers(s,side).length===0)return['lose','nospider'];
+     return null;
+    },
+    timeout:'closed',
+    ev(s){
+     return (s.relays.filter(r=>r.owner==='g').length-s.relays.filter(r=>r.owner==='r').length)*185;
+    },
+    target(s,u){
+     return s.relays.find(r=>r.owner!==u.side)||movers(s,enemyOf(u.side))[0]||null;
+    },
+    intro(d){
+     const g0=d.gs[0]||'sola';
+     return[
+      {bg:'film_core',kb:'in',tint:'red',fx:'alert shake',stamp:'Ω–04 外环解体区',mode:'narr',line:'外环甲板正在向太空中剥离解体！唯有中央的 D5 与 E4 两座安定锚还能维持重力场。'},
+      {who:g0,side:'g',line:'别留在外围！全员向中央 D5、E4 安定锚突进，在近身战中决一胜负！'},
+      {bg:'film_core',kb:'out',tint:'dark',objective:{title:'崩塌隔离区',where:'Ω–04 外环解体区'}}
+     ];
+    },
+    after(s,res){
+     if(res==='infect'){
+      for(const id of activeGirls(C.side))if(C.roster[id])C.roster[id].xp=Math.min(5,(C.roster[id].xp||0)+1);
+      return[{mode:'narr',line:'重力安定锚锁死，中央甲板上的敌军被彻底肃清！'}];
+     }
+     return[{mode:'narr',line:'外环甲板脱离，小队紧急跃迁撤离。'}];
+    }
+   };
   }
  }catch(e){console.warn('m24 k23 extend',e);}
 
- // D) Hook M24 Custom Interludes (siege / heist / blackout) into Mission Lifecycle for BOTH Factions
+ // D) Hook M24 Custom Interludes into Mission Lifecycle for BOTH Factions
+ const M24_CUSTOM_KINDS=['siege','heist','blackout','awakening','convoy','overload','quarantine'];
  function isM24Interlude(s){
   return s&&s.kind24&&K23[s.kind24];
  }
 
  function launchM24Interlude(kind){
+  if(!C)newCampaign(homeSide||'g');
+  // If it is one of the original 5 hive23 interludes, ensure Red Hive campaign & run full intro
+  if(!M24_CUSTOM_KINDS.includes(kind)&&typeof K23!=='undefined'&&K23[kind]){
+   if(C.side!=='r')newCampaign('r');
+   const def23=K23[kind];
+   const data23=def23.setup();
+   runId++;busy=false;undoStack=[];
+   try{hideStory();}catch(e){}
+   try{$('result').hidden=true;}catch(e){}
+   S=def23.build(data23);
+   S.kind24=null;S.kind23=kind;S.data23=data23;S.data24=data23;S.limit=S.k23?.limit||9;
+   for(const u of S.units)if(u.char&&C.roster[u.char])C.roster[u.char].introduced=true;
+   selected=movers(S,'r').find(u=>u.char)?.uid||movers(S,'r')[0]?.uid;
+   addLog(`接入特殊行动区域：${def23.where}。`,'good');
+   checkpoint={c:clone(C),s:clone(S)};
+   showGame();render();persist();
+   const shots23=[{title:{k:'INTERLUDE',m:def23.name,s:def23.where},hold:1600,sfx:'cut'},...def23.intro(data23).filter(Boolean)];
+   FILM.play(typeof withDeploy==='function'?withDeploy(shots23):shots23,()=>{try{render();}catch(e){}},{chapter:`INTERLUDE / ${def23.en}`});
+   return true;
+  }
   const def=K23[kind];if(!def)return false;
   const st24=ensureM24State();
   if(st24&&!st24.usedTypes.includes(kind))st24.usedTypes.push(kind);
@@ -1205,6 +1449,7 @@
   S.kind24=kind;
   S.kind23=kind;
   S.data24=data;
+  S.data23=data;
   S.limit=S.k23?.limit||8;
   for(const u of S.units)if(u.char&&C.roster[u.char])C.roster[u.char].introduced=true;
   selected=movers(S,C.side).find(u=>u.char)?.uid||movers(S,C.side)[0]?.uid;
@@ -1220,7 +1465,10 @@
   siege:'死守中央两座熔心锁，利用高同步单位的超频连斩反杀突袭敌军！',
   heist:'夺取中央加密黑匣并护送携带者抵达己方撤离口，或直接歼灭/感染敌方主力！',
   blackout:'极夜环境下迅速占领 B5 与 G5 两座照明信标即可直接锁定胜局！',
-  awakening:'王牌主力已进入 SYNC III★ 超频觉醒态，掌控两座共鸣王座或击溃敌军！'
+  awakening:'王牌主力已进入 SYNC III★ 超频觉醒态，掌控两座共鸣王座或击溃敌军！',
+  convoy:'护送/截击中央磁浮轨道上的装甲核心匣，控制中轴走廊是胜负关键！',
+  overload:'第 3 轮起同时控制 B6、E5、G3 三座电容塔中的任意 2 座即可直接引爆电弧获胜！',
+  quarantine:'向中央 D5、E4 安定锚收缩突进，利用超频连动在近身战中一举决胜！'
  };
  const m24BaseQuestHint=questHint;
  questHint=function(s){
@@ -1271,6 +1519,19 @@
   return m24BaseResolveEnv.apply(this,arguments);
  };
 
+ const m24BaseShowResult=showResult;
+ showResult=function(){
+  const r=m24BaseShowResult.apply(this,arguments);
+  try{
+   if(isM24Interlude(S)){
+    document.querySelectorAll('#result-content .accept20').forEach(b=>{
+     b.onclick=()=>{advanceMission();};
+    });
+   }
+  }catch(e){}
+  return r;
+ };
+
  const m24BaseAdvance=advanceMission;
  advanceMission=function(){
   if(isM24Interlude(S)){
@@ -1288,31 +1549,177 @@
   return m24BaseAdvance.apply(this,arguments);
  };
 
- // Hook nextMission so Guardians ALSO get random interludes between chapters, and Red Hive can roll M24 interludes
+ // E) Character-State Conditional Random Events (根据角色不同处境随机触发分支抉择)
+ const M25_EVENTS={
+  g_lark_beacon:{
+   side:'g',
+   cond:()=>C&&C.roster&&C.roster.lark&&C.roster.lark.introduced,
+   play(){
+    const isInf=C.roster.lark.side==='r';
+    const partner=activeGirls('g').find(x=>['iris','misa','lyra'].includes(x))||activeGirls('g')[0]||'lyra';
+    if(isInf){
+     return{
+      shots:[
+       {bg:'film_cabin',kb:'in',tint:'cold',stamp:'角色分支 · 璃雀的旧信标',mode:'narr',line:'深夜的侦察频段里，突然跳出一串只有先遣队才懂的折翼摩斯码——发信源来自已被赤蛛寄生的璃雀。'},
+       {who:partner,side:'g',line:'这是璃雀以前常敲的节奏……虽然她胸口的红蜘蛛锁死了语音，但她的手指还在偷偷发坐标！'}
+      ],
+      who:partner,q:'要相信这串来自受控同伴的暗号吗？',
+      opts:[
+       {label:'⚡ 相信璃雀的残存本能（全队主力 +1 XP，破译捷径）',action:()=>{for(const id of activeGirls('g'))if(C.roster[id])C.roster[id].xp=Math.min(5,(C.roster[id].xp||0)+1);},after:[{who:partner,side:'g',line:'坐标是真的！她替我们标出了赤蛛的盲区！'}]},
+       {label:'🛡️ 警惕母巢诱饵，加固防卫（下一战额外部署哨塔）',action:()=>{C.flags.sentinel23=(C.flags.sentinel23||0)+1;},after:[{who:partner,side:'g',line:'不能冒险。先把防线架好，我们堂堂正正推进过去。'}]}
+      ]
+     };
+    }
+    return{
+     shots:[
+      {bg:'film_cabin',kb:'in',tint:'cold',stamp:'角色分支 · 折翼改装',who:'lark',side:'g',line:'队长！我在接驳区的备用机库里找到了一套高阶曲率喷口，正好能装在我的折翼装甲上！'}
+     ],
+     who:'lark',q:'如何分配这套高阶曲率组件？',
+     opts:[
+      {label:'★ 专精改装璃雀（璃雀直达 SYNC III★ 超频觉醒）',action:()=>{C.roster.lark.xp=Math.max(4,(C.roster.lark.xp||0)+2);},after:[{who:'lark',side:'g',line:'折翼推进器全开！看我直接跳过她们的防线！'}]},
+      {label:'⚙️ 拆解分给全队（全体在列机娘 +1 XP）',action:()=>{for(const id of activeGirls('g'))C.roster[id].xp=Math.min(5,(C.roster[id].xp||0)+1);},after:[{who:partner,side:'g',line:'全队伺服同步率都上升了一个台阶！'}]}
+     ]
+    };
+   }
+  },
+  g_misa_firewall:{
+   side:'g',
+   cond:()=>activeGirls('g').includes('misa')||activeGirls('g').includes('sera'),
+   play(){
+    const spk=activeGirls('g').includes('misa')?'misa':'sera';
+    return{
+     shots:[
+      {bg:'film_garden',kb:'in',tint:'cold',stamp:'角色分支 · 逆向神经脉冲',who:spk,side:'g',line:'我拆解了一只被击毁的赤红机械蜘蛛残骸，摸清了它扑向胸甲时的神经握手频率！'}
+     ],
+     who:spk,q:'将逆向研究成果用于哪个方向？',
+     opts:[
+      {label:'⚡ 强化工兵与医疗组超频（弥砂/白栖直达 SYNC III★）',action:()=>{['misa','sera'].forEach(id=>{if(C.roster[id])C.roster[id].xp=Math.max(4,(C.roster[id].xp||0)+2);});},after:[{who:spk,side:'g',line:'超载回路调试完毕，下一战由我们轰开正面！'}]},
+      {label:'🔥 超频全队主武器（全体在列机娘 +1 XP）',action:()=>{for(const id of activeGirls('g'))C.roster[id].xp=Math.min(5,(C.roster[id].xp||0)+1);},after:[{who:spk,side:'g',line:'高频破甲补丁已同步至全队武器总线！'}]}
+     ]
+    };
+   }
+  },
+  g_tribunal_oath:{
+   side:'g',
+   cond:()=>activeGirls('r').length>=1&&(activeGirls('g').includes('ruby')||activeGirls('g').includes('nyx')||activeGirls('g').includes('akira')),
+   play(){
+    const spk=['ruby','nyx','akira'].find(id=>activeGirls('g').includes(id))||'akira';
+    const takenId=activeGirls('r')[0];
+    return{
+     shots:[
+      {bg:'film_corridor',kb:'in',tint:'dark',stamp:'角色分支 · 铁血誓言',who:spk,side:'g',line:`${nm24(takenId)}胸口的红蜘蛛已经彻底接管了她的机体。下一战在棋盘上撞见她，谁都不许手抖。`}
+     ],
+     who:spk,q:'面对被寄生的昔日同伴，下达哪道作战方针？',
+     opts:[
+      {label:`⚔️ 铁血破阵令（${nm24(spk)}直达 SYNC III★ 超频觉醒）`,action:()=>{if(C.roster[spk])C.roster[spk].xp=Math.max(4,(C.roster[spk].xp||0)+2);},after:[{who:spk,side:'g',line:'收到。我会在最快的一步里结束她的痛苦。'}]},
+      {label:'🛡️ 机动迂回令（全队 +1 XP，优先夺取战略终端）',action:()=>{for(const id of activeGirls('g'))C.roster[id].xp=Math.min(5,(C.roster[id].xp||0)+1);},after:[{who:spk,side:'g',line:'明白。先切断母巢节点，不跟受控载体硬拼消耗。'}]}
+     ]
+    };
+   }
+  },
+  r_chest_symphony:{
+   side:'r',
+   cond:()=>activeGirls('r').length>=2,
+   play(){
+    const [a,b]=activeGirls('r').slice(0,2);
+    return{
+     shots:[
+      {bg:'film_overmind',kb:'in',tint:'red',stamp:'母巢分支 · 双生胸甲共鸣',mode:'narr',line:`${nm24(a)}与${nm24(b)}并排站在苗床前，她们胸口正中的两枚赤红机械蜘蛛正在以完全相同的频率闪烁。`},
+      {who:a,side:'r',line:'母巢……我能听见她的心跳，也能听见她的走法。'}
+     ],
+     who:'overmind',q:'如何编织她们两人之间的神经链路？',
+     opts:[
+      {label:`★ 双生超频同调（${nm24(a)}与${nm24(b)}直达 SYNC III★）`,action:()=>{[a,b].forEach(id=>{if(C.roster[id])C.roster[id].xp=Math.max(4,(C.roster[id].xp||0)+2);});},after:[{who:'overmind',line:'从今天起，你们就是我最锋利的一双翅膀。'}]},
+      {label:'🕸️ 反哺母巢苗床（下一战额外孵化 2 只捕食赤蛛）',action:()=>{C.flags.brood22=Math.min(2,(C.flags.brood22||0)+2);},after:[{who:'overmind',line:'你们的记忆，让整窝孩子都学会了怎么捕猎。'}]}
+     ]
+    };
+   }
+  },
+  r_captain_hunter:{
+   side:'r',
+   cond:()=>activeGirls('g').includes('lyra'),
+   play(){
+    const t=activeGirls('r')[0]||'lark';
+    return{
+     shots:[
+      {bg:'film_overmind',kb:'in',tint:'red',stamp:'母巢分支 · 猎首推演',who:t,side:'r',line:'母巢，零音队长的指挥习惯还留在我的记忆库里。只要掐断她的两翼，苍穹防线就会不攻自破。'}
+     ],
+     who:'overmind',q:'如何利用这份关于零音的战术记忆？',
+     opts:[
+      {label:'🕸️ 训练捕食猎群（全体受控机娘 +1 XP，下一战多孵 1 蛛）',action:()=>{for(const id of activeGirls('r'))C.roster[id].xp=Math.min(5,(C.roster[id].xp||0)+1);C.flags.brood22=Math.min(2,(C.flags.brood22||0)+1);},after:[{who:'overmind',line:'很好。下一战，去把你的老队长也接过来。'}]},
+      {label:'🎭 伪造求救信号诱敌（下一战守护者阵型前移暴露）',action:()=>{C.flags.exposed23='lyra';},after:[{who:'overmind',line:'她从来不会丢下同伴。这就是她最大的弱点。'}]}
+     ]
+    };
+   }
+  }
+ };
+
+ function playM25Event(evId,done){
+  const def=M25_EVENTS[evId];if(!def){done();return;}
+  const st24=ensureM24State();
+  if(st24)st24.incidents[evId]=1;
+  const data=def.play();
+  const shots=[...data.shots];
+  shots.push({
+   who:data.who,side:def.side,line:data.q,
+   choices:data.opts.map(o=>({
+    label:o.label,detail:'',
+    action:()=>{try{o.action();}catch(e){}persist();},
+    next:()=>o.after||[]
+   }))
+  });
+  FILM.play(shots,()=>{done();},{chapter:'BRANCH / 命运分歧'});
+ }
+
+ // Hook nextMission so Guardians ALSO get random interludes & character events between chapters, and Red Hive can roll M24/M25 content
  const m24BaseNextMission=nextMission;
  nextMission=function(){
   try{
    if(!isQA()&&!isFilmTest()&&C&&C.step<4&&!C.finished&&!(S&&S.saga)){
     const st24=ensureM24State();
     const gap=C.step;
-    if(C.side==='g'&&st24&&!st24.interludes[gap]){
-     st24.interludes[gap]=1;
-     const pool=['siege','heist','blackout','awakening'].filter(k=>!st24.usedTypes.includes(k)&&K23[k]&&K23[k].cond());
-     if(pool.length&&Math.random()<0.75){
-      const pickKind=pick24(pool);
-      persist();
-      launchM24Interlude(pickKind);
-      return;
+    const allM24Kinds=['siege','heist','blackout','awakening','convoy','overload','quarantine'];
+    if(C.side==='g'&&st24){
+     if(!st24.interludes[gap]){
+      st24.interludes[gap]=1;
+      const pool=allM24Kinds.filter(k=>!st24.usedTypes.includes(k)&&K23[k]&&K23[k].cond());
+      if(pool.length&&Math.random()<0.8){
+       const pickKind=pick24(pool);
+       persist();
+       launchM24Interlude(pickKind);
+       return;
+      }
      }
-    }else if(C.side==='r'&&st24&&!st24.interludes[gap]){
-     st24.interludes[gap]=1;
-     const pool=['siege','heist','blackout','awakening'].filter(k=>!st24.usedTypes.includes(k)&&K23[k]&&K23[k].cond());
-     if(pool.length&&Math.random()<0.55){
-      if(C.p23&&C.p23.done)C.p23.done[gap]=1;
-      const pickKind=pick24(pool);
-      persist();
-      launchM24Interlude(pickKind);
-      return;
+     if(!st24.incidents['gap_'+gap]){
+      st24.incidents['gap_'+gap]=1;
+      const evPool=Object.keys(M25_EVENTS).filter(k=>M25_EVENTS[k].side==='g'&&!st24.incidents[k]&&M25_EVENTS[k].cond());
+      if(evPool.length&&Math.random()<0.75){
+       try{$('result').hidden=true;hideStory();}catch(e){}
+       playM25Event(pick24(evPool),()=>nextMission());
+       return;
+      }
+     }
+    }else if(C.side==='r'&&st24){
+     if(!st24.interludes[gap]){
+      st24.interludes[gap]=1;
+      const pool=allM24Kinds.filter(k=>!st24.usedTypes.includes(k)&&K23[k]&&K23[k].cond());
+      if(pool.length&&Math.random()<0.6){
+       if(C.p23&&C.p23.done)C.p23.done[gap]=1;
+       const pickKind=pick24(pool);
+       persist();
+       launchM24Interlude(pickKind);
+       return;
+      }
+     }
+     if(!st24.incidents['gap_'+gap]){
+      st24.incidents['gap_'+gap]=1;
+      const evPool=Object.keys(M25_EVENTS).filter(k=>M25_EVENTS[k].side==='r'&&!st24.incidents[k]&&M25_EVENTS[k].cond());
+      if(evPool.length&&Math.random()<0.65){
+       if(C.p23&&C.p23.inc)C.p23.inc[gap]=1;
+       try{$('result').hidden=true;hideStory();}catch(e){}
+       playM25Event(pick24(evPool),()=>nextMission());
+       return;
+      }
      }
     }
    }
@@ -1320,8 +1727,57 @@
   return m24BaseNextMission.apply(this,arguments);
  };
 
+ // F) Special Operations Selector Modal (allows direct play of all 12 distinct mission types anytime)
+ function openOpsSelector24(){
+  if(!C)newCampaign(homeSide||'g');
+  const modes=[
+   {id:'siege',name:'熔心死守',tag:'坚守反击',desc:'死守副反应堆双熔心锁直至脉冲释放，或全歼突击队'},
+   {id:'heist',name:'双核夺密',tag:'夺宝撤离',desc:'争夺金库中央两枚加密黑匣并护送携带者从气闸撤离'},
+   {id:'blackout',name:'极夜脉冲猎场',tag:'暗夜夺点',desc:'黑暗走廊中抢先点亮 B5 与 G5 两座照明信标锁定胜局'},
+   {id:'awakening',name:'胸甲共鸣审判',tag:'王牌觉醒',desc:'主力直达 SYNC III★ 超频觉醒态，争夺中央共鸣王座'},
+   {id:'convoy',name:'轨道列车截击',tag:'护送截击',desc:'护送或截击沿磁浮轨道北上的装甲核心匣'},
+   {id:'overload',name:'三塔连锁过载',tag:'三角控场',desc:'同时掌控三座高能电容塔中的任意两座释放全域电弧'},
+   {id:'quarantine',name:'崩塌隔离区',tag:'缩圈决战',desc:'外环解体，向中央 D5/E4 重力安定锚收缩近身决战'},
+   {id:'hunt',name:'逃生舱倒计时',tag:'赤巢追猎',desc:'在受伤机娘登上逃生舱前用赤蛛完成合围寄生'},
+   {id:'eggs',name:'孵化前的九十秒',tag:'赤巢守卵',desc:'死守三枚母巢卵囊直至第 8 轮破壳孵化'},
+   {id:'decap',name:'她们的指挥官',tag:'赤巢斩首',desc:'在 11 轮内突破护卫防线，感染或击毁敌方指挥官'},
+   {id:'drain',name:'通风道潜行',tag:'赤巢潜入',desc:'避开哨塔封锁线，将至少 3 只赤蛛送入北侧通风暗渠'},
+   {id:'duel',name:'镜室审讯',tag:'赤巢镜室',desc:'受控机娘牵制旧日搭档，引导赤蛛完成最后寄生'}
+  ];
+  const html=`<div class="manual-note"><b>12 种多样化战术关卡 · 随机幕间触发或随时直接体验</b><br>战役推进过程中会根据角色处境随机抽取不同机制的小关与分支事件；你也可以在下方直接选择任一模式立即接入战斗（当前阵营：<b>${C.side==='r'?'赤巢意识':'地球守护者'}</b>）。</div>
+  <div class="manual-grid" style="margin-top:12px">
+   ${modes.map(m=>`<div class="manual-section" style="display:flex;flex-direction:column;justify-content:space-between;gap:8px">
+    <div><small>${m.tag}</small><h3>${m.name}</h3><p>${m.desc}</p></div>
+    <button type="button" class="button primary" data-m24-op="${m.id}" style="width:100%;height:34px;font-size:12px">立即接入 · ${m.name}</button>
+   </div>`).join('')}
+  </div>`;
+  openModal('多样化战术关卡选择','TACTICAL OPERATIONS / 12 DISTINCT MODES',html);
+  $('modal-content').querySelectorAll('[data-m24-op]').forEach(btn=>{
+   btn.onclick=()=>{
+    const id=btn.dataset.m24Op;
+    closeModal();
+    launchM24Interlude(id);
+   };
+  });
+ }
+
+ // Add Special Ops button to toolbar
+ try{
+  const grp=document.querySelector('.m24-toolbar-group');
+  if(grp&&!$('m24-ops-btn')){
+   const btn=document.createElement('button');
+   btn.type='button';
+   btn.className='m24-elo-btn';
+   btn.id='m24-ops-btn';
+   btn.title='打开多样化特殊战术关卡选择器（死守/夺密/极夜/王牌审判/列车护送/三塔过载/崩塌隔离等）';
+   btn.textContent='🎯 特遣关卡';
+   btn.onclick=openOpsSelector24;
+   grp.appendChild(btn);
+  }
+ }catch(e){}
+
  window.__M24__={
-  statsOf,searchGM,triggerTacticalHint,launchM24Interlude,
+  statsOf,searchGM,triggerTacticalHint,launchM24Interlude,openOpsSelector24,playM25Event,
   get elo(){return aiEloTier;},setElo(v){aiEloTier=v;}
  };
  if(isFilmTest()&&window.__MV_FILM__){
