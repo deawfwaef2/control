@@ -112,3 +112,21 @@ body.hud15 #roster-list .roster-item small,body.hud15 #roster-list .roster-item 
 @media (max-height:700px){body.hud15 #game .dossier .unit-trait,body.hud15 #game .dossier .upgrade-info{display:none!important}body.hud15 #game .roster-panel .panel-title{display:none!important}}
 @media (max-width:1250px){body.hud15 #game:not([hidden]){grid-template-columns:minmax(200px,17vw) minmax(0,1fr) minmax(220px,19vw)!important}html body.hud15 #game #roster-list{grid-template-columns:repeat(4,minmax(0,1fr))!important}}
 html body.hud15 #toast{top:auto!important;bottom:10px!important;left:50%!important;right:auto!important;transform:translateX(-50%)!important;max-width:min(720px,60vw);font-size:14px!important;z-index:70!important}
+/* ===== M17-2 board speech bubbles ===== */
+#bub17{position:fixed;inset:0;pointer-events:none;z-index:46}
+#bub17 .b17{position:absolute;left:0;top:0;max-width:280px;min-width:90px;padding:8px 13px 9px;border-radius:12px;
+ background:linear-gradient(180deg,rgba(14,30,44,.97),rgba(8,17,27,.97));border:1px solid rgba(111,214,255,.55);
+ box-shadow:0 10px 26px rgba(0,0,0,.55),0 0 18px rgba(111,214,255,.18);color:#e8f6ff;opacity:0;
+ transition:opacity .22s ease,filter .22s ease;filter:blur(2px);will-change:transform}
+#bub17 .b17.show{opacity:1;filter:none}
+#bub17 .b17.out{opacity:0;filter:blur(3px)}
+#bub17 .b17.gone{display:none}
+#bub17 .b17 b{display:block;font-size:12px;letter-spacing:2px;color:#6fd6ff;margin-bottom:2px;font-weight:700}
+#bub17 .b17 p{margin:0;font-size:15px;line-height:1.45;white-space:normal;word-break:break-all}
+#bub17 .b17:after{content:"";position:absolute;left:calc(var(--ax,50%) - 7px);bottom:-7px;width:12px;height:12px;transform:rotate(45deg);
+ background:rgba(8,17,27,.97);border-right:1px solid rgba(111,214,255,.55);border-bottom:1px solid rgba(111,214,255,.55)}
+#bub17 .b17.below:after{bottom:auto;top:-7px;border:0;border-left:1px solid rgba(111,214,255,.55);border-top:1px solid rgba(111,214,255,.55);background:rgba(14,30,44,.97)}
+#bub17 .b17.r{background:linear-gradient(180deg,rgba(44,10,20,.97),rgba(24,5,12,.97));border-color:rgba(255,59,92,.6);box-shadow:0 10px 26px rgba(0,0,0,.55),0 0 20px rgba(255,59,92,.25);color:#ffe6ea}
+#bub17 .b17.r b{color:#ff6f86}
+#bub17 .b17.r:after{background:rgba(24,5,12,.97);border-color:rgba(255,59,92,.6)}
+#bub17 .b17.r.below:after{background:rgba(44,10,20,.97)}

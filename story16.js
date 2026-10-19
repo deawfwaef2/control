@@ -81,7 +81,7 @@ const BW_CALL={lyra:'零音队长！',akira:'绛刃！',lark:'璃雀！',iris:'�
    const girl=C.roster&&C.roster[u.char];
    if(u.side==='r'&&girl&&typeof filmCombatSub==='function'){
     const t=performance.now();if(t-lastT<5000||Math.random()>.55)return r;lastT=t;
-    let line;if(!seen.has(u.char)&&typeof BRAINWASH!=='undefined'&&BRAINWASH[u.char]){seen.add(u.char);line=BRAINWASH[u.char];}else line=BW_CHATTER[Math.floor(Math.random()*BW_CHATTER.length)];
+    let line;if(!seen.has(u.char)&&typeof BRAINWASH!=='undefined'&&BRAINWASH[u.char]){seen.add(u.char);line=BRAINWASH[u.char];}else{const bw=typeof CAST17!=='undefined'&&CAST17[u.char]&&Math.random()<.65?CAST17[u.char].bw:BW_CHATTER;line=bw[Math.floor(Math.random()*bw.length)];}
     filmCombatSub(CHAR[u.char]?.name||'',line,'r');SND16.speak(u.char,'r',line,Math.random()<.5?'hmm':'laugh');
     // a guardian answers once in a while
     if(C.side==='g'&&Math.random()<.5){const f=filmPick((BW_BOND[u.char]||[]),'g');if(f)setTimeout(()=>{filmCombatSub(CHAR[f]?.name||'',`${BW_CALL[u.char]||''}……求你了，醒过来……`,'g');SND16.speak(f,'g','','sad');},2700);}
@@ -100,14 +100,14 @@ const NEAR_SPIDER=['它靠过来了……！','别、别过来！','胸口……
   const r=await pm.apply(this,arguments);
   try{
    if(!S||S.outcome||!u)return r;const t=performance.now();
-   if(isPlayer&&u.char&&!m.capture&&u.side==='g'&&t-lastMove>7000&&Math.random()<.35){
-    const p=(typeof PERSONA!=='undefined'&&PERSONA[u.char])||{};const line=(p.voice&&p.voice.move)||'';
+   if(isPlayer&&u.char&&!m.capture&&u.side==='g'&&t-lastMove>6000&&Math.random()<.45){
+    const p=(typeof PERSONA!=='undefined'&&PERSONA[u.char])||{};const cb=typeof CAST17!=='undefined'&&CAST17[u.char];const line=(cb?cb.move[Math.floor(Math.random()*cb.move.length)]:(p.voice&&p.voice.move))||'';
     if(line){lastMove=t;filmCombatSub(CHAR[u.char]?.name||'',line,'g');SND16.speak(u.char,'g',line);}
    }
    if(t-lastWarn>9000){
     const spiders=S.units.filter(v=>v.kind==='spider'&&v.side==='r'&&(typeof onBoard!=='function'||onBoard(v)));
     const girl=S.units.find(v=>v.char&&v.side==='g'&&(typeof onBoard!=='function'||onBoard(v))&&spiders.some(s=>Math.max(Math.abs(s.x-v.x),Math.abs(s.y-v.y))===1));
-    if(girl&&(!isPlayer||u.kind==='spider')&&C.side==='g'){lastWarn=t;const line=NEAR_SPIDER[Math.floor(Math.random()*NEAR_SPIDER.length)];setTimeout(()=>{filmCombatSub(CHAR[girl.char]?.name||'',line,'g');SND16.speak(girl.char,'g',line,'shock');},500);}
+    if(girl&&(!isPlayer||u.kind==='spider')&&C.side==='g'){lastWarn=t;const dz=typeof CAST17!=='undefined'&&CAST17[girl.char]&&Math.random()<.6?CAST17[girl.char].danger:NEAR_SPIDER;const line=dz[Math.floor(Math.random()*dz.length)];setTimeout(()=>{filmCombatSub(CHAR[girl.char]?.name||'',line,'g');SND16.speak(girl.char,'g',line,'shock');},500);}
     else if(girl&&C.side==='r'&&isPlayer&&u.kind==='spider'){lastWarn=t;setTimeout(()=>{filmCombatSub('赤巢','她的胸口……就在眼前了。','r');SND16.play('overmind');},400);}
    }
   }catch(e){}

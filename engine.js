@@ -314,18 +314,24 @@ function chooseAI(s,side){
    if(u.flee&&ev.escaped)bonus+=valueOf(u)*25;
    if(m.type==='wait')bonus-=2;
    if(ev.relay)bonus+=8;
-   if(m.capture)bonus+=1.5;
+   if(m.capture){const tg=unitAt(s,m.x,m.y);bonus+=1.5+(tg?valueOf(tg)*(captureMode(u,tg)==='infect'?1.2:.6):0);}
+   if(moved&&m.type!=='wait'){ // M17: don't hang pieces, look for forks
+    const dz=threatMap(next,enemyOf(side)),k2=key(moved.x,moved.y);
+    if(dz.has(k2)&&!m.capture)bonus-=valueOf(u)*(u.kind==='courier'?1.4:.9);
+    let forks=0;for(const fm of legalMoves(next,moved))if(fm.capture){const t2=unitAt(next,fm.x,fm.y);if(t2)forks+=captureMode(moved,t2)==='infect'?1.6:1;}
+    bonus+=Math.min(3,forks)*1.1;
+   }
    const quick=goalPositionScore(next,side)+safetyScore(next,side)*.7+bonus;
    candidates.push({m,next,quick,bonus});
   }
  }
  if(!candidates.length)return null;
- candidates.sort((a,b)=>b.quick-a.quick);candidates=candidates.slice(0,12);
+ candidates.sort((a,b)=>b.quick-a.quick);candidates=candidates.slice(0,16);
  for(const cand of candidates){
   const opponent=enemyOf(side);let replies=[];
   for(const u of movers(cand.next,opponent))for(const m of legalMoves(cand.next,u))if(m.capture){const target=unitAt(cand.next,m.x,m.y);replies.push({m,gain:target?valueOf(target)*(captureMode(u,target)==='infect'?2:1):0});}
   replies.sort((a,b)=>b.gain-a.gain);let worst=goalPositionScore(cand.next,side);
-  for(const reply of replies.slice(0,7)){const after=clone(cand.next);applyBasic(after,reply.m);worst=Math.min(worst,goalPositionScore(after,side)+safetyScore(after,side)*.35);}
+  for(const reply of replies.slice(0,9)){const after=clone(cand.next);applyBasic(after,reply.m);worst=Math.min(worst,goalPositionScore(after,side)+safetyScore(after,side)*.35);}
   cand.score=cand.quick*.6+worst*.4+cand.bonus*.2;
  }
  candidates.sort((a,b)=>b.score-a.score);return candidates[0].m;

@@ -1669,6 +1669,24 @@ body.hud15 #roster-list .roster-item small,body.hud15 #roster-list .roster-item 
 @media (max-height:700px){body.hud15 #game .dossier .unit-trait,body.hud15 #game .dossier .upgrade-info{display:none!important}body.hud15 #game .roster-panel .panel-title{display:none!important}}
 @media (max-width:1250px){body.hud15 #game:not([hidden]){grid-template-columns:minmax(200px,17vw) minmax(0,1fr) minmax(220px,19vw)!important}html body.hud15 #game #roster-list{grid-template-columns:repeat(4,minmax(0,1fr))!important}}
 html body.hud15 #toast{top:auto!important;bottom:10px!important;left:50%!important;right:auto!important;transform:translateX(-50%)!important;max-width:min(720px,60vw);font-size:14px!important;z-index:70!important}
+/* ===== M17-2 board speech bubbles ===== */
+#bub17{position:fixed;inset:0;pointer-events:none;z-index:46}
+#bub17 .b17{position:absolute;left:0;top:0;max-width:280px;min-width:90px;padding:8px 13px 9px;border-radius:12px;
+ background:linear-gradient(180deg,rgba(14,30,44,.97),rgba(8,17,27,.97));border:1px solid rgba(111,214,255,.55);
+ box-shadow:0 10px 26px rgba(0,0,0,.55),0 0 18px rgba(111,214,255,.18);color:#e8f6ff;opacity:0;
+ transition:opacity .22s ease,filter .22s ease;filter:blur(2px);will-change:transform}
+#bub17 .b17.show{opacity:1;filter:none}
+#bub17 .b17.out{opacity:0;filter:blur(3px)}
+#bub17 .b17.gone{display:none}
+#bub17 .b17 b{display:block;font-size:12px;letter-spacing:2px;color:#6fd6ff;margin-bottom:2px;font-weight:700}
+#bub17 .b17 p{margin:0;font-size:15px;line-height:1.45;white-space:normal;word-break:break-all}
+#bub17 .b17:after{content:"";position:absolute;left:calc(var(--ax,50%) - 7px);bottom:-7px;width:12px;height:12px;transform:rotate(45deg);
+ background:rgba(8,17,27,.97);border-right:1px solid rgba(111,214,255,.55);border-bottom:1px solid rgba(111,214,255,.55)}
+#bub17 .b17.below:after{bottom:auto;top:-7px;border:0;border-left:1px solid rgba(111,214,255,.55);border-top:1px solid rgba(111,214,255,.55);background:rgba(14,30,44,.97)}
+#bub17 .b17.r{background:linear-gradient(180deg,rgba(44,10,20,.97),rgba(24,5,12,.97));border-color:rgba(255,59,92,.6);box-shadow:0 10px 26px rgba(0,0,0,.55),0 0 20px rgba(255,59,92,.25);color:#ffe6ea}
+#bub17 .b17.r b{color:#ff6f86}
+#bub17 .b17.r:after{background:rgba(24,5,12,.97);border-color:rgba(255,59,92,.6)}
+#bub17 .b17.r.below:after{background:rgba(44,10,20,.97)}
 </style>
 </head>
 <body>
@@ -2376,18 +2394,24 @@ function chooseAI(s,side){
    if(u.flee&&ev.escaped)bonus+=valueOf(u)*25;
    if(m.type==='wait')bonus-=2;
    if(ev.relay)bonus+=8;
-   if(m.capture)bonus+=1.5;
+   if(m.capture){const tg=unitAt(s,m.x,m.y);bonus+=1.5+(tg?valueOf(tg)*(captureMode(u,tg)==='infect'?1.2:.6):0);}
+   if(moved&&m.type!=='wait'){ // M17: don't hang pieces, look for forks
+    const dz=threatMap(next,enemyOf(side)),k2=key(moved.x,moved.y);
+    if(dz.has(k2)&&!m.capture)bonus-=valueOf(u)*(u.kind==='courier'?1.4:.9);
+    let forks=0;for(const fm of legalMoves(next,moved))if(fm.capture){const t2=unitAt(next,fm.x,fm.y);if(t2)forks+=captureMode(moved,t2)==='infect'?1.6:1;}
+    bonus+=Math.min(3,forks)*1.1;
+   }
    const quick=goalPositionScore(next,side)+safetyScore(next,side)*.7+bonus;
    candidates.push({m,next,quick,bonus});
   }
  }
  if(!candidates.length)return null;
- candidates.sort((a,b)=>b.quick-a.quick);candidates=candidates.slice(0,12);
+ candidates.sort((a,b)=>b.quick-a.quick);candidates=candidates.slice(0,16);
  for(const cand of candidates){
   const opponent=enemyOf(side);let replies=[];
   for(const u of movers(cand.next,opponent))for(const m of legalMoves(cand.next,u))if(m.capture){const target=unitAt(cand.next,m.x,m.y);replies.push({m,gain:target?valueOf(target)*(captureMode(u,target)==='infect'?2:1):0});}
   replies.sort((a,b)=>b.gain-a.gain);let worst=goalPositionScore(cand.next,side);
-  for(const reply of replies.slice(0,7)){const after=clone(cand.next);applyBasic(after,reply.m);worst=Math.min(worst,goalPositionScore(after,side)+safetyScore(after,side)*.35);}
+  for(const reply of replies.slice(0,9)){const after=clone(cand.next);applyBasic(after,reply.m);worst=Math.min(worst,goalPositionScore(after,side)+safetyScore(after,side)*.35);}
   cand.score=cand.quick*.6+worst*.4+cand.bonus*.2;
  }
  candidates.sort((a,b)=>b.score-a.score);return candidates[0].m;
@@ -7063,6 +7087,157 @@ filmDeployHook=function(done){
 if(location.hash==='#filmtest')window.__MV_FILM__.deploy=()=>new Promise(r=>filmDeployHook(r));
 
 
+/* ===== M17 CAST BIBLE — how each girl talks, what she cares about, who she cares about =====
+   Used by the board chat bubbles (bubble17.js). Every line is short enough for a bubble.
+   self: how she refers to herself · tic: verbal habit · core: what drives her (for writers). */
+const CAST17={
+ lyra:{self:'我',tic:'短句、命令式，从不说"大概"',core:'背着历次阵亡名单的指挥官；最怕再写一个名字',
+  move:['按计划推进。','这一格，我们的。','保持间距，别给它们落脚点。'],
+  kill:['清除。下一个。','……别回头，继续。','干净利落。'],
+  danger:['它在看你的胸口。退。','别逞强——这是命令。'],
+  lost:['……把她的名字记下来。战后我亲自念。','不许哭。现在不许。'],
+  bw:['全员，向我靠拢。这是命令。','我终于不用再写阵亡名单了。','你们的站位，我闭着眼都知道。']},
+ akira:{self:'我',tic:'嗓门大，爱用"给我"',core:'出击前给每个人摆好马克杯，发誓全员回家喝庆功酒',
+  move:['让开让开！','跟上我的速度！','前面交给我！'],
+  kill:['哈！一刀两断！','下一个是谁？！','这种程度也敢挡路？'],
+  danger:['离那玩意儿远点！','喂！它冲你去了！'],
+  lost:['……她的马克杯，我还摆在桌上啊。','可恶……可恶！！'],
+  bw:['不用再保护谁了……真轻松啊，哈哈。','来啊，零音。像以前一样比一比。','马克杯？……那是什么来着。']},
+ lark:{self:'我',tic:'爱哼地球老歌，句尾轻快',core:'第一批调查员；拼死锁住信标，自责没能带大家回去',
+  move:['嗯哼～绕后！','这条路我走过！','跟着我的歌声走～'],
+  kill:['抓到啦！','呼……这次我没逃。','对不起啦，铁蜘蛛。'],
+  danger:['它、它又来了……','那个声音……我又听见了……'],
+  lost:['我又……没能把人带回去……','那首歌，她还没听完……'],
+  bw:['胸口这里一直在唱歌哦，你们听？','大家，好久不见～','这次换我来接你们回家。']},
+ iris:{self:'人家/我',tic:'句尾"～"，嚼薄荷糖，黑客黑话',core:'唯一能看穿赤巢迷雾的眼睛；嘴上轻浮，最重情',
+  move:['日字跳～抓不到我吧？','路线已破解～','嘎嘣——薄荷糖，充能完毕。'],
+  kill:['脉冲直击～拜拜啦！','防火墙？不存在的。','这波数据，人家收下了～'],
+  danger:['警告～它的爪子算出你的坐标了！','喂喂，往后退一格啦！'],
+  lost:['……她的信号，从我的频道里消失了。','不好笑。一点都不好笑。'],
+  bw:['母巢的频道好干净～','嘻嘻，你们的通讯，人家全听得见哦。','来嘛，我帮你调个频。']},
+ misa:{self:'我',tic:'"那、那个……"开头，一讲机械就停不下来',core:'害羞的工程师；整支队伍的机甲都是她修的',
+  move:['那、那个……我过去啦。','小心脚下管线……','走位误差 0.3，可以接受。'],
+  kill:['拆、拆解完毕！','结构弱点在第三关节，果然。','对不起……但你的螺丝松了。'],
+  danger:['它的结构……没有拆卸螺丝……好可怕。','请、请离它远一点！'],
+  lost:['她的机甲……上周才刚给她调好的……','我修得好机甲……修不好人……'],
+  bw:['维生管线已改造完毕。母巢夸我了。','你的关节……拆开一定很漂亮。','孵化效率，提升百分之三百。']},
+ veil:{self:'……',tic:'数呼吸，"一、二……"，很少说话',core:'孤独的狙击手；只信任看得见她背影的人',
+  move:['……换点。','一、二……就位。','视野，良好。'],
+  kill:['命中。','……呼。','下一个。'],
+  danger:['……左边。','别动。我来。'],
+  lost:['……瞄准镜里，少了一个人。','……'],
+  bw:['……瞄准镜里，只剩你们的胸口。','一、二……扣下。','……很安静。终于。']},
+ noct:{self:'我',tic:'冷淡，像在念设计文档',core:'天穹站的设计者，亲手写了赤巢的第一行代码',
+  move:['这条走廊，是我画的。','捷径。别问我怎么知道。','跃迁，抵达。'],
+  kill:['……对不起。','这是我欠这座站的。','设计缺陷，已修正。'],
+  danger:['这里的结构会塌，退后。','它的路线我认得……小心。'],
+  lost:['又一个……因为我。','……我设计了这一切。'],
+  bw:['你们的结局，我也设计好了。','别怕，很快的。','这座站，从一开始就是为母巢建的。']},
+ sera:{self:'我',tic:'温柔，总问"疼不疼"',core:'医疗兵；治好了所有人，却没人治好她',
+  move:['我跟在后面，别担心。','受伤了就喊我。','慢一点，大家都慢一点……'],
+  kill:['……对不起，我不得不这么做。','手术刀，也能是武器。','请原谅我。'],
+  danger:['别让它碰到你！我来不及缝合胸口！','退后，求你了！'],
+  lost:['我……救不了她……','她最后，还在叫我的名字……'],
+  bw:['疼吗？过来，让我抱抱你。','一针下去，就再也不会疼了哦。','我会把你治好的。治成母巢喜欢的样子。']},
+ vega:{self:'我',tic:'话少，像姐姐，"站我身后"',core:'永远站在最前面的重盾；身上的伤疤比勋章多',
+  move:['站我身后。','盾在，人在。','推进。'],
+  kill:['冲撞。','……别碰我的人。','挡路的，碾过去。'],
+  danger:['到我盾后面来！','别慌。我在。'],
+  lost:['……我的盾，没挡住。','是我站得不够前。'],
+  bw:['盾，是用来保护母巢的。','站我身后……然后，闭上眼睛。','我想起来了，我一直是母巢的盾。']},
+ ruby:{self:'本官',tic:'法庭用语，"判决""驳回"',core:'冷硬的炮击裁决官；只相信规则',
+  move:['移位，合规。','炮位调整。','进入裁决射程。'],
+  kill:['判决：粉碎。','驳回。','执行完毕。'],
+  danger:['异议！它越界了！','注意，非法接近。'],
+  lost:['……本官判决，此事不可饶恕。','记录在案。永远在案。'],
+  bw:['违抗者，裁决。顺从者，赐福。','本官宣布：你们有罪。','母巢即律法。']},
+ june:{self:'我',tic:'调皮，管敌人叫"猎物"',core:'野性的猎人；笑着打仗，其实最怕孤单',
+  move:['嘘——猎人移动中。','绕过去咬它～','脚步要轻。'],
+  kill:['猎物到手！','嘿嘿，太慢啦。','今晚加餐～'],
+  danger:['呜，这只猎物会反咬！','别被它闻到味道！'],
+  lost:['……她答应过要跟我比谁抓得多。','好安静……我不喜欢安静。'],
+  bw:['抓到你啦～下一个是谁？','母巢的巢，好温暖哦。','猎人，被猎了呢。嘻嘻。']},
+ psalm:{self:'我',tic:'用唱词说话',core:'歌姬与支援；相信歌声能叫醒人',
+  move:['♪ 往前走，别回头 ♪','跟上节拍。','这一段，转调。'],
+  kill:['♪ 安息吧 ♪','终章。','这一曲，为你送行。'],
+  danger:['♪ 小心——它在合唱里走调了 ♪','听！它靠近了！'],
+  lost:['……我的和声，少了一个声部。','我会把她的旋律唱完。'],
+  bw:['♪ 母巢啊，母巢 ♪','歌词改好了，你听。','跟我一起唱吧，很快就不会走调了。']},
+ kuro:{self:'……',tic:'几乎只用"……"和两三个字',core:'影子里的忍姬；只有珀弦能让她笑',
+  move:['……影步。','……位置。','……潜入。'],
+  kill:['……结束。','……一击。','……没有声音。'],
+  danger:['……后面。','……退。'],
+  lost:['……','……我会替她走完这条影子。'],
+  bw:['……影子里，有好多红色的眼睛。','……来。','……等你很久了。']},
+ sola:{self:'本小姐',tic:'嚣张，爱比较，总想吃东西',core:'熔核拳姬；嘴上嚣张，其实是全队开心果',
+  move:['本小姐来也！','冲冲冲！','让开，热的来了！'],
+  kill:['一拳！还有谁！','哈！太弱啦！','打完这仗本小姐要吃烤肉！'],
+  danger:['它敢碰本小姐试试！','呜哇，好近！'],
+  lost:['……打完了，说好一起吃烤肉的啊……','本小姐……不想再打了……'],
+  bw:['好热……胸口好热！全部烧掉吧！','本小姐，现在是母巢的火。','来比比，谁先把你烧成灰～']},
+ celia:{self:'我',tic:'祷词，"愿……"',core:'圣骑士；信仰是她唯一的铠甲',
+  move:['愿光指引前路。','以盾为誓，前进。','我守在这里。'],
+  kill:['愿你安息。','神会宽恕你。我不会。','光，降临。'],
+  danger:['到我身边来！','神啊，护佑她。'],
+  lost:['愿她的灵魂……找到回家的路。','我的祈祷，没有被听见吗……'],
+  bw:['圣歌改了歌词。听，它在唱母巢的名字。','你祈祷了那么久，终于有人回答了。','跪下吧，母巢会宽恕你。']},
+ nyx:{self:'我',tic:'礼貌而冰冷，"失礼了"',core:'处刑官；从不享受杀戮，只是从不手软',
+  move:['失礼了，借过。','处刑位置，确认。','请不要动。'],
+  kill:['处刑完毕。','失礼了。','安静地去吧。'],
+  danger:['它的意图很失礼。','请退后。'],
+  lost:['……这一次，我来迟了。','我会为她讨回公道。'],
+  bw:['处刑开始。别挣扎。','挣扎只会让蜘蛛扎得更深哦。','失礼了，你的胸口，我收下了。']},
+ astra:{self:'我',tic:'报数字、小数点后两位',core:'重炮观测手；用计算来压住恐惧',
+  move:['坐标修正 0.25。','炮位转移。','仰角确认。'],
+  kill:['命中，误差 0.00。','弹道完美。','轰击确认。'],
+  danger:['它距离你 1 格！命中概率 87%！','警告，接近速率异常！'],
+  lost:['……我算不出来，怎么才能把她带回来。','计算……失败。'],
+  bw:['目标：昔日友军。误差为零。','我不用再计算了，母巢替我算好了。','弹道修正……朝向你的胸口。']},
+ echo:{self:'回音',tic:'重复别人话的最后几个字',core:'初代实验体；只会回应，不会主动说话',
+  move:['……移动，移动。','……这里，这里。','……走吧，走吧。'],
+  kill:['……结束了，结束了。','……碎了，碎了。','……安静，安静。'],
+  danger:['……危险，危险。','……退后，退后。'],
+  lost:['……不见了，不见了。','……'],
+  bw:['母巢说什么，回音就说什么。','……属于母巢，属于母巢。','……回家，回家。']}
+};
+/* pair banter (both on board, both on the player's side). ctx: idle | danger | lost */
+const BANTER17=[
+ {ctx:'idle',who:['akira','lyra'],lines:[['akira','喂，零音。打完这仗，马克杯我已经摆好了。'],['lyra','……先活下来。'],['akira','你每次都这么说。所以你每次都活下来了。']]},
+ {ctx:'idle',who:['iris','kuro'],lines:[['iris','玄羽～要不要来颗薄荷糖？'],['kuro','……'],['iris','"……"的意思是"要"，人家翻译得对吧？'],['kuro','……嗯。']]},
+ {ctx:'idle',who:['sola','akira'],lines:[['sola','绛刃！这次本小姐打得比你多！'],['akira','哈？数清楚再说！'],['sola','输的人请烤肉！']]},
+ {ctx:'idle',who:['misa','lark'],lines:[['misa','璃雀，你的喷射翼……那、那个，左侧有点偏。'],['lark','诶？你怎么连这个都看得出来？'],['misa','因为……是我修的呀。']]},
+ {ctx:'idle',who:['lark','iris'],lines:[['lark','珀弦，你还留着我上次唱的那首吗？'],['iris','当然～加密存了三份呢。'],['lark','……那等回去，我唱完整版给你听。']]},
+ {ctx:'idle',who:['vega','astra'],lines:[['astra','苍澜，你的盾挡住了 94% 的弹道。'],['vega','剩下的 6% 呢？'],['astra','……打在你身上。'],['vega','那就够了。']]},
+ {ctx:'idle',who:['celia','lyra'],lines:[['celia','零音，我为你祈祷过了。'],['lyra','我不信神。'],['celia','没关系。神信你。']]},
+ {ctx:'idle',who:['sera','misa'],lines:[['sera','弥砂，你的手又被划破了。'],['misa','那、那个……拧螺丝的时候……'],['sera','回去我给你包扎。说好了。']]},
+ {ctx:'idle',who:['psalm','celia'],lines:[['psalm','♪ 圣歌，和声准备好了吗 ♪'],['celia','一直都准备好了。'],['psalm','那就让它们听听，什么叫活人的歌。']]},
+ {ctx:'idle',who:['june','veil'],lines:[['june','雾棘雾棘，你又在数呼吸？'],['veil','……一、二……'],['june','好吧好吧，那我数猎物。一、二……']]},
+ {ctx:'idle',who:['iris','lyra'],lines:[['iris','队长大人～它们的通讯频率我破解了一半。'],['lyra','另一半呢？'],['iris','另一半……在它们心里。嘻嘻，开玩笑的，三分钟。']]},
+ {ctx:'idle',who:['kuro','akira'],lines:[['akira','玄羽！你什么时候到我后面的？！'],['kuro','……一直。'],['akira','……下次出个声啊！']]},
+ {ctx:'idle',who:['astra','ruby'],lines:[['ruby','星枢，炮击许可已批准。'],['astra','坐标已锁定。误差 0.02。'],['ruby','本官允许 0.03。'],['astra','……不需要。']]},
+ {ctx:'idle',who:['sola','sera'],lines:[['sola','白栖！本小姐要是受伤了，你要第一个来！'],['sera','你每次都这么说，然后每次都冲在最前面。'],['sola','因为有你在嘛！']]},
+ {ctx:'danger',who:['vega','lark'],lines:[['vega','璃雀，到我盾后面来。'],['lark','可、可是……'],['vega','这一次，没人会丢下你。']]},
+ {ctx:'danger',who:['lyra','akira'],lines:[['lyra','绛刃，别冲。它们在等你冲。'],['akira','……啧。知道了。'],['lyra','我需要你活着劈下一刀。']]},
+ {ctx:'danger',who:['iris','misa'],lines:[['iris','弥砂，左边那只的爪子已经算准你了～'],['misa','诶诶诶？！'],['iris','往右下退一格，人家罩你。']]},
+ {ctx:'lost',who:['akira','lyra'],lines:[['akira','……零音。她的杯子，我还摆着。'],['lyra','那就摆着。等我们把她的份也喝了。']]},
+ {ctx:'lost',who:['sera','celia'],lines:[['sera','我……我救不了她……'],['celia','不是你的错。是我们一起没守住。'],['sera','……嗯。']]},
+ {ctx:'lost',who:['iris','kuro'],lines:[['iris','……她的信号，我还在频道里听得见杂音。'],['kuro','……别听。'],['iris','……嗯。不听了。']]}
+];
+/* when a girl has been taken and she faces her friend on the board */
+const CONFRONT17={
+ 'lark>iris':[['lark','珀弦～你还留着我的歌呢。现在，我唱新版本给你听。'],['iris','……璃雀，那首歌不是这样唱的。'],['lark','嘻嘻，母巢说，这样更好听。']],
+ 'iris>kuro':[['iris','玄羽～影子里冷吧？来人家这边嘛。'],['kuro','……你不是她。'],['iris','"……"的意思是"要"，对吧？'],['kuro','……不对。']],
+ 'akira>lyra':[['akira','零音！来比一比啊！像以前一样！'],['lyra','……绛刃。我会亲手结束这个。'],['akira','哈哈！这才是你嘛！']],
+ 'lyra>akira':[['lyra','绛刃，归队。这是命令。'],['akira','……别用她的声音说话！'],['lyra','可这就是我的声音啊。']],
+ 'misa>sera':[['misa','白栖，你的手又破了吧？让我……拆开看看。'],['sera','弥砂……求你，醒过来……'],['misa','我很清醒哦。从来没这么清醒过。']],
+ 'sera>misa':[['sera','弥砂，过来，我给你包扎。'],['misa','你、你的针……是红色的……'],['sera','嗯。打下去，就不疼了。']],
+ 'sola>akira':[['sola','绛刃！来比谁先把对方烧成灰！'],['akira','……你说过输的人请烤肉的。'],['sola','烤……肉？哈哈，那是什么？']],
+ 'vega>astra':[['vega','星枢，站我身后。'],['astra','……苍澜，你的盾朝向错了。'],['vega','没错。它一直朝着你。']],
+ 'celia>psalm':[['celia','祈雾，唱吧。唱母巢的圣歌。'],['psalm','♪ 我只唱活人的歌 ♪'],['celia','那你很快就没有歌可唱了。']],
+ 'kuro>iris':[['kuro','……珀弦。'],['iris','玄羽……？你的影子……变红了……'],['kuro','……来。']]
+};
+
+
 /* ===== M16 STORY — longer, personal brainwash scenes + infected-girl chatter in battle =====
    Infection film: last words → inner resistance → the Hive's whisper (aimed at her own wound)
    → memories turning red → sync 100% → first obedient words → a friend's reaction. */
@@ -7146,7 +7321,7 @@ const BW_CALL={lyra:'零音队长！',akira:'绛刃！',lark:'璃雀！',iris:'�
    const girl=C.roster&&C.roster[u.char];
    if(u.side==='r'&&girl&&typeof filmCombatSub==='function'){
     const t=performance.now();if(t-lastT<5000||Math.random()>.55)return r;lastT=t;
-    let line;if(!seen.has(u.char)&&typeof BRAINWASH!=='undefined'&&BRAINWASH[u.char]){seen.add(u.char);line=BRAINWASH[u.char];}else line=BW_CHATTER[Math.floor(Math.random()*BW_CHATTER.length)];
+    let line;if(!seen.has(u.char)&&typeof BRAINWASH!=='undefined'&&BRAINWASH[u.char]){seen.add(u.char);line=BRAINWASH[u.char];}else{const bw=typeof CAST17!=='undefined'&&CAST17[u.char]&&Math.random()<.65?CAST17[u.char].bw:BW_CHATTER;line=bw[Math.floor(Math.random()*bw.length)];}
     filmCombatSub(CHAR[u.char]?.name||'',line,'r');SND16.speak(u.char,'r',line,Math.random()<.5?'hmm':'laugh');
     // a guardian answers once in a while
     if(C.side==='g'&&Math.random()<.5){const f=filmPick((BW_BOND[u.char]||[]),'g');if(f)setTimeout(()=>{filmCombatSub(CHAR[f]?.name||'',`${BW_CALL[u.char]||''}……求你了，醒过来……`,'g');SND16.speak(f,'g','','sad');},2700);}
@@ -7165,20 +7340,189 @@ const NEAR_SPIDER=['它靠过来了……！','别、别过来！','胸口……
   const r=await pm.apply(this,arguments);
   try{
    if(!S||S.outcome||!u)return r;const t=performance.now();
-   if(isPlayer&&u.char&&!m.capture&&u.side==='g'&&t-lastMove>7000&&Math.random()<.35){
-    const p=(typeof PERSONA!=='undefined'&&PERSONA[u.char])||{};const line=(p.voice&&p.voice.move)||'';
+   if(isPlayer&&u.char&&!m.capture&&u.side==='g'&&t-lastMove>6000&&Math.random()<.45){
+    const p=(typeof PERSONA!=='undefined'&&PERSONA[u.char])||{};const cb=typeof CAST17!=='undefined'&&CAST17[u.char];const line=(cb?cb.move[Math.floor(Math.random()*cb.move.length)]:(p.voice&&p.voice.move))||'';
     if(line){lastMove=t;filmCombatSub(CHAR[u.char]?.name||'',line,'g');SND16.speak(u.char,'g',line);}
    }
    if(t-lastWarn>9000){
     const spiders=S.units.filter(v=>v.kind==='spider'&&v.side==='r'&&(typeof onBoard!=='function'||onBoard(v)));
     const girl=S.units.find(v=>v.char&&v.side==='g'&&(typeof onBoard!=='function'||onBoard(v))&&spiders.some(s=>Math.max(Math.abs(s.x-v.x),Math.abs(s.y-v.y))===1));
-    if(girl&&(!isPlayer||u.kind==='spider')&&C.side==='g'){lastWarn=t;const line=NEAR_SPIDER[Math.floor(Math.random()*NEAR_SPIDER.length)];setTimeout(()=>{filmCombatSub(CHAR[girl.char]?.name||'',line,'g');SND16.speak(girl.char,'g',line,'shock');},500);}
+    if(girl&&(!isPlayer||u.kind==='spider')&&C.side==='g'){lastWarn=t;const dz=typeof CAST17!=='undefined'&&CAST17[girl.char]&&Math.random()<.6?CAST17[girl.char].danger:NEAR_SPIDER;const line=dz[Math.floor(Math.random()*dz.length)];setTimeout(()=>{filmCombatSub(CHAR[girl.char]?.name||'',line,'g');SND16.speak(girl.char,'g',line,'shock');},500);}
     else if(girl&&C.side==='r'&&isPlayer&&u.kind==='spider'){lastWarn=t;setTimeout(()=>{filmCombatSub('赤巢','她的胸口……就在眼前了。','r');SND16.play('overmind');},400);}
    }
   }catch(e){}
   return r;
  };
 })();
+
+
+/* ===== M17 BOARD CHAT — speech bubbles above the pieces, conversations, tactical call-outs =====
+   boardSay(id,text,{side,hold})  · boardConvo([[id,text],…])
+   Every combat subtitle (filmCombatSub) is redirected here when the speaker is on the board. */
+const BUB17=(()=>{
+ const layer=document.createElement('div');layer.id='bub17';document.body.appendChild(layer);
+ const live=[];let queue=[],playing=false,convoToken=0;
+ const unitOf=id=>typeof S!=='undefined'&&S&&S.units?S.units.find(u=>u.char===id&&(typeof onBoard!=='function'||onBoard(u))):null;
+ const cellOf=u=>u&&document.querySelector(`#board .cell[data-x="${u.x}"][data-y="${u.y}"]`);
+ const blocked=()=>{const f=document.getElementById('film');return(f&&f.classList.contains('on')&&!f.classList.contains('deploying'))||document.getElementById('deploy16')||!$('modal').hidden||$('game').hidden;};
+ function place(b){
+  const u=b._uid?S&&S.units.find(v=>v.uid===b._uid):null;const c=cellOf(u);
+  if(!c){b.classList.add('gone');return;}
+  const r=c.getBoundingClientRect(),w=b.offsetWidth,h=b.offsetHeight;
+  let x=r.left+r.width/2-w/2,y=r.top-h-6;let below=false;
+  if(y<(document.querySelector('.site-header')?.offsetHeight||50)+4){y=r.bottom+6;below=true;}
+  x=Math.max(8,Math.min(window.innerWidth-w-8,x));
+  b.style.transform=`translate(${Math.round(x)}px,${Math.round(y)}px)`;b.classList.toggle('below',below);
+  b.style.setProperty('--ax',Math.round(r.left+r.width/2-x)+'px');
+ }
+ function say(id,text,opt={}){
+  if(!text||blocked())return null;const u=unitOf(id);if(!u)return null;
+  // one bubble per speaker; at most 2 on screen
+  for(const b of live.slice())if(b._id===id)kill(b,true);
+  while(live.length>=2)kill(live[0],true);
+  const b=document.createElement('div');b.className='b17 '+(u.side==='r'?'r':'g');b._id=id;b._uid=u.uid;
+  const nm=(CHAR[id]&&CHAR[id].name)||'';
+  b.innerHTML=`<b>${nm}</b><p></p>`;layer.appendChild(b);live.push(b);
+  const p=b.querySelector('p');p.textContent=text;place(b);p.textContent='';
+  requestAnimationFrame(()=>b.classList.add('show'));
+  let i=0;const step=()=>{if(!b.isConnected)return;i+=1;p.textContent=text.slice(0,i);place(b);if(i<text.length)b._t=setTimeout(step,28);};step();
+  if(!opt.silent)try{SND16.speak(id,u.side,text,opt.emo);}catch(e){}
+  const hold=opt.hold||Math.min(5200,1500+text.length*85);
+  b._k=setTimeout(()=>kill(b),hold);
+  return b;
+ }
+ function kill(b,fast){clearTimeout(b._t);clearTimeout(b._k);const i=live.indexOf(b);if(i>=0)live.splice(i,1);b.classList.remove('show');b.classList.add('out');setTimeout(()=>b.remove(),fast?120:300);}
+ function clear(){live.slice().forEach(b=>kill(b,true));queue=[];convoToken++;playing=false;}
+ async function convo(lines){
+  lines=lines.filter(([id])=>unitOf(id));if(lines.length<2)return false;
+  const tok=++convoToken;playing=true;
+  for(const [id,text,emo] of lines){
+   if(tok!==convoToken)return false;
+   while(blocked()&&tok===convoToken)await new Promise(r=>setTimeout(r,300));
+   say(id,text,{emo,hold:Math.min(6000,2300+text.length*90)});
+   await new Promise(r=>setTimeout(r,Math.min(4200,1100+text.length*75)));
+  }
+  if(tok===convoToken)playing=false;return true;
+ }
+ setInterval(()=>{for(const b of live)place(b);},200);
+ window.addEventListener('resize',()=>{for(const b of live)place(b);});
+ return{say,convo,clear,get busy(){return playing||live.length>0;},unitOf};
+})();
+function boardSay(id,text,opt){return BUB17.say(id,text,opt);}
+
+/* redirect combat subtitles into bubbles */
+(function(){
+ if(typeof filmCombatSub!=='function')return;
+ const base=filmCombatSub;
+ filmCombatSub=function(name,line,side){
+  let id=null;try{id=Object.keys(CHAR).find(c=>CHAR[c].name===name);}catch(e){}
+  if(id&&BUB17.unitOf(id)){BUB17.say(id,line,{silent:true});return;}
+  base(name,line,side);
+ };
+ // richer, personality-specific lines for the existing systems
+ try{for(const id of Object.keys(CAST17)){FILM_BARKS[id]=CAST17[id].kill.slice();}}catch(e){}
+ try{for(const id of Object.keys(CAST17)){if(typeof BRAINWASH!=='undefined'&&!BRAINWASH[id])BRAINWASH[id]=CAST17[id].bw[0];}}catch(e){}
+})();
+
+/* ---------- the brain: who talks, when, about what ---------- */
+const TALK17=(()=>{
+ const used=new Set();let lastLostCount=0,lastTalkRound=-1;
+ const pick=a=>a[Math.floor(Math.random()*a.length)];
+ const name=id=>(CHAR[id]&&CHAR[id].name)||id;
+ const onB=(side)=>S.units.filter(u=>u.char&&u.side===side&&(typeof onBoard!=='function'||onBoard(u)));
+ const coord=(x,y)=>typeof xy==='function'?xy(x,y):`${x},${y}`;
+ function lostIds(){try{return (typeof filmLost==='function'?filmLost():[]).filter(id=>CHAR[id]);}catch(e){return[];}}
+ function tactical(){
+  const me=C.side,foe=me==='g'?'r':'g';
+  const threats=threatMap(S,foe);
+  const mine=onB(me).filter(u=>threats.has(key(u.x,u.y))&&!u.used);
+  if(!mine.length)return null;
+  const v=mine[0];
+  const attacker=S.units.find(a=>a.side===foe&&(typeof onBoard!=='function'||onBoard(a))&&legalMoves(S,a,'threat').some(m=>m.x===v.x&&m.y===v.y));
+  const safe=legalMoves(S,v).filter(m=>!m.capture&&!threats.has(key(m.x,m.y)));
+  const friends=onB(me).filter(u=>u.uid!==v.uid);
+  const bond=(typeof BW_BOND!=='undefined'&&BW_BOND[v.char])||[];
+  const caller=friends.find(f=>bond.includes(f.char))||friends.find(f=>['lyra','iris','astra','vega'].includes(f.char))||friends[0];
+  const infect=attacker&&attacker.kind==='spider'&&attacker.side==='r'&&me==='g';
+  const aName=attacker?(attacker.char?name(attacker.char):infect?'赤蛛':'敌机'):'敌人';
+  if(me==='g'){
+   if(!caller)return[[v.char,pick(CAST17[v.char]?.danger||['它在盯着我……'])]];
+   const s=safe.length?safe.sort((a,b)=>Math.abs(a.y-v.y)-Math.abs(b.y-v.y))[0]:null;
+   const l1=s?`${name(v.char)}，${attacker?coord(attacker.x,attacker.y)+'那只':''}${aName}下一步就能${infect?'扑到你的胸口':'打到你'}——退到 ${coord(s.x,s.y)}！`:`${name(v.char)}，你被${aName}盯上了，周围没有安全格……找人掩护！`;
+   return[[caller.char,l1,'shock'],[v.char,s?pick(['收到！','明、明白！','……知道了。','谢啦！']):pick(CAST17[v.char]?.danger||['……'])]];
+  }
+  return null;
+ }
+ function hiveTactical(){
+  if(C.side!=='r')return null;
+  const prey=S.units.filter(g=>g.char&&g.side==='g'&&(typeof onBoard!=='function'||onBoard(g)));
+  for(const sp of S.units.filter(u=>u.kind==='spider'&&u.side==='r'&&(typeof onBoard!=='function'||onBoard(u)))){
+   const hit=legalMoves(S,sp).find(m=>m.capture&&prey.some(g=>g.x===m.x&&g.y===m.y));
+   if(hit){const g=prey.find(g=>g.x===hit.x&&g.y===hit.y);const voice=onB('r').find(u=>u.char);
+    const line=`${coord(sp.x,sp.y)} 的孩子，离 ${name(g.char)} 的胸口只差一步了。`;
+    if(voice)return[[voice.char,line,'laugh']];
+    filmCombatSub('赤巢',line,'r');return [];}
+  }
+  return null;
+ }
+ function confront(){
+  const lost=lostIds();const taken=onB('r').filter(u=>lost.includes(u.char));
+  for(const t of taken){
+   for(const g of onB('g')){
+    const k=`${t.char}>${g.char}`;if(CONFRONT17[k]&&!used.has(k)){used.add(k);return CONFRONT17[k];}
+   }
+  }
+  // generic confrontation with a bond friend
+  for(const t of taken){
+   const bond=(typeof BW_BOND!=='undefined'&&BW_BOND[t.char])||[];const f=onB('g').find(g=>bond.includes(g.char));
+   const k=`gen>${t.char}>${f&&f.char}`;
+   if(f&&!used.has(k)){used.add(k);return[[f.char,`${name(t.char)}……是我啊。你还认得我吗？`,'sad'],[t.char,pick(CAST17[t.char]?.bw||['……认得哦。']),'laugh'],[f.char,pick(['……我会把你带回来的。哪怕只剩名字。','对不起……我要开枪了。','别用她的脸笑！']),'sad']];}
+  }
+  return null;
+ }
+ function banter(ctx){
+  const me=C.side;const here=new Set(onB(me).map(u=>u.char));
+  const pool=BANTER17.filter(b=>b.ctx===ctx&&b.who.every(w=>here.has(w))&&!used.has(b.lines[0][1]));
+  if(!pool.length)return null;const b=pick(pool);used.add(b.lines[0][1]);return b.lines;
+ }
+ function lostLine(){
+  const lost=lostIds();if(lost.length<=lastLostCount){lastLostCount=lost.length;return null;}
+  lastLostCount=lost.length;const who=lost[lost.length-1];
+  const bond=(typeof BW_BOND!=='undefined'&&BW_BOND[who])||[];const f=onB(C.side).find(u=>bond.includes(u.char))||onB(C.side)[0];
+  if(!f||C.side!=='g')return null;
+  const b=banter('lost');if(b)return b;
+  return[[f.char,pick(CAST17[f.char]?.lost||['……']),'sad']];
+ }
+ function turnStart(){
+  if(!S||S.outcome||S.phase!=='player'||lastTalkRound===S.round)return;lastTalkRound=S.round;
+  setTimeout(()=>{
+   if(!S||S.phase!=='player'||S.outcome)return;
+   const lines=tactical()||hiveTactical()||lostLine()||confront()||(Math.random()<.6?banter(onB(C.side).some(u=>threatMap(S,C.side==='g'?'r':'g').has(key(u.x,u.y)))?'danger':'idle'):null);
+   if(!lines||!lines.length)return;if(lines.length===1)BUB17.say(lines[0][0],lines[0][1],{emo:lines[0][2]});else BUB17.convo(lines);
+  },900);
+ }
+ return{turnStart,used};
+})();
+(function(){
+ const ep=endPhase;
+ endPhase=async function(){const r=await ep.apply(this,arguments);try{TALK17.turnStart();}catch(e){console.error(e);}return r;};
+ // first turn of a mission: after the film/deploy closes
+ const obs=new MutationObserver(()=>{const f=document.getElementById('film');if(f&&!f.classList.contains('on')&&S&&S.round===1&&S.phase==='player')setTimeout(()=>{try{TALK17.turnStart();}catch(e){}},1200);});
+ const f=document.getElementById('film');if(f)obs.observe(f,{attributes:true,attributeFilter:['class']});
+})();
+/* use the cast bible in the older reaction systems */
+(function(){
+ try{
+  if(typeof NEAR_SPIDER!=='undefined'){NEAR_SPIDER.length=0;NEAR_SPIDER.push('它靠过来了……！','别、别过来！','胸口……它盯着我的胸口！');}
+  if(typeof BW_CHATTER!=='undefined'){/* keep generic pool, bubbles prefer personal lines below */}
+  for(const id of Object.keys(CAST17)){if(typeof PERSONA!=='undefined'&&PERSONA[id]&&PERSONA[id].voice){PERSONA[id].voice.move=CAST17[id].move[0];}}
+ }catch(e){}
+})();
+if(location.hash==='#filmtest')Object.assign(window.__MV_FILM__,{say:(id,t)=>boardSay(id,t),convo:l=>BUB17.convo(l),turn:()=>{TALK17.turnStart();},banter:()=>{const b=BANTER17.find(b=>b.who.every(w=>BUB17.unitOf(w)));return b?BUB17.convo(b.lines):null;}});
+if(location.hash==='#filmtest')Object.assign(window.__MV_FILM__,{
+ st:()=>({round:S&&S.round,phase:S&&S.phase,side:C&&C.side}),
+ step:()=>{const u=S.units.find(v=>v.side===C.side&&!v.used&&v.char&&legalMoves(S,v).some(m=>!m.capture));if(!u)return 0;handleCell(u.x,u.y);const m=legalMoves(S,u).find(m=>!m.capture);handleCell(m.x,m.y);return u.char;},
+ end:()=>endPhase()});
 
 })();
 </script>
