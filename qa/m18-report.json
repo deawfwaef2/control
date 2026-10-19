@@ -1,0 +1,22 @@
+{
+  "milestone": "M18-1 + M18-2",
+  "date": "2026-10-19",
+  "base": "a2bc83e (M18-1) / a70d3bc (M18-2, rebased on M17-5 d13ff5a)",
+  "method": "Playwright Chromium headless, file:// 开始游戏.html, real UI clicks/taps; audio verified by counting WebAudio oscillator/noise nodes created (headless cannot prove human-perceived volume)",
+  "checks": [
+    {"name": "title screen with Start button", "pass": true},
+    {"name": "board renders 64 cells after film->battle", "pass": true},
+    {"name": "AUD18 audio context running after real clicks", "pass": true},
+    {"name": "legal move offered and executed", "pass": true},
+    {"name": "move produced real audio nodes (59 -> 106)", "pass": true},
+    {"name": "capture pop-up panel display:none", "pass": true},
+    {"name": "no toast pop-up after move", "pass": true},
+    {"name": "kill FX = particles + floating text on board", "pass": true},
+    {"name": "SFX variants move/hit/capture/select/wait/objective all synthesize", "pass": true},
+    {"name": "no page scroll at 1440x900", "pass": true},
+    {"name": "mobile 390x844: tap unlocks audio (ctx running), tap makes sound", "pass": true},
+    {"name": "zero page errors (desktop + mobile)", "pass": true}
+  ],
+  "pass": "13/13",
+  "notCovered": "Not a full campaign playthrough, balance pass, or human listening test. Screenshots: /var/tmp/w/m18-board.png, m18-mobile.png (ephemeral)."
+}
