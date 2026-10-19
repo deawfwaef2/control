@@ -1921,6 +1921,15 @@ body.red-faction #film .fm-choices button{border-color:rgba(255,59,92,.3);border
 body.red-faction #film .fm-choices button:hover,body.red-faction #film .fm-choices button:focus-visible{border-color:#ff5c78;background:linear-gradient(90deg,rgba(60,12,24,.96),rgba(22,6,12,.9))}
 body.red-faction #film .fm-choices button.picked{border-color:#ff8095;box-shadow:0 0 24px rgba(255,59,92,.35)}
 body.red-faction #film .fm-choices button small{color:#e9a9b4}
+
+/* M22 · 预告进入格：脉动的辉光与角标，不遮挡棋子 */
+.cell.ingress22{position:relative}
+.cell.ingress22::after{content:"";position:absolute;inset:4px;border-radius:6px;pointer-events:none;box-shadow:inset 0 0 0 2px currentColor,inset 0 0 22px currentColor;animation:ingress22 1.5s ease-in-out infinite;z-index:1}
+.cell.ingress22::before{content:"";position:absolute;left:50%;top:50%;width:26%;height:26%;transform:translate(-50%,-50%) rotate(45deg);border:2px solid currentColor;pointer-events:none;opacity:.85;z-index:1}
+.cell.ingress22-r{color:#ff3b5c}
+.cell.ingress22-g{color:#6fd6ff}
+@keyframes ingress22{0%,100%{opacity:.35}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.cell.ingress22::after{animation:none;opacity:.85}}
 </style>
 </head>
 <body>
@@ -10110,7 +10119,7 @@ const H21={
    3) 关卡事件：战斗中途的剧情事件提前一轮预告，在棋盘上真实发生（不弹面板）。
    只读公开信息；AI 与玩家使用同一套走法引擎，不给任何隐藏加成。 */
 (function(){
- const qa22=()=>location.hash==='#qa';
+ const qa22=()=>location.hash==='#qa'&&!window.__AI22QA;
  const R22=()=>typeof C!=='undefined'&&C&&C.side==='r'&&!(typeof S!=='undefined'&&S&&S.saga);
  const nm=id=>(CHAR[id]&&CHAR[id].name)||id;
  function mul(seed){let a=seed>>>0;return function(){a=(a+0x6D2B79F5)>>>0;let t=a;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296;};}
@@ -10256,33 +10265,40 @@ const H21={
  /* 每章 3 个变数：terrain 立即生效；ev[回合] 在该回合末发生，提前一回合以截获通讯预告 */
  const V22={
   0:[
-   {k:'cargo',feed:'接驳甲板的货柜在对接冲击中倾覆，挡住了两条通道。',hz:null,set:s=>wall(s,[[1,5],[6,2],[2,2]]),ev:{3:{warn:'穿梭机还有一轮到港。撑住，增援马上就到。',run:()=>ingress('drone','g',[[0,7],[1,7],[2,7]],'苍鹭穿梭机靠港：守护哨卫从舱门冲进甲板。')}}},
-   {k:'dormant',feed:'冷藏舱里，还有我上一次留下的孩子。它们在等我叫醒。',set:s=>{add(s,'sentinel','g',[[5,6],[2,6],[4,6]]);},ev:{2:{warn:'冷藏舱温度在升高……里面有东西在动。',run:()=>ingress('spider','r',[[0,4],[7,4],[0,3],[7,3]],'冷藏舱破裂：一只休眠赤蛛醒了过来。',true)}}},
+   {k:'cargo',feed:'接驳甲板的货柜在对接冲击中倾覆，挡住了两条通道。',hz:null,set:s=>wall(s,[[1,5],[6,2],[2,2]]),ev:{3:{warn:'穿梭机还有一轮到港。撑住，增援马上就到。',sp:[['drone','g',[[1,7],[2,7],[0,6]],'苍鹭穿梭机靠港：守护哨卫从舱门冲进甲板。']]}}},
+   {k:'dormant',feed:'冷藏舱里，还有我上一次留下的孩子。它们在等我叫醒。',set:s=>{add(s,'sentinel','g',[[5,6],[2,6],[4,6]]);},ev:{2:{warn:'冷藏舱温度在升高……里面有东西在动。',sp:[['spider','r',[[0,4],[7,4],[0,3],[7,3]],'冷藏舱破裂：一只休眠赤蛛醒了过来。']]}}},
    {k:'airlock',feed:'A 列气闸在循环。每三轮，那一列会被抽成真空。',hz:{rounds:[3,6,9],cells:[[0,2],[0,3],[0,4],[0,5]]},set:s=>{},ev:{}}
   ],
   1:[
-   {k:'racks',feed:'倒塌的培育架横在温室南侧。守护者要绕路，才能碰到样本。',set:s=>wall(s,[[3,5],[4,5]]),ev:{3:{warn:'温室南门已经撬开，增援下一轮进来。',run:()=>ingress('drone','g',[[3,7],[4,7],[2,7]],'温室南门被撬开：守护哨卫进入花园。')}}},
-   {k:'bloom',feed:'苗床提前醒了。冷却系统也开始失控。',set:s=>{s.ventStart=Math.max(2,s.ventStart-1);},ev:{2:{warn:'苗床在发热。第一窝，就快破壳了。',run:()=>ingress('spider','r',[[4,2],[3,2],[4,1]],'苗床破壳：一只新生赤蛛爬出培育槽。',true)}}},
-   {k:'lockdown',feed:'温室进入封锁。守护者多带了一台哨塔，可她们的退路也被锁死了。',set:s=>{add(s,'sentinel','g',[[4,6],[3,6],[5,6]]);add(s,'spider','r',[[1,2],[6,2],[0,1]]);},ev:{5:{warn:'封锁门的电源在闪。还有一轮。',run:()=>ingress('spider','r',[[0,2],[7,2],[0,1]],'封锁门断电：通风井里落下一只赤蛛。',true)}}}
+   {k:'racks',feed:'倒塌的培育架横在温室南侧。守护者要绕路，才能碰到样本。',set:s=>wall(s,[[3,5],[4,5]]),ev:{3:{warn:'温室南门已经撬开，增援下一轮进来。',sp:[['drone','g',[[3,7],[4,7],[2,7]],'温室南门被撬开：守护哨卫进入花园。']]}}},
+   {k:'bloom',feed:'苗床提前醒了。冷却系统也开始失控。',set:s=>{s.ventStart=Math.max(2,s.ventStart-1);},ev:{2:{warn:'苗床在发热。第一窝，就快破壳了。',sp:[['spider','r',[[4,2],[3,2],[4,1]],'苗床破壳：一只新生赤蛛爬出培育槽。']]}}},
+   {k:'lockdown',feed:'温室进入封锁。守护者多带了一台哨塔，可她们的退路也被锁死了。',set:s=>{add(s,'sentinel','g',[[4,6],[3,6],[5,6]]);add(s,'spider','r',[[1,2],[6,2],[0,1]]);},ev:{5:{warn:'封锁门的电源在闪。还有一轮。',sp:[['spider','r',[[0,2],[7,2],[0,1]],'封锁门断电：通风井里落下一只赤蛛。']]}}}
   ],
   2:[
    {k:'storm',feed:'太阳风暴提前到达。桥面会比预计更早断开。',set:s=>{s.collapseAt=Math.max(3,(s.collapseAt||6)-1);},ev:{}},
-   {k:'spine',feed:'中轴的检修架断了，桥心变成了之字形。',set:s=>wall(s,[[2,3],[5,4]]),ev:{4:{warn:'护送队在呼叫支援。下一轮，北端会有东西下来。',run:()=>ingress('drone','g',[[3,7],[4,7],[2,6]],'北端支援抵达：一台守护哨卫落上桥面。')}}},
+   {k:'spine',feed:'中轴的检修架断了，桥心变成了之字形。',set:s=>wall(s,[[2,3],[5,4]]),ev:{4:{warn:'护送队在呼叫支援。下一轮，北端会有东西下来。',sp:[['drone','g',[[3,7],[4,7],[2,6]],'北端支援抵达：一台守护哨卫落上桥面。']]}}},
    {k:'escort',feed:'护送队比情报里多了一台哨卫。我也多派了一只。',set:s=>{add(s,'drone','g',[[4,6],[2,6],[5,6]]);add(s,'spider','r',[[2,1],[5,1],[3,1]]);},ev:{}}
   ],
   3:[
-   {k:'shards',feed:'镜面碎了一地。碎片之间，路变窄了。',set:s=>wall(s,[[1,5],[6,5]]),ev:{4:{warn:'镜像库的备用门在解锁。她们在叫人。',run:()=>ingress('sentinel','g',[[0,7],[7,7],[1,7]],'备用门打开：轨道哨塔进入镜像库。')}}},
-   {k:'echo',feed:'镜子里有回声。有些回声，是我的。',set:s=>{},ev:{3:{warn:'镜面在颤……有什么东西，要从反面爬出来。',run:()=>ingress('spider','r',[[3,5],[4,5],[2,5],[5,5]],'镜面翻转：一只赤蛛从镜子背面爬进她们的后方。',true)}}},
+   {k:'shards',feed:'镜面碎了一地。碎片之间，路变窄了。',set:s=>wall(s,[[1,5],[6,5]]),ev:{4:{warn:'镜像库的备用门在解锁。她们在叫人。',sp:[['sentinel','g',[[1,7],[6,7],[0,6]],'备用门打开：轨道哨塔进入镜像库。']]}}},
+   {k:'echo',feed:'镜子里有回声。有些回声，是我的。',set:s=>{},ev:{3:{warn:'镜面在颤……有什么东西，要从反面爬出来。',sp:[['spider','r',[[3,5],[4,5],[2,5],[5,5]],'镜面翻转：一只赤蛛从镜子背面爬进她们的后方。']]}}},
    {k:'seal',feed:'镜像库封闭协议启动。两边都多了一点筹码。',set:s=>{add(s,'drone','g',[[3,6],[4,6],[2,6]]);add(s,'sentinel','r',[[3,1],[5,1],[2,1]]);},ev:{}}
   ],
   4:[
-   {k:'overload',feed:'母巢在过载。第五轮，它会一口气吐出两只。',set:s=>{},ev:{5:{warn:'核心温度在攀升。下一轮，母巢会过载生产。',run:()=>{ingress('spider','r',[[2,1],[6,1],[3,1]],'母巢过载：额外一只赤蛛出槽。',true);ingress('spider','r',[[1,1],[5,1],[4,1]],'',true);}}}},
-   {k:'assault',feed:'她们准备了两波突击。第一波，第三轮到。',set:s=>{add(s,'spider','r',[[2,2],[6,3],[1,3]]);},ev:{3:{warn:'突击艇在减速。下一轮靠舷。',run:()=>ingress('sentinel','g',[[0,6],[7,6],[1,7]],'第一波突击：轨道哨塔从舷窗突入。')},6:{warn:'第二艘突击艇在靠近。',run:()=>ingress('drone','g',[[7,7],[0,7],[6,7]],'第二波突击：守护哨卫跟进。')}}},
+   {k:'overload',feed:'母巢在过载。第五轮，它会一口气吐出两只。',set:s=>{},ev:{5:{warn:'核心温度在攀升。下一轮，母巢会过载生产。',sp:[['spider','r',[[2,1],[6,1],[3,1]],'母巢过载：额外一只赤蛛出槽。'],['spider','r',[[1,1],[5,1],[4,1]],'']]}}},
+   {k:'assault',feed:'她们准备了两波突击。第一波，第三轮到。',set:s=>{add(s,'spider','r',[[2,2],[6,3],[1,3]]);},ev:{3:{warn:'突击艇在减速。下一轮靠舷。',sp:[['sentinel','g',[[0,6],[7,6],[1,7]],'第一波突击：轨道哨塔从舷窗突入。']]},6:{warn:'第二艘突击艇在靠近。',sp:[['drone','g',[[7,7],[6,7],[1,7]],'第二波突击：守护哨卫跟进。']]}}},
    {k:'purge',feed:'反应堆在泄压。第 4 排会周期性被抽成真空——对她们，对我，都一样。',hz:{rounds:[4,8,12],cells:[[0,4],[1,4],[2,4],[5,4],[6,4],[7,4]]},set:s=>{},ev:{}}
   ]
  };
+ // 入口被占时，就近换一个己方后排空格（不占撤离点/交付口/终端）
+ function slotFor(side,slots,used){
+  const ok=([x,y])=>!(used&&used.has(key(x,y)))&&!blocked(S,x,y)&&!unitAt(S,x,y)&&!S.exits.some(e=>e.x===x&&e.y===y)&&!S.delivery.some(d=>d.x===x&&d.y===y)&&!S.relays.some(r=>r.x===x&&r.y===y);
+  let p=slots.find(ok);if(p)return p;const[a,b]=slots[0];const rows=side==='g'?[7,6,5]:[0,1,2];const all=[];
+  for(const y of rows)for(let x=0;x<8;x++)all.push([x,y]);all.sort((m,n)=>(Math.abs(m[0]-a)+Math.abs(m[1]-b))-(Math.abs(n[0]-a)+Math.abs(n[1]-b)));
+  return all.find(ok)||null;
+ }
  function ingress(kind,side,slots,text,quiet){
-  const p=slots.find(([x,y])=>!blocked(S,x,y)&&!unitAt(S,x,y));if(!p)return;
+  const p=slotFor(side,slots);if(!p)return;
   const u=spawn(S,kind,side,p[0],p[1]);if(!u)return;u.used=true;
   if(text){addLog(text,side==='r'?'good':'capture');try{radio(side==='r'?'赤巢':'截获通讯',text);}catch(e){}}
   try{if(typeof sfx==='function')sfx(side==='r'?'spawn':'alarm');}catch(e){}
@@ -10329,7 +10345,7 @@ const H21={
  };
  const _env=resolveEnvironment;
  resolveEnvironment=function(){
-  try{const v=curV();if(v&&v.ev){const e=v.ev[S.round];if(e)e.run();const w=v.ev[S.round+1];if(w&&w.warn){radio('截获通讯',w.warn);addLog('截获通讯：'+w.warn,'capture');}}}catch(e){console.warn('ev22',e);}
+  try{const v=curV();if(v&&v.ev){const e=v.ev[S.round];if(e&&e.sp)for(const a of e.sp)ingress(...a);const w=v.ev[S.round+1];if(w&&w.warn){radio('截获通讯',w.warn);addLog('截获通讯：'+w.warn,'capture');}}}catch(e){console.warn('ev22',e);}
   return _env.apply(this,arguments);
  };
  const _rb=resolveBattle;
@@ -10343,6 +10359,11 @@ const H21={
   try{if(R22()&&target&&target.char&&C.p21&&C.p21.mark===target.char){const u=S.units.find(v=>v.char===target.char);if(u){u.xp=Math.max(2,u.xp||0);if(C.roster[u.char])C.roster[u.char].xp=u.xp;addLog(`${nm(u.char)}醒得很快。她一直在等我——同步 II。`,'good');}}}catch(e){}
   return _ce.apply(this,arguments);
  };
+
+ // 预告：下一轮末将有单位进入的格子在棋盘上脉动（红=赤巢，青=守护者）
+ try{const _rb22=renderBoard;renderBoard=function(){const r=_rb22.apply(this,arguments);try{const v=curV();const board=document.getElementById('board');
+  if(board&&v&&v.ev&&S&&!S.outcome){const e=v.ev[S.round];if(e&&e.sp){const used=new Set();for(const[kind,side,slots]of e.sp){const p=slotFor(side,slots,used);if(!p)continue;used.add(key(p[0],p[1]));const c=board.querySelector(`.cell[data-x="${p[0]}"][data-y="${p[1]}"]`);if(c){c.classList.add('ingress22',side==='r'?'ingress22-r':'ingress22-g');c.title=(c.title||'')+'，本轮末将有'+(side==='r'?'赤巢':'守护者')+'单位进入';}}}}
+ }catch(e){}return r;};}catch(e){}
 
  /* ------------------------------------------------------- 开场：截获情报 */
  if(typeof filmIntro==='function'){
@@ -10380,7 +10401,7 @@ const H21={
      S.aiBudget=k;S.aiDone=0;
      for(let i=0;i<k&&!S.outcome;i++){const m=pick(side);if(!m)break;if(window.__LOG22&&side==='g'&&useNew)window.__LOG22.push('R'+S.round+' '+(window.__T22||[]).slice(0,3).join(' | '));if(window.__LOG22&&side==='r'){const u=S.units.find(v=>v.uid===m.uid);window.__LOG22.push('R'+S.round+' HIVE '+(u.char||u.kind)+'@'+u.x+','+u.y+'>'+m.x+','+m.y+(m.capture?'x':''));}applyBasic(S,m);const u=S.units.find(v=>v.uid===m.uid);if(u)u.used=true;S.aiDone++;moves++;}
     }
-    try{const v=curV();if(v&&v.ev&&v.ev[S.round])v.ev[S.round].run();}catch(e){}
+    try{const v=curV();if(v&&v.ev&&v.ev[S.round]&&v.ev[S.round].sp)for(const a of v.ev[S.round].sp)ingress(...a);}catch(e){}
     const hz=imminentHazard(S);for(const u of S.units)if(onBoard(u)&&hz.includes(key(u.x,u.y)))u.dead=true;
     if(S.mid===2&&hz.length){S.voids.push(...hz);S.collapsed=true;}
     S.round++;
