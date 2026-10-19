@@ -10522,7 +10522,7 @@ const K23={};
  const say=(id,keptLine,erasedLine,x)=>me(id,kept(id)?keptLine:erasedLine,x);
 
  /* ---------- 卵囊：不能移动的己方单位 ---------- */
- KINDS.egg={name:'赤巢卵囊',role:'孵化中的子嗣',rune:'卵',value:4,rule:'无法移动。被吃即毁。撑到孵化的那一轮末，它会破壳成为赤蛛。',icon:'core'};
+ KINDS.egg={name:'卵囊',role:'孵化中的子嗣',rune:'卵',value:4,rule:'无法移动。被吃即毁。撑到孵化的那一轮末，它会破壳成为赤蛛。',icon:'core'};
  const _mv=movers;movers=function(s,side){return _mv.apply(this,arguments).filter(u=>u.kind!=='egg');};
  const _lm=legalMoves;legalMoves=function(s,u,mode){if(u&&u.kind==='egg')return[];const out=_lm.apply(this,arguments);if(u&&u.slow23&&mode!=='threat')return out.filter(m=>distance(u,m)<=1);if(u&&u.slow23&&mode==='threat')return out.filter(m=>distance(u,m)<=1);return out;};
  const _iq=initQuest;initQuest=function(s){if(s&&s.kind23)return;return _iq.apply(this,arguments);};
@@ -10531,7 +10531,7 @@ const K23={};
  function blank(base,name,where){
   building=true;K23.__building=true;let s;try{s=makeMission(base);}finally{building=false;K23.__building=false;}
   Object.assign(s,{units:[],relays:[],loot:[],walls:[],voids:[],doors:[],delivery:[],exits:[],var22:null,whisper22:null,brood22:0,ventStart:99,collapseAt:99,spawnEvery:99,collapsed:true,limit:99,holdTarget:99,round:1,serial:100});
-  delete s.quest;s.flags.gatesOpen=true;s.subOpName=name;s.where23=where;return s;
+  delete s.quest;s.flags.gatesOpen=true;s.subOpName=name.replace('幕间 · ','');s.where23=where;return s;
  }
  const put=(s,kind,side,x,y,char)=>spawn(s,kind,side,x,y,char||undefined,char||undefined);
  const putG=(s,id,x,y)=>{const u=spawn(s,'mech','g',x,y,id);return u;};
@@ -10677,13 +10677,16 @@ const K23={};
  function launch(id){
   const def=DEFS[id];const data=def.setup();st().used.push(id);
   runId++;busy=false;undoStack=[];try{hideStory();}catch(e){}try{$('result').hidden=true;}catch(e){}
-  S=def.build(data);S.kind23=id;S.data23=data;cur={id,data};
+  S=def.build(data);S.kind23=id;S.data23=data;cur={id,data};S.limit=S.k23.limit;
   for(const u of S.units)if(u.char)C.roster[u.char].introduced=true;
   selected=movers(S,'r').find(u=>u.char)?.uid||movers(S,'r')[0]?.uid;
   addLog(`接入${def.where}。`,'good');checkpoint={c:clone(C),s:clone(S)};showGame();render();persist();
   const shots=[{title:{k:'INTERLUDE',m:def.name,s:def.where},hold:1700,sfx:'cut'},...def.intro(data).filter(Boolean)];
   FILM.play(withDeploy(shots),()=>{try{render();}catch(e){}},{chapter:`INTERLUDE / ${def.en}`});
  }
+
+ const HINT23={"hunt": "她受了伤，只能一格一格地挪。堵住她的路，把她赶进孩子们的怀里。别让被夺走的女孩们杀了她。", "eggs": "卵囊不会动。她们会直扑卵囊——挡在路上，或者先咬住冲得最快的那一个。", "decap": "她身边有护卫。拆开护卫，或者绕过去。时间一到，她就会撤离。", "drain": "不用打赢。哨塔看得远，但转身慢。三只钻进暗渠口就够了。", "duel": "被夺走的她不能感染，只能替孩子们开路。把她的搭档逼进角落。"};
+ const _qh=questHint;questHint=function(s){if(s&&s.kind23&&HINT23[s.kind23])return HINT23[s.kind23];return _qh.apply(this,arguments);};
  const _obj=objectives;objectives=function(s,side){if(s&&s.kind23&&DEFS[s.kind23]){const g=DEFS[s.kind23].goals(s);return side==='r'?{main:g,extra:[]}:{main:[],extra:[]};}return _obj.apply(this,arguments);};
  const _co=checkOutcome;checkOutcome=function(){
   if(S&&S.kind23&&DEFS[S.kind23]){if(S.outcome)return true;const r=DEFS[S.kind23].check(S);if(r){S.res23=r[1];resolveBattle(r[0]==='win',REASON[r[1]]||'');return true;}return false;}
@@ -10710,6 +10713,8 @@ const K23={};
  }
  const _adv=advanceMission;advanceMission=function(){if(S&&S.kind23){finish();return;}return _adv.apply(this,arguments);};
  const _sr=showResult;showResult=function(){const r=_sr.apply(this,arguments);
+  try{if(S&&S.kind23&&S.outcome){const sub=document.querySelector('#result-content .result-subtitle');if(sub)sub.textContent=S.outcome.reason||'';
+    document.querySelectorAll('#result-content li, #result-content p, #result-content div').forEach(el=>{if(!el.children.length&&/样本|密钥|数据包|桥体|中继|卷宗|朔夜已回到|是否继续同行|镜室|信使/.test(el.textContent))el.remove();});}}catch(e){}
   try{if(S&&S.kind23&&S.outcome&&!S.outcome.won){const box=document.querySelector('#result-content .result-buttons');if(box){box.querySelectorAll('.accept20').forEach(b=>b.remove());document.querySelectorAll('.accept20-note').forEach(n=>n.remove());const b=document.createElement('button');b.className='button primary accept20';b.textContent='接受失败 · 让故事继续';b.onclick=()=>{finish();};box.prepend(b);}}}catch(e){console.error(e);}
   return r;};
 
@@ -10828,7 +10833,7 @@ const K23={};
 
  /* ---------- 测试钩子（仅 #filmtest） ---------- */
  if(location.hash==='#filmtest'&&window.__MV_FILM__)Object.assign(window.__MV_FILM__,{
-  i23:id=>launch(id), inc23:id=>playIncident(id,()=>{window.__INC23DONE=1;}),
+  i23:id=>launch(id),mv23:m=>performMove(m,true),end23:()=>endPhase(),hive23:()=>chooseAI(S,'r'), inc23:id=>playIncident(id,()=>{window.__INC23DONE=1;}),
   st23:()=>({kind:S&&S.kind23,res:S&&S.res23,outcome:S&&S.outcome,goals:S&&S.kind23?DEFS[S.kind23].goals(S):null,p23:C.p23,fx:S&&S.fx23,units:S&&S.units.filter(u=>!u.dead).map(u=>u.side+':'+(u.char||u.kind)+'@'+u.x+','+u.y)}),
   sim23:(id,k,ms)=>{
    newCampaign('r');try{hideStory();}catch(e){}
