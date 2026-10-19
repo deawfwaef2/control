@@ -53,7 +53,7 @@
 #film .fm-actor.speaking{animation:fmBreath 4s ease-in-out infinite}
 @keyframes fmBreath{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 /* stamp */
-#film .fm-stamp{position:absolute;top:calc(8.5vh + 22px);left:4vw;z-index:6;font:600 15px/1.5 ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;letter-spacing:.14em;color:#cfe9f5;text-shadow:0 2px 8px #000;opacity:0;transition:opacity .6s}
+#film .fm-stamp{position:absolute;top:calc(8.5vh + 22px);left:4vw;z-index:6;padding:7px 16px 7px 12px;background:linear-gradient(90deg,rgba(0,0,0,.72),rgba(0,0,0,0));font:600 15px/1.5 ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;letter-spacing:.14em;color:#cfe9f5;text-shadow:0 2px 8px #000;opacity:0;transition:opacity .6s}
 #film .fm-stamp.show{opacity:.92}
 #film .fm-stamp::before{content:"";display:inline-block;width:8px;height:8px;margin-right:12px;background:#ff3b4e;border-radius:50%;vertical-align:1px;animation:fmRec 1.2s steps(2) infinite}
 @keyframes fmRec{50%{opacity:0}}

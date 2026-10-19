@@ -11,7 +11,7 @@ art = {p.stem: 'data:image/webp;base64,' + base64.b64encode(p.read_bytes()).deco
 music = {p.stem: 'data:audio/mpeg;base64,' + base64.b64encode(p.read_bytes()).decode('ascii')
          for p in sorted((ROOT/'music').glob('*.mp3'))}
 css = '\n'.join((ROOT/f).read_text(encoding='utf-8') for f in ('style.css','cinematic.css','screenplay.css','protocol.css','audio.css','film.css','hud.css') if (ROOT/f).exists())
-files = ['data.js','cast.js','engine.js','ui.js','presentation.js','campaign.js','ensemble.js','screenplay-data.js','screenplay.js','protocol.js','audio.js','film.js','film-script.js','hud.js']
+files = ['data.js','cast.js','engine.js','ui.js','presentation.js','campaign.js','ensemble.js','screenplay-data.js','screenplay.js','protocol.js','audio.js','film.js','film-script.js','film-chapters.js','hud.js']
 js = '\n\n'.join((ROOT/f).read_text(encoding='utf-8') for f in files if (ROOT/f).exists())
 script = '(function(){\n' + js + '\n})();'
 # Do not replace the last playable artifact with syntactically invalid work.

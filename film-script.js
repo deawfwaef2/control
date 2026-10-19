@@ -4,7 +4,7 @@
    - No design notes, no rule explanations inside dialogue. Show, don't explain.
    - Every chapter: establish place → people & motive → something wrong → threat → clear order.
    - Objectives come from actGoals(S) at runtime so cards always match the real board. */
-const CHAPTER_BG={0:'film_corridor',1:'garden',2:'bridge',3:'archive',4:'reactor'};
+const CHAPTER_BG={0:'film_corridor',1:'film_garden',2:'film_bridge',3:'film_mirror',4:'film_core'};
 const CHAPTER_EN={0:'SILENT DOCK',1:'GREENHOUSE',2:'BROKEN BRIDGE',3:'MIRROR ROOM',4:'RED HIVE ZERO'};
 const CN_NUM=['一','二','三','四','五','六'];
 function filmAlive(id){const r=C?.roster?.[id];return !!r&&r.status==='active';}
@@ -37,6 +37,7 @@ function filmIntroDockGuardian(){
   {who:'lyra',side:'g',line:'璃雀。不准单独行动。'},
   {who:'lark',side:'g',line:'……是是，队长大人。'},
   {who:'iris',side:'g',pos:'right',line:'站内还有残余电力。只要接回 D 区的主中继站，我就能读出录音的原始时间戳——确认它到底是谁发的。'},
+  {who:'iris',side:'g',line:'另外，苍鹭小队从另一侧的温室环接舷，白隼守在外环天桥。三路同时进站。'},
   {who:'kuro',side:'g',pos:'right',line:'……外壳上有新的划痕。是从里面往外刮的。'},
   {who:'sola',side:'g',pos:'right',line:'那正好。不管里面是什么东西，揍一拳就知道是不是活的了。'},
   {who:'lyra',side:'g',pos:'left',line:'所有人听好。我们是来带人回家的，不是来送死的。任何人失去联络——立刻呼叫我。'},
