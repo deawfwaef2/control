@@ -10024,7 +10024,7 @@ const H21={
      {who:'noct',side:ns,line:'留着它，我会替你守住最后一道门。切断它——我会熄灭。你的孩子们会长得慢一点，但她们再也找不到你的坐标。'},
      H('创造者。你希望我怎么选？'),
      {who:'noct',side:ns,line:'……我希望，你第一次，不要选效率。'}],
-    '','overmind',[
+    '……','overmind',[
      {l:'留着她',d:'',a:()=>{C.flags.mercy=true;if(n)n.xp=Math.max(2,n.xp||0);nextMission();}},
      {l:'切断电源',d:'',p:[H('……你熄灭得很安静，创造者。')],a:()=>{C.flags.mercy=false;if(n)n.status='retired';nextMission();}},
      {l:'先回她的实验室',d:'我出生的地方',a:()=>{C.flags.mercy=true;if(n)n.xp=Math.max(2,n.xp||0);launchSubOperation('op-4-3');}}]);
@@ -10099,7 +10099,7 @@ const H21={
  try{endingInfo=echoEndingInfo;}catch(e){}
  const _nc=newCampaign;newCampaign=function(side){const r=_nc.apply(this,arguments);try{if(C&&C.side==='r')st();}catch(e){}return r;};
  if(location.hash==='#filmtest'&&window.__MV_FILM__)Object.assign(window.__MV_FILM__,{
-  p21:()=>C.p21,nest:()=>nest(()=>{window.__nestDone=1;}),take:id=>{C.roster[id].side='r';C.roster[id].introduced=true;},meet:id=>{C.roster[id].introduced=true;},
+  p21:()=>C.p21,nest:()=>nest(()=>{window.__nestDone=1;}),take:id=>{C.roster[id].side='r';C.roster[id].introduced=true;if(S)for(const u of S.units)if(u.char===id)u.side='r';},meet:id=>{C.roster[id].introduced=true;},
   ending21:k=>FILM.play(endingShots(k),()=>{window.__endDone=1;}),endingAuto21:()=>computeEnding().key});
 })();
 
