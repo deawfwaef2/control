@@ -5,7 +5,7 @@
    - Respects the existing mixer (EchoAudio settings: enabled / effects / effectsVolume). */
 const SND16=(()=>{
  let ctx=null,master=null,sfxBus=null,voxBus=null,verb=null,verbSend=null,unlocked=false,lastVox=0,lastMove=0;
- const bufs={},loading={};
+ const bufs={},loading={};let VP=1,VV=1,curUnit=null;const lastPitch={},lastVar={},lastVoxKey={};
  const st=()=>{try{return EchoAudio.settings;}catch(e){return{enabled:true,effects:true,effectsVolume:.72};}};
  const on=()=>{const s=st();return s.enabled!==false&&s.effects!==false;};
  function init(){
@@ -28,14 +28,14 @@ const SND16=(()=>{
  function ready(){if(!ctx||!unlocked||!on()||document.hidden)return false;if(ctx.state!=='running'){ctx.resume().catch(()=>{});return false;}mix();return true;}
  function env(g,t,a,peak,dur){g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(Math.max(.0002,peak),t+a);g.gain.exponentialRampToValueAtTime(.0001,t+dur);}
  function osc(type,f0,f1,dur,vol,delay=0,opt={}){
-  const t=now()+delay,o=ctx.createOscillator(),g=ctx.createGain();o.type=type;o.frequency.setValueAtTime(f0,t);if(f1&&f1!==f0)o.frequency.exponentialRampToValueAtTime(Math.max(20,f1),t+dur*(opt.glide||1));
+  f0*=VP;if(f1)f1*=VP;vol*=VV;const t=now()+delay,o=ctx.createOscillator(),g=ctx.createGain();o.type=type;o.frequency.setValueAtTime(f0,t);if(f1&&f1!==f0)o.frequency.exponentialRampToValueAtTime(Math.max(20,f1),t+dur*(opt.glide||1));
   if(opt.detune)o.detune.value=opt.detune;env(g,t,opt.a||.006,vol,dur);let node=g;
   if(opt.lp){const f=ctx.createBiquadFilter();f.type='lowpass';f.frequency.value=opt.lp;f.Q.value=opt.q||.8;g.connect(f);node=f;}
   o.connect(g);node.connect(sfxBus);if(opt.verb)node.connect(verbSend);o.start(t);o.stop(t+dur+.05);return o;
  }
  let nbuf=null;function noiseBuf(){if(nbuf)return nbuf;const len=ctx.sampleRate*2;nbuf=ctx.createBuffer(1,len,ctx.sampleRate);const d=nbuf.getChannelData(0);for(let i=0;i<len;i++)d[i]=Math.random()*2-1;return nbuf;}
  function noise(dur,vol,type='bandpass',f0=1500,f1=null,delay=0,opt={}){
-  const t=now()+delay,s=ctx.createBufferSource(),f=ctx.createBiquadFilter(),g=ctx.createGain();s.buffer=noiseBuf();s.loop=true;
+  f0*=VP;if(f1)f1*=VP;vol*=VV;const t=now()+delay,s=ctx.createBufferSource(),f=ctx.createBiquadFilter(),g=ctx.createGain();s.buffer=noiseBuf();s.loop=true;
   f.type=type;f.frequency.setValueAtTime(f0,t);if(f1)f.frequency.exponentialRampToValueAtTime(f1,t+dur);f.Q.value=opt.q||1.2;
   env(g,t,opt.a||.004,vol,dur);s.connect(f);f.connect(g);g.connect(sfxBus);if(opt.verb)g.connect(verbSend);s.start(t,Math.random()*1.5);s.stop(t+dur+.05);
  }
@@ -77,7 +77,37 @@ const SND16=(()=>{
   type(){osc('square',1900+Math.random()*300,1500,.012,.012,0,{lp:4000});},
   overmind(){osc('sawtooth',55,52,.7,.14,0,{lp:380,q:8,verb:true});osc('square',110,104,.6,.05,.02,{lp:700});for(let i=0;i<4;i++)osc('sine',880+i*120,700,.05,.03,.05+i*.09);noise(.6,.06,'bandpass',180,120,0,{q:6});}
  };
- function play(name){if(!ready())return;const f=FX[name]||FX.ui;try{f();}catch(e){}}
+ /* M17: no two plays sound identical — random pitch/level, never the same pitch twice in a row,
+    and real variants for the sounds you hear most (move / select / hit / whoosh). */
+ const R=(a,b)=>a+Math.random()*(b-a);
+ const VARIANTS={
+  move:{
+   girl:[()=>{noise(.3,.12,'bandpass',500,2400,0,{q:2.5});osc('sawtooth',120,240,.28,.04,0,{lp:900});osc('sine',170,60,.14,.36,.3);ring([2200,3500],.18,.05,.31);},
+         ()=>{noise(.22,.1,'bandpass',900,3800,0,{q:1.6,verb:true});osc('triangle',300,620,.2,.05,0);osc('sine',150,48,.16,.38,.24);noise(.06,.16,'lowpass',1100,null,.25);},
+         ()=>{[0,.11,.22].forEach((t,i)=>{osc('sine',120+i*12,50,.08,.22,t);noise(.04,.1,'lowpass',1300,null,t);});noise(.3,.07,'highpass',3000,6000,.02);ring([2600],.15,.04,.24);}],
+   spider:[()=>{for(let i=0;i<8;i++)noise(.016,.15,'highpass',R(2600,4800),null,i*.045+R(0,.012),{q:3});osc('sawtooth',80,60,.36,.05,0,{lp:380});osc('sine',100,40,.12,.3,.38);},
+           ()=>{for(let i=0;i<6;i++){osc('square',R(900,1600),R(400,700),.02,.05,i*.06,{lp:2500});}noise(.4,.08,'bandpass',300,700,0,{q:6});osc('sine',90,36,.16,.35,.4);}],
+   drone:[()=>{osc('sawtooth',180,260,.45,.05,0,{lp:900,q:4});osc('sawtooth',182,262,.45,.04,0,{lp:900,q:4});noise(.45,.06,'bandpass',1200,1800,0,{q:5});osc('sine',300,160,.12,.12,.44);},
+          ()=>{osc('triangle',420,880,.3,.06,0);osc('sine',880,600,.2,.04,.2);noise(.3,.05,'highpass',2500,5000,0);}],
+   courier:[()=>{noise(.25,.1,'bandpass',600,2600,0,{q:2});for(let i=0;i<4;i++)noise(.015,.12,'highpass',R(3000,5000),null,.05+i*.05);osc('sine',110,50,.12,.25,.27);}]
+  },
+  select:[()=>{osc('square',520,1180,.07,.06,0,{lp:3200});osc('sine',1760,1760,.09,.05,.05);noise(.05,.05,'highpass',4200);},
+          ()=>{osc('triangle',880,1320,.06,.07,0);osc('sine',1320,1320,.12,.05,.06,{verb:true});},
+          ()=>{osc('sine',660,660,.05,.06,0);osc('sine',990,990,.05,.06,.05);osc('sine',1480,1480,.1,.04,.1,{verb:true});noise(.04,.04,'highpass',5000);},
+          ()=>{osc('square',300,900,.05,.05,0,{lp:2200});ring([1700,2550],.18,.06,.04);}],
+  hit:[null,
+       ()=>{noise(.06,.4,'highpass',3000,null,0);osc('sawtooth',2400,300,.18,.14,0,{lp:5000});osc('sine',120,30,.45,.6,.02);noise(.4,.3,'lowpass',2000,200,.03,{verb:true});for(let i=0;i<6;i++)osc('square',R(2000,5000),R(800,1500),.03,.04,.05+i*.04,{lp:6000});},
+       ()=>{osc('sine',90,24,.7,.8,0,{a:.002,verb:true});noise(.5,.4,'lowpass',1600,120,0,{verb:true});ring([311,740,1320],1.1,.12,.03);noise(.15,.2,'bandpass',800,300,.12,{q:4});}],
+  whoosh:[null,()=>{noise(.55,.13,'bandpass',4200,260,0,{q:1.2,verb:true});},()=>{noise(.35,.1,'bandpass',600,2600,0,{q:2});noise(.5,.06,'highpass',3000,8000,.1,{verb:true});},()=>{noise(.7,.12,'lowpass',300,2600,0,{verb:true});osc('sine',60,90,.6,.1,0,{verb:true});}]
+ };
+ function kindOf(u){if(!u)return'girl';if(u.char)return'girl';if(u.kind==='spider')return'spider';if(u.kind==='courier')return'courier';return'drone';}
+ function play(name){if(!ready())return;
+  let p=R(.9,1.1);if(lastPitch[name]&&Math.abs(p-lastPitch[name])<.035)p+=p>1?-.06:.06;lastPitch[name]=p;VP=p;VV=R(.86,1.08);
+  let f=FX[name]||FX.ui;
+  if((name==='move'||name==='enemymove')&&curUnit){const k=kindOf(curUnit);const pool=VARIANTS.move[k];if(pool&&(k!=='girl'||Math.random()<.75)){let i=Math.floor(Math.random()*pool.length);if(pool.length>1&&i===lastVar['m'+k])i=(i+1)%pool.length;lastVar['m'+k]=i;f=pool[i];}}
+  else if(VARIANTS[name]&&Array.isArray(VARIANTS[name])){const pool=VARIANTS[name];let i=Math.floor(Math.random()*pool.length);if(pool.length>1&&i===lastVar[name])i=(i+1)%pool.length;lastVar[name]=i;if(pool[i])f=pool[i];}
+  try{f();}catch(e){}VP=1;VV=1;}
+ function setUnit(u){curUnit=u;}
 
  /* ---------- voices ---------- */
  const BANK={
@@ -116,18 +146,20 @@ const SND16=(()=>{
  function speak(id,side,text,hint){
   if(!id||id==='overmind'){if(id==='overmind')play('overmind');return;}
   if(!ready())return;const tNow=performance.now();if(tNow-lastVox<260)return;lastVox=tNow;
-  const {bank,rate}=voiceFor(id,side);const emo=emotion(text,hint);const slot=(BANK[bank]||BANK.v3)[emo]||'ok';const key=`${bank}_${slot}`;
-  const go=b=>{if(!b||!ctx)return;const s=ctx.createBufferSource(),g=ctx.createGain();s.buffer=b;s.playbackRate.value=rate*(0.98+Math.random()*.04);g.gain.value=bank==='v2'?.95:.85;s.connect(g);g.connect(voxBus);
+  const {bank,rate}=voiceFor(id,side);const emo=emotion(text,hint);let slot=(BANK[bank]||BANK.v3)[emo]||'ok';let key=`${bank}_${slot}`;
+  if(lastVoxKey[id]===key&&!hint){const alt={ok:'hmm',hmm:'ok',think:'hmm',obey:'hmm',cheer:'attack',attack:'cheer',laugh:'ok',sigh:'sad',sad:'sigh'}[slot];if(alt&&VOICE_DATA[`${bank}_${alt}`]){slot=alt;key=`${bank}_${alt}`;}}lastVoxKey[id]=key;
+  const go=b=>{if(!b||!ctx)return;const s=ctx.createBufferSource(),g=ctx.createGain();s.buffer=b;s.playbackRate.value=rate*(0.95+Math.random()*.1);g.gain.value=bank==='v2'?.95:.85;s.connect(g);g.connect(voxBus);
    if(bank==='v2'){g.connect(verbSend);}s.start();};
   if(bufs[key])go(bufs[key]);else{const p=load(key);if(p)p.then(go);}
  }
  ['pointerdown','keydown','touchstart'].forEach(ev=>document.addEventListener(ev,e=>{if(e.isTrusted)unlock();},{capture:true}));
  document.addEventListener('visibilitychange',()=>{if(!ctx)return;if(document.hidden)ctx.suspend().catch(()=>{});else if(unlocked&&on())ctx.resume().catch(()=>{});});
- return{play,speak,unlock,emotion,get state(){return{ctx:ctx?ctx.state:'none',unlocked,on:on(),voices:Object.keys(bufs).length};}};
+ return{play,speak,unlock,emotion,setUnit,get state(){return{ctx:ctx?ctx.state:'none',unlocked,on:on(),voices:Object.keys(bufs).length};}};
 })();
 
 /* route every existing cue to the new engine */
 sfx=type=>{if(type==='move'&&typeof S!=='undefined'&&S&&S.phase&&S.phase!=='player'){SND16.play('enemymove');return;}SND16.play(type);};
+(function(){const pm=performMove;performMove=async function(m){try{SND16.setUnit(S&&S.units.find(v=>v.uid===m.uid));}catch(e){}return pm.apply(this,arguments);};})();
 filmSound=type=>{if(type)SND16.play(type);};
 if(location.hash==='#filmtest'||location.hash==='#qa')window.__MV_SND__=SND16;
 
