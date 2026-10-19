@@ -327,3 +327,9 @@
 ## M16-1 棋盘放大 + 修复移动时巨型棋子遮挡（追加）
 - 移动"挡眼睛"根因：protocol.js animateToken 把棋子克隆到 body 下滑行，克隆体脱离棋盘 CSS 变量后宽度变成 ~1350px（满屏立绘）。已改为 inline `!important` 锁定宽高/overflow。
 - hud.js 末尾 M16 块：章节标题（.mission-heading）在桌面模式移入顶栏；回合/阶段/行动数/结束阶段移入棋盘右侧窄列 `.hud-side`。hud.css 末尾"M16 bigger board"：两侧栏收窄，1440×900 棋盘 549→684px。
+
+## M16-2 音效重做 + 角色语气词配音（追加）
+- 新文件 sound16.js（build 顺序在 hud.js 之后）：`SND16` 全合成音效（WebAudio + 生成混响），覆盖全局 `sfx` / `filmSound`。音效名：hover ui select move enemymove wait hit capture/infect commit objective alarm victory defeat knock latch pulse cut whoosh boom stamp glitch type overmind。仍受 EchoAudio 混音设置（总开关/音效开关/音效音量）控制。
+- 配音（仿弹丸论破：只有语气词，绝不念整句）：voice/*.mp3（24 段，约 240KB），build_game.py 以 `VOICE_DATA` 内嵌。三个音色库：v1 元气（璃雀/阳炎/弥砂/霁川）、v2 被侵蚀/妖艳（绯夜/绯律/回音 + 所有被感染后的角色）、v3 凛然/温柔（其余，按角色 playbackRate 调音高）。赤巢蛛皇不用人声，用合成机械音 `overmind`。
+- 触发：film.js 新增 `filmShotHook`（每个镜头开始时调用）→ 台词开头配语气词，按台词情绪（！？/……/哈哈/对不起/冲…）选 ok/shock/sad/laugh/attack/think 等；换景 whoosh、标题卡 boom、目标卡 objective。战斗中：选中角色出语气词、吃子时攻击方喊声、被击杀/被感染方惨叫。
+- 语音生成：add_voice 选了 voice-01(元气) voice-02(妖艳) voice-03(温柔)；voice-00 被内容过滤拒绝，已放弃。切分脚本 /var/tmp/w/split2.py（需 PYTHONPATH=/var/tmp/w/py 的 soundfile）。

@@ -7,6 +7,7 @@
     line:'text', mode:'narr|sys|voice|hive', fx:'flash|redflash|shake|static|alert' (space-separated),
     sfx:'cut|pulse|alarm|latch|knock|hit|capture|commit|victory', objective:{title,where,tip,go}}
    NEVER put design notes / requirement text into lines. Lines must read like film dialogue. */
+let filmShotHook=null;
 const FILM=(()=>{
  let root=null,st=null,auto=false;
  try{auto=localStorage.getItem('mv-film-auto')==='1';}catch(e){}
@@ -109,6 +110,7 @@ const FILM=(()=>{
   if(shot.stamp!==undefined){const s=q('.fm-stamp');s.classList.remove('show');s.textContent=shot.stamp;if(shot.stamp)requestAnimationFrame(()=>s.classList.add('show'));}
   else if(changed||shot.black)q('.fm-stamp').classList.remove('show');
   fx(shot);
+  try{filmShotHook&&filmShotHook(shot,changed);}catch(e){}
   if(shot.title){
    title.querySelector('.k').textContent=shot.title.k||'';title.querySelector('.m').textContent=shot.title.m||'';title.querySelector('.s').textContent=shot.title.s||'';
    title.classList.remove('show');void title.offsetWidth;title.classList.add('show');sub.style.opacity=0;
