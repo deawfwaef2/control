@@ -627,6 +627,37 @@ html body.m26-in-game #board .cell.dark:not(.void){
   inset 0 1px 0 rgba(150,215,245,.15),
   inset 0 0 0 1px rgba(111,214,255,.1)!important;
 }
+
+/* Chapter-Specific 3D Architectural Tile Themes */
+/* Theme 1: Bioluminescent Cryo-Garden (Octagonal Bio-Dome) */
+html body.m26-in-game #board[data-theme="garden"] .cell:not(.void){
+ background:linear-gradient(155deg,rgba(18,52,48,.92) 0%,rgba(10,30,28,.95) 60%,rgba(5,18,17,.98) 100%)!important;
+ box-shadow:0 7px 0 #03100f,0 12px 20px rgba(0,0,0,.8),inset 0 1px 0 rgba(140,255,220,.24),inset 0 0 0 1px rgba(90,230,190,.16)!important;
+}
+html body.m26-in-game #board[data-theme="garden"] .cell.dark:not(.void){
+ background:linear-gradient(155deg,rgba(12,38,35,.94) 0%,rgba(7,22,21,.96) 60%,rgba(4,13,12,.98) 100%)!important;
+}
+/* Theme 2: High-Orbit Titanium Twin Bridge */
+html body.m26-in-game #board[data-theme="bridge"] .cell:not(.void){
+ background:linear-gradient(155deg,rgba(34,48,68,.93) 0%,rgba(18,27,42,.96) 60%,rgba(10,16,26,.98) 100%)!important;
+ box-shadow:0 8px 0 #050912,0 14px 24px rgba(0,0,0,.85),inset 0 1px 0 rgba(200,235,255,.28),inset 0 0 0 1px rgba(130,200,255,.18)!important;
+}
+/* Theme 3: Quantum Mirror Sanctum (Crystalline Violet-Obsidian) */
+html body.m26-in-game #board[data-theme="mirror"] .cell:not(.void){
+ background:linear-gradient(155deg,rgba(32,26,58,.92) 0%,rgba(18,14,36,.95) 60%,rgba(10,8,22,.98) 100%)!important;
+ box-shadow:0 7px 0 #070512,0 12px 22px rgba(0,0,0,.82),inset 0 1px 0 rgba(210,190,255,.26),inset 0 0 0 1px rgba(165,140,255,.18)!important;
+}
+html body.m26-in-game #board[data-theme="mirror"] .cell.dark:not(.void){
+ background:linear-gradient(155deg,rgba(22,18,42,.94) 0%,rgba(12,10,26,.96) 60%,rgba(7,5,16,.98) 100%)!important;
+}
+/* Theme 4: Red Zero Overmind Citadel (Volcanic Biomech) */
+html body.m26-in-game #board[data-theme="core"] .cell:not(.void){
+ background:linear-gradient(155deg,rgba(48,16,26,.93) 0%,rgba(28,8,15,.96) 60%,rgba(16,4,9,.98) 100%)!important;
+ box-shadow:0 8px 0 #0d0206,0 14px 24px rgba(0,0,0,.86),inset 0 1px 0 rgba(255,150,175,.24),inset 0 0 0 1px rgba(255,65,95,.2)!important;
+}
+html body.m26-in-game #board[data-theme="core"] .cell.dark:not(.void){
+ background:linear-gradient(155deg,rgba(34,10,18,.95) 0%,rgba(20,5,11,.97) 60%,rgba(11,2,6,.99) 100%)!important;
+}
 body.side-r.m26-in-game #board .cell:not(.void){
  box-shadow:
   0 7px 0 #110408,
@@ -750,6 +781,60 @@ body.side-r.m26-in-game #board .cell.selected .token{
 @keyframes m26SpiderPulse{
  0%,100%{transform:translateX(-50%) scale(.92);opacity:.88}
  50%{transform:translateX(-50%) scale(1.16);opacity:1}
+}
+
+/* Butterfly Causality Crest on Evolved Character Tokens */
+.m26-bf-crest{
+ position:absolute;
+ right:2px;
+ bottom:21%;
+ z-index:4;
+ font-size:11px;
+ line-height:1;
+ pointer-events:none;
+ filter:drop-shadow(0 0 6px rgba(244,201,107,.95));
+ animation:m26BfFloat 2.2s ease-in-out infinite;
+}
+@keyframes m26BfFloat{
+ 0%,100%{transform:translateY(0) scale(.95)}
+ 50%{transform:translateY(-2px) scale(1.12)}
+}
+
+/* 3D Floor Shockwave Ring on Move / Attack Landing */
+.m26-floor-wave{
+ position:absolute;
+ inset:4%;
+ border-radius:6px;
+ border:2px solid var(--m26-cy);
+ pointer-events:none;
+ z-index:5;
+ animation:m26WaveOut .52s cubic-bezier(.16,.84,.44,1) forwards;
+}
+.m26-floor-wave.r{
+ border-color:var(--m26-red);
+}
+@keyframes m26WaveOut{
+ 0%{opacity:1;transform:scale(.45);box-shadow:0 0 24px currentColor}
+ 100%{opacity:0;transform:scale(1.38);box-shadow:0 0 0 transparent}
+}
+
+/* Map Shape Subtitle Tag in Top-Left Watermark */
+.m26-map-shape-tag{
+ display:inline-block;
+ margin-left:8px;
+ padding:2px 8px;
+ border-radius:3px;
+ background:rgba(111,214,255,.15);
+ border:1px solid rgba(111,214,255,.35);
+ color:#bceeff;
+ font-size:11px;
+ font-weight:700;
+ letter-spacing:.1em;
+}
+body.side-r .m26-map-shape-tag{
+ background:rgba(255,59,92,.18);
+ border-color:rgba(255,59,92,.4);
+ color:#ffc4cf;
 }
 
 @media (max-width:1100px){

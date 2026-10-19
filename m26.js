@@ -270,9 +270,20 @@
     }
    }
 
-   // 3) Carve Non-Rectangular 3D Map Shape for this Chapter
+   // 3) Carve Non-Rectangular 3D Map Shape for this Chapter (with Butterfly Geometry Mutations!)
    if(CHAPTER_MAP_SHAPES[id]){
-    applyMapShape26(s,CHAPTER_MAP_SHAPES[id]);
+    let shapeVoids=[...CHAPTER_MAP_SHAPES[id]];
+    if(bf){
+     // Butterfly Map Geometry Mutation 1: Intercepting Ch1 Courier seals Ch2 central glass pit (3,4)
+     if(id===1&&bf.courierFate==='intercepted'){
+      shapeVoids=shapeVoids.filter(k=>k!=='3,4');
+     }
+     // Butterfly Map Geometry Mutation 2: Saving Misa in Ch2 welds stabilizer plates on Ch3 outer bridge (1,3 & 6,3)
+     if(id===2&&bf.misaFate==='saved'){
+      s.voids=s.voids.filter(k=>k!=='1,3'&&k!=='6,3');
+     }
+    }
+    applyMapShape26(s,shapeVoids);
    }
    s.initial=s.units.filter(u=>u.char).map(u=>({char:u.char,side:u.side}));
   }catch(e){console.warn('m26 makeMission',e);}
@@ -395,18 +406,82 @@
   };
  }
 
- // Inject animated chest spider SVG on infected girls & 3D selection lock ring
+ // Inject animated chest spider SVG on infected girls & Butterfly Causality Crest on evolved heroes
  const m26BaseTokenHTML=tokenHTML;
  tokenHTML=function(u){
   let html=m26BaseTokenHTML.apply(this,arguments);
   try{
-   if(u&&u.char&&u.side==='r'){
-    const spiderBadge=`<svg class="m26-chest-spider" viewBox="0 0 64 64" aria-hidden="true"><use href="#i-spider"/></svg>`;
-    html=html.replace(/<\/span>$/,`${spiderBadge}</span>`);
+   if(u&&u.char){
+    const bf=ensureButterfly();
+    let badges='';
+    if(u.side==='r'){
+     badges+=`<svg class="m26-chest-spider" viewBox="0 0 64 64" aria-hidden="true"><use href="#i-spider"/></svg>`;
+    }
+    const hasBf=(u.char==='lyra'&&bf?.larkFate==='infected')||(u.char==='lark'&&bf?.larkFate)||(u.char==='misa'&&bf?.misaFate)||(u.xp>=4);
+    if(hasBf){
+     badges+=`<span class="m26-bf-crest" title="蝴蝶效应 · 命运蜕变单位">🦋</span>`;
+    }
+    if(badges)html=html.replace(/<\/span>$/,`${badges}</span>`);
    }
   }catch(e){}
   return html;
  };
+
+ // Set 3D Map Architectural Theme & Shape Subtitle Tag on renderBoard
+ const MAP_THEMES_26={0:'dock',1:'garden',2:'bridge',3:'mirror',4:'core'};
+ const MAP_SHAPE_NAMES_26={
+  0:'3D 狭长气闸廊 · 3v3微局',
+  1:'3D 八角生态双环',
+  2:'3D 沙漏断轨双桥',
+  3:'3D 十字棱镜圣殿',
+  4:'3D 阶梯母巢王座',
+  siege:'3D 熔心六角堡',
+  heist:'3D 菱形金库',
+  blackout:'3D 裂谷暗夜廊',
+  awakening:'3D 王座八角场',
+  convoy:'3D 磁浮峡谷轨',
+  overload:'3D 三角电容阵',
+  quarantine:'3D 坍缩孤岛'
+ };
+ const m26BaseRenderBoard=renderBoard;
+ renderBoard=function(){
+  const r=m26BaseRenderBoard.apply(this,arguments);
+  try{
+   const bd=$('board');
+   if(bd&&S){
+    const k=S.kind24||S.kind23;
+    const theme=k==='siege'||k==='overload'?'core':k==='heist'||k==='awakening'?'mirror':k==='blackout'?'garden':(MAP_THEMES_26[S.mid]||'dock');
+    bd.dataset.theme=theme;
+    const locEl=$('mission-location');
+    if(locEl){
+     const shapeLabel=MAP_SHAPE_NAMES_26[k]||MAP_SHAPE_NAMES_26[S.mid]||'3D 异形战区';
+     if(!locEl.querySelector('.m26-map-shape-tag')){
+      locEl.insertAdjacentHTML('beforeend',`<span class="m26-map-shape-tag">${shapeLabel}</span>`);
+     }else{
+      locEl.querySelector('.m26-map-shape-tag').textContent=shapeLabel;
+     }
+    }
+   }
+  }catch(e){}
+  return r;
+ };
+
+ // Hook deployLine so characters speak Butterfly-Effect-aware lines during board deployment
+ if(typeof deployLine==='function'){
+  const m26OrigDeployLine=deployLine;
+  deployLine=function(id,side){
+   try{
+    const bf=ensureButterfly();
+    if(bf){
+     if(id==='lyra'&&side==='g'&&bf.larkFate==='infected')return'璃雀……等着我。这一战，绝不会再让任何一只红蜘蛛碰我的队员！';
+     if(id==='lark'&&side==='g'&&bf.larkFate==='saved')return'接驳甲板捡回一条命！队长，前方的赤蛛伏击点我已经全部标出来啦！';
+     if(id==='lark'&&side==='r'&&bf.larkFate==='infected')return'零音队长……快躲开……胸口这只红蜘蛛在逼我瞄准你们！';
+     if(id==='misa'&&side==='g'&&bf.misaFate==='saved')return'天桥承重梁我已经加固过了！大家放心往前冲！';
+    }
+   }catch(e){}
+   return m26OrigDeployLine.apply(this,arguments);
+  };
+ }
 
  // Enhance renderObjectives with Butterfly Echo Strip
  const m26BaseRenderObjectives=renderObjectives;
@@ -591,7 +666,7 @@
   }
  }
 
- // 3D Camera Impulse on Move / Attack
+ // 3D Camera Impulse & Landing Shockwave Ring on Move / Attack
  const m26BasePerformMove=performMove;
  performMove=async function(m,isPlayer){
   try{
@@ -602,7 +677,19 @@
     sur.classList.add('m26-cam-impulse');
    }
   }catch(e){}
-  return m26BasePerformMove.apply(this,arguments);
+  const res=await m26BasePerformMove.apply(this,arguments);
+  try{
+   if(m&&m.type!=='wait'&&$('board')){
+    const destCell=$('board').querySelector(`.cell[data-x="${m.x}"][data-y="${m.y}"]`);
+    if(destCell){
+     const wave=document.createElement('span');
+     wave.className='m26-floor-wave'+(m.capture||C?.side==='r'?' r':'');
+     destCell.appendChild(wave);
+     setTimeout(()=>wave.remove(),560);
+    }
+   }
+  }catch(e){}
+  return res;
  };
 
  /* =========================================================================
