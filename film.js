@@ -29,7 +29,7 @@ const FILM=(()=>{
    if(b&&b.dataset.a==='auto'){auto=!auto;b.setAttribute('aria-pressed',String(auto));try{localStorage.setItem('mv-film-auto',auto?'1':'0');}catch(_){}if(auto&&!st.typing)schedule();return;}
    if(b&&b.dataset.a==='skip'){skip();return;}
    if(b&&b.classList.contains('fm-go')){finish();return;}
-   if(b&&b.dataset.choice!==undefined&&st.shot&&st.shot.choices){const c=st.shot.choices[+b.dataset.choice];finish();try{c&&c.action&&c.action();}catch(err){console.error(err);}return;}
+   if(b&&b.dataset.choice!==undefined&&st.shot&&st.shot.choices){pick(+b.dataset.choice,false);return;}
    if(e.target.closest('.fm-choices'))return;
    if(e.target.closest('.fm-obj'))return;
    advance();
@@ -45,7 +45,19 @@ const FILM=(()=>{
   },true);
   return root;
  }
- function clearTimers(){if(!st)return;clearInterval(st.typer);clearTimeout(st.autoT);clearTimeout(st.holdT);}
+ function clearTimers(){if(!st)return;clearInterval(st.typer);clearTimeout(st.autoT);clearTimeout(st.holdT);clearTimeout(st.choiceT);}
+ /* M19: choice resolution. c.next(late) may return more shots to splice in (branching inside one film);
+    otherwise the film closes and c.action() runs (legacy). */
+ function pick(i,late){
+  if(!st||!st.shot||!st.shot.choices)return;const c=st.shot.choices[i];if(!c)return;clearTimeout(st.choiceT);
+  if(typeof c.next==='function'){
+   const box=q('.fm-choices');box.querySelectorAll('button').forEach((b,j)=>b.classList.toggle('picked',j===i));box.classList.add('resolved');
+   let more=null;try{more=c.next(late);}catch(err){console.error(err);}
+   if(Array.isArray(more)&&more.length&&st){st.shots.splice(st.i+1,st.shots.length,...more.filter(Boolean));st.choosing=false;setTimeout(()=>{if(!st)return;box.classList.remove('resolved');advance(true);},late?900:420);return;}
+   finish();return;
+  }
+  finish();try{c.action&&c.action();}catch(err){console.error(err);}
+ }
  function setBg(shot){
   const layers=[...root.querySelectorAll('.fm-bg')];
   if(shot.black){layers.forEach(l=>l.classList.remove('show'));st.bg=null;return true;}
@@ -109,7 +121,7 @@ const FILM=(()=>{
   st.fullText=text;st.lineEl=el;
  }
  function reducedMotionSafe(){try{return typeof reducedMotion!=='undefined'&&reducedMotion;}catch(e){return false;}}
- function ready(){root.classList.add('ready');if(auto)schedule();}
+ function ready(){root.classList.add('ready');if(auto)schedule();else if(st&&st.shot&&st.shot.auto&&!st.shot.choices){const me=st.shot;st.autoT=setTimeout(()=>{if(st&&st.shot===me&&!st.typing&&!st.objective&&!st.choosing)advance();},me.auto);}}
  function schedule(){clearTimeout(st.autoT);const len=(st.fullText||'').length;st.autoT=setTimeout(()=>{if(st&&!st.typing&&!st.objective)advance();},1500+len*55);}
  function show(){
   clearTimers();root.classList.remove('ready');
@@ -170,12 +182,15 @@ const FILM=(()=>{
  function showChoices(shot){
   st.choosing=true;q('.fm-ctl').style.visibility='hidden';const box=q('.fm-choices');
   box.innerHTML=shot.choices.map((c,i)=>`<button type="button" data-choice="${i}"><b>${escHtml(c.label||'')}</b>${c.detail?`<small>${escHtml(c.detail)}</small>`:''}</button>`).join('');
+  box.classList.remove('resolved','late');
+  if(shot.timer>0){const bar=document.createElement('div');bar.className='fm-timer';bar.innerHTML=`<i style="animation-duration:${shot.timer}s"></i><span>犹豫，也是一种选择</span>`;box.appendChild(bar);
+   st.choiceT=setTimeout(()=>{if(!st||st.shot!==shot)return;box.classList.add('late');try{sfx('alarm');}catch(e){}pick(shot.timeout||0,true);},shot.timer*1000);}
   requestAnimationFrame(()=>{box.classList.add('show');const f=box.querySelector('button');f&&f.focus({preventScroll:true});});
  }
  function escHtml(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
  function advance(force){
   if(!st)return;
-  if(st.typing&&!force){clearInterval(st.typer);st.typing=false;if(st.lineEl)st.lineEl.textContent=st.fullText;ready();return;}
+  if(st.typing&&!force){clearInterval(st.typer);st.typing=false;if(st.lineEl)st.lineEl.textContent=st.fullText;if(st.shot&&st.shot.choices&&!st.choosing)showChoices(st.shot);else ready();return;}
   if(st.objective&&!force)return;
   if(st.choosing)return;
   if(st.i<st.shots.length-1){st.i++;show();}else finish();
