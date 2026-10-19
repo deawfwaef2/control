@@ -7424,6 +7424,40 @@ const CONFRONT17={
  'celia>psalm':[['celia','祈雾，唱吧。唱母巢的圣歌。'],['psalm','♪ 我只唱活人的歌 ♪'],['celia','那你很快就没有歌可唱了。']],
  'kuro>iris':[['kuro','……珀弦。'],['iris','玄羽……？你的影子……变红了……'],['kuro','……来。']]
 };
+/* M17: radio-bar quotes follow the girl's CURRENT state (all girls start in justice form).
+   Old CHAR.quote of several girls described them as already infected — that text is now only
+   used once she has really been taken. */
+const QUOTE17={
+ lyra:{g:'全员听令：看清它们的扑击路线。这一次，名单上不许再多一个名字。'},
+ akira:{g:'马克杯我已经摆好了——所以谁都不许倒下！跟紧我！'},
+ lark:{g:'这一次，我不会再丢下任何人了。跟着我的歌声走～',r:'胸口这里一直在唱歌哦……大家，好久不见～'},
+ veil:{g:'……一、二……视野良好。靠近你的东西，我先替你看见。',r:'……瞄准镜里，只剩你们的胸口。'},
+ misa:{g:'那、那个……护盾回路交给我！你们只要别让它们靠近我的工具箱……'},
+ noct:{g:'这座站是我画的。它的每一条暗道，我都会用来赎罪。',r:'我曾想用代码锁住深渊，如今深渊在我胸口绽放出猩红的光。'},
+ iris:{g:'频道已破解一半～剩下一半，等人家嚼完这颗薄荷糖。',r:'母巢的频道好干净～你们的通讯，人家全听得见哦。'},
+ sera:{g:'疼不疼？受伤了就喊我——我一定赶到。',r:'疼吗？过来，一针下去，就再也不会疼了哦。'},
+ vega:{g:'站我身后。盾在，人在。',r:'站我身后……然后，闭上眼睛。'},
+ ruby:{g:'本官宣布：赤巢的一切越界行为，判决粉碎。',r:'隔舱重炮已装填。母巢即律法——将一切入侵者轰成碎片。'},
+ june:{g:'嘘——猎人移动中。今天的猎物，是那些红色的蜘蛛～',r:'抓到你啦～猎人，被猎了呢，嘻嘻。'},
+ psalm:{g:'♪ 往前走，别回头 ♪——只要还有人在唱，就没有人会迷路。',r:'别挣扎了，听一听胸口红蜘蛛的心跳，那是母巢最温柔的摇篮曲。'},
+ kuro:{g:'……影步。它跳上你胸口之前，我会先斩断它的八足。',r:'……影子里，有好多红色的眼睛。……来。'},
+ sola:{g:'管它什么机械蜘蛛！敢靠近本小姐，一拳轰成废铁渣！',r:'好热……胸口好热！本小姐现在是母巢的火！'},
+ celia:{g:'以圣盾起誓——我的羽翼之下，绝不允许任何人被赤巢夺走。',r:'圣歌改了歌词。听，它在唱母巢的名字。'},
+ nyx:{g:'失礼了。处刑对象只有一个——赤巢。',r:'嘻嘻，胸口这只小蜘蛛咬得好疼呀……来吧，让我把你们也变成姊妹吧？'},
+ astra:{g:'弹道修正完毕，误差 0.02。指挥官，炮口听你的。',r:'目标：昔日友军。误差为零。'},
+ echo:{g:'……收到，收到。回音会跟着大家，跟着大家。',r:'星枢姐姐，胸口这颗红星好暖和……快过来陪回音一起闪烁吧。'}
+};
+(function(){
+ for(const id of Object.keys(QUOTE17)){
+  const ch=typeof CHAR!=='undefined'&&CHAR[id];if(!ch)continue;
+  const old=ch.quote;
+  try{Object.defineProperty(ch,'quote',{configurable:true,enumerable:true,
+   get(){let side='g';try{side=(typeof C!=='undefined'&&C&&C.roster&&C.roster[id]&&C.roster[id].side)||'g';}catch(e){}
+    if(side==='r'&&typeof C!=='undefined'&&C&&C.side==='g'&&!(C.flags&&C.flags.taken17&&C.flags.taken17.includes(id))&&ch.origin!=='r')side='g';
+    return QUOTE17[id][side]||QUOTE17[id].g||old;},set(v){}});}catch(e){}
+ }
+ try{CHAR.lark.bio='先遣侦察分队的薄荷绿短发机娘，队里最爱笑的开心果，总在频道里哼地球老歌。天穹站失联当夜，她是唯一锁住信标、活着撤回来的人——也是那晚最后一个听见同伴求救的人。这一次，她坚持要带路。';}catch(e){}
+})();
 
 
 /* ===== M16 STORY — longer, personal brainwash scenes + infected-girl chatter in battle =====
