@@ -129,3 +129,12 @@
 .fm-combat-sub.show{opacity:1;transform:translate(-50%,0)}
 .fm-combat-sub b{color:#7fdcff;margin-right:12px;letter-spacing:.14em}
 .fm-combat-sub.r b{color:#ff6b7d}
+
+/* choices */
+#film .fm-choices{position:absolute;z-index:9;left:50%;bottom:calc(8.5vh + 3.2vh + 175px);transform:translate(-50%,10px);width:min(760px,92vw);display:flex;flex-direction:column;gap:8px;opacity:0;pointer-events:none;transition:all .45s cubic-bezier(.2,.7,.2,1);cursor:default}
+#film .fm-choices.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+#film .fm-choices button{all:unset;cursor:pointer;display:block;padding:14px 20px 13px;background:linear-gradient(90deg,rgba(6,12,18,.94),rgba(6,12,18,.82));border:1px solid rgba(127,220,255,.28);border-left:3px solid #7fdcff;transition:all .2s}
+#film .fm-choices button:hover,#film .fm-choices button:focus-visible{background:linear-gradient(90deg,rgba(20,46,62,.96),rgba(10,20,30,.9));border-color:#7fdcff;transform:translateX(6px)}
+#film .fm-choices b{display:block;font-size:clamp(16px,1.3vw,19px);letter-spacing:.06em;color:#f2f6f9;margin-bottom:4px}
+#film .fm-choices small{display:block;font-size:14px;line-height:1.6;color:#9fb0bd}
+@media (max-width:760px){#film .fm-choices{bottom:calc(8.5vh + 170px)}#film .fm-choices small{font-size:12px}}

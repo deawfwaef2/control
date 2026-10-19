@@ -19,7 +19,7 @@ const FILM=(()=>{
  function build(){
   if(root)return root;
   root=document.createElement('div');root.id='film';root.hidden=true;root.setAttribute('role','dialog');root.setAttribute('aria-modal','true');root.setAttribute('aria-label','剧情演出');
-  root.innerHTML=`<div class="fm-stage"><div class="fm-bg" data-l="0"></div><div class="fm-bg" data-l="1"></div><div class="fm-actor left" data-pos="left"><img alt=""></div><div class="fm-actor right" data-pos="right"><img alt=""></div><div class="fm-grade"></div><div class="fm-grain"></div><div class="fm-alert"></div><div class="fm-static"></div><div class="fm-flash"></div></div><div class="fm-bar top"></div><div class="fm-bar bottom"></div><div class="fm-chapter"></div><div class="fm-stamp"></div><div class="fm-sub"><div class="fm-name"></div><div class="fm-line" aria-live="polite"></div></div><div class="fm-title"><div class="k"></div><div class="m"></div><div class="line"></div><div class="s"></div></div><div class="fm-obj"><small></small><h3></h3><div class="where"></div><ol></ol><div class="tip"></div><button class="fm-go" type="button">开始作战</button></div><div class="fm-ctl"><button type="button" data-a="auto" aria-pressed="${auto}">自动播放</button><button type="button" data-a="skip">跳过 ▸▸</button></div><div class="fm-hint">点击 / 空格 继续 ▸</div><div class="fm-progress"></div>`;
+  root.innerHTML=`<div class="fm-stage"><div class="fm-bg" data-l="0"></div><div class="fm-bg" data-l="1"></div><div class="fm-actor left" data-pos="left"><img alt=""></div><div class="fm-actor right" data-pos="right"><img alt=""></div><div class="fm-grade"></div><div class="fm-grain"></div><div class="fm-alert"></div><div class="fm-static"></div><div class="fm-flash"></div></div><div class="fm-bar top"></div><div class="fm-bar bottom"></div><div class="fm-chapter"></div><div class="fm-stamp"></div><div class="fm-sub"><div class="fm-name"></div><div class="fm-line" aria-live="polite"></div></div><div class="fm-title"><div class="k"></div><div class="m"></div><div class="line"></div><div class="s"></div></div><div class="fm-obj"><small></small><h3></h3><div class="where"></div><ol></ol><div class="tip"></div><button class="fm-go" type="button">开始作战</button></div><div class="fm-choices"></div><div class="fm-ctl"><button type="button" data-a="auto" aria-pressed="${auto}">自动播放</button><button type="button" data-a="skip">跳过 ▸▸</button></div><div class="fm-hint">点击 / 空格 继续 ▸</div><div class="fm-progress"></div>`;
   document.body.appendChild(root);
   root.addEventListener('click',e=>{
    if(!st)return;
@@ -27,12 +27,15 @@ const FILM=(()=>{
    if(b&&b.dataset.a==='auto'){auto=!auto;b.setAttribute('aria-pressed',String(auto));try{localStorage.setItem('mv-film-auto',auto?'1':'0');}catch(_){}if(auto&&!st.typing)schedule();return;}
    if(b&&b.dataset.a==='skip'){skip();return;}
    if(b&&b.classList.contains('fm-go')){finish();return;}
+   if(b&&b.dataset.choice!==undefined&&st.shot&&st.shot.choices){const c=st.shot.choices[+b.dataset.choice];finish();try{c&&c.action&&c.action();}catch(err){console.error(err);}return;}
+   if(e.target.closest('.fm-choices'))return;
    if(e.target.closest('.fm-obj'))return;
    advance();
   });
   window.addEventListener('keydown',e=>{
    if(!st||root.hidden)return;
    const k=e.key;
+   if(st.choosing&&(k===' '||k==='Enter'||k==='ArrowRight'||k==='Escape')){if(document.activeElement&&document.activeElement.dataset&&document.activeElement.dataset.choice!==undefined&&k!=='ArrowRight'&&k!=='Escape')return;e.preventDefault();e.stopImmediatePropagation();return;}
    if(k===' '||k==='Enter'||k==='ArrowRight'){e.preventDefault();e.stopImmediatePropagation();if(st.objective&&k!=='ArrowRight')finish();else advance();}
    else if(k==='Escape'){e.preventDefault();e.stopImmediatePropagation();skip();}
    else e.stopImmediatePropagation();
@@ -100,7 +103,7 @@ const FILM=(()=>{
   st.shot=shot;
   q('.fm-progress').style.width=`${(st.i+1)/st.shots.length*100}%`;
   const title=q('.fm-title'),sub=q('.fm-sub'),obj=q('.fm-obj');
-  obj.classList.remove('show');st.objective=false;
+  obj.classList.remove('show');st.objective=false;st.choosing=false;q('.fm-ctl').style.visibility='';q('.fm-choices').classList.remove('show');q('.fm-choices').innerHTML='';
   const changed=setBg(shot);
   if(changed&&!shot.keep)clearActors();
   if(shot.stamp!==undefined){const s=q('.fm-stamp');s.classList.remove('show');s.textContent=shot.stamp;if(shot.stamp)requestAnimationFrame(()=>s.classList.add('show'));}
@@ -139,17 +142,23 @@ const FILM=(()=>{
   name.textContent=nm;
   name.classList.toggle('show',!!nm);
   line.className=`fm-line${mode?' '+mode:''}${(shot.red||side==='r'&&mode==='sys')?' r':''}`;
-  type(line,shot.line||'',ready);
+  type(line,shot.line||'',shot.choices?()=>showChoices(shot):ready);
+ }
+ function showChoices(shot){
+  st.choosing=true;q('.fm-ctl').style.visibility='hidden';const box=q('.fm-choices');
+  box.innerHTML=shot.choices.map((c,i)=>`<button type="button" data-choice="${i}"><b>${escHtml(c.label||'')}</b>${c.detail?`<small>${escHtml(c.detail)}</small>`:''}</button>`).join('');
+  requestAnimationFrame(()=>{box.classList.add('show');const f=box.querySelector('button');f&&f.focus({preventScroll:true});});
  }
  function escHtml(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
  function advance(force){
   if(!st)return;
   if(st.typing&&!force){clearInterval(st.typer);st.typing=false;if(st.lineEl)st.lineEl.textContent=st.fullText;ready();return;}
   if(st.objective&&!force)return;
+  if(st.choosing)return;
   if(st.i<st.shots.length-1){st.i++;show();}else finish();
  }
  function skip(){
-  if(!st)return;
+  if(!st||st.choosing||(st.shot&&st.shot.choices))return;
   const idx=st.shots.findIndex((s,i)=>i>st.i&&s&&typeof s==='object'&&s.objective);
   if(idx>=0&&!st.objective){st.i=idx;show();return;}
   finish();

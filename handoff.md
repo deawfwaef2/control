@@ -305,3 +305,12 @@
 - 台词会按存活/阵营过滤：`G(id,line)` 角色阵亡或被控则跳过；`GO([ids],line)` 自动找还活着的人下令。璃雀被控、阵亡名单等会进入后续章节台词。
 - 阶段目标卡标题使用 `FILM_ACT_TITLES`（不再出现“夺回朔夜”这种与不可逆规则矛盾的标题）；目标条目仍取自 actGoals。
 - 自动检查（`#filmtest` 预览钩子，仅带该 hash 时存在）：双阵营 5 章开场 + 22 个转场 + 感染镜头全部播放到目标卡，0 页面错误。
+
+## M15-4 抉择 / 支线开场 / 终章 全部改走电影播放器（追加）
+- film.js：镜头支持 `choices:[{label,detail,action}]`——台词打完后弹出选项按钮；选择期间禁用推进/跳过（隐藏右上控制条），点击→关闭电影→执行 action。CSS `.fm-choices`（film.css 末尾）。
+- film-chapters.js 末尾：
+  - 覆盖 `playChoice`：所有分支抉择（第一章战后路线、温室/天桥战后、连贯分支航线、镜像电源、终局指令）以电影镜头呈现；按标题正则 FILM_CHOICE_LINES 替换为角色口吻台词（不再出现"战区已肃清！全员状态与胸口寄生记录已同步保留"之类系统话术）；未匹配时用 filmClean 清洗【】。
+  - 覆盖 `playStory`：旧沙盘过场不再弹出；若 frames.film===true 直接播放，若标题匹配某个 SUB_OPERATIONS → `filmSubOp(op)`（标题卡 + 场景旁白 + op.intro 台词 + 目标卡，红方为母巢口吻），否则 filmFromLegacy。`#qa` 下保留旧实现。
+  - 覆盖 `echoEndingFrames`：守护方 公开/封存、赤巢方 停产方舟/轨道空投 四种专属终章演出 + 终章标题卡，阵亡/被夺者姓名会被提及。
+  - `#filmtest` 钩子新增 choice(title)、ending(disclosure)、sub(opId)。
+- QA：/var/tmp/w/end_test.cjs（抉择+终章两方）、sub_test.cjs（5 个支线两方均到目标卡），errors []。

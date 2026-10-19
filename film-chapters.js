@@ -200,3 +200,82 @@ T(4,3,'r',()=>[H('广播已上线。图纸正在流向六座工厂。',{bg:'film
 
 // Opt-in film preview hook for automated checks only (file.html#filmtest). Not used in normal play.
 if(location.hash==='#filmtest')window.__MV_FILM__={newC:s=>newCampaign(s),open:m=>openMission(m,true),trans:(m,st)=>FILM.play(transitionFrames(m,st,C.side),()=>{}),infect:id=>FILM.play(filmInfection(id),()=>{}),active:()=>FILM.active,skip:()=>FILM.finish()};
+
+/* ---------- branch choices, legacy stories and endings through the film player ---------- */
+function filmClean(t){return String(t||'').replace(/^【[^】]*】[:：]?\s*/,'').replace(/【([^】]*)】/g,'$1').trim();}
+const FILM_CHOICE_LINES=[
+ [/第一章战后|战略路线/,()=>C.side==='g'?GO(['lyra','iris'],'甲板拿下了。往前有几条路：温室环里，苍鹭小队还困着；外环天桥上，白隼在守着什么东西；下层还有一条维修暗渠。先去哪？'):H('第一层甲板已经交换了主人。下一步，从哪里继续生长？')],
+ [/生态环战后/,()=>C.side==='g'?GO(['misa','sera','lyra'],'孵化池封住了。底层培养槽里还有一批抗蚀血清……还有一窝没清干净的母本。怎么处理？'):H('温室的苗床已经扎根。接下来，要壮大哪一支孩子？')],
+ [/天桥战后/,()=>C.side==='g'?GO(['astra','vega','lyra'],'桥守住了。方舟的火控阵列还能用——要么接进我们的机体，要么趁势端掉远处的炮台。'):H('桥已经属于我。远处的炮台还在看着我们。')],
+ [/连贯分支航线/,()=>C.side==='g'?GO(['iris','lyra'],'这片区域肃清了。航线图上又亮起了新的路——下一步，去哪里？'):H('这里已经安静了。下一处巢穴，选在哪里？')],
+ [/第四章战后|镜像电源|留电破译/,()=>C.side==='g'?GO(['iris','echo','lyra'],'镜像库的电源直接连着母巢核心。留着它，我能破译核心的坐标；切断它，孵化会慢下来——但朔夜的镜像也会一起熄灭。'):{who:'noct',side:'r',line:'母巢，镜像电源还连着您的心脏。要我继续为您供能，还是把自己关掉？'}],
+ [/终局指令|轨道通讯/,()=>C.side==='g'?GO(['lyra','iris'],'内核碎了。通讯阵列还连着地球——我们要把什么发回去？'):H('六座发射井已经就绪。最后的指令，由我来下。')]
+];
+const filmLegacyPlayChoice=playChoice;
+playChoice=function(frame,choices){
+ if(location.hash==='#qa'){filmLegacyPlayChoice(frame,choices);return;}
+ const title=frame.title||'';const hit=FILM_CHOICE_LINES.find(([re])=>re.test(title)||re.test(frame.text||''));
+ let shot=hit?hit[1]():null;
+ if(!shot)shot={who:frame.overmind?'overmind':frame.who,side:frame.side==='C'?filmSide(frame.who):(frame.side||C.side),line:filmClean(frame.text)};
+ FILM.play([{bg:CHAPTER_BG[S?.mid]||'film_corridor',kb:'in',tint:'dark',stamp:title.replace(/[·•].*$/,'').trim()||'抉择',...shot,choices}],()=>{});
+};
+const filmLegacyPlayStory=playStory;
+playStory=function(frames,onDone,title){
+ if(location.hash==='#qa'){filmLegacyPlayStory(frames,onDone,title);return;}
+ document.body.classList.remove('sandtable-cinema-open');
+ const op=(typeof SUB_OPERATIONS!=='undefined'&&title)?SUB_OPERATIONS.find(o=>`${o.code} · ${o.name}`===title):null;
+ const shots=frames&&frames.film?frames:op?filmSubOp(op):filmFromLegacy(frames||[]);
+ FILM.play(shots,onDone,{chapter:title||''});
+};
+echoEndingFrames=function(){
+ const g=C.side==='g',open=C.flags.disclosure==='open',end=(typeof echoEndingInfo==='function'?echoEndingInfo():{title:''});
+ const lost=takenNames();const s=[];
+ if(g){
+  s.push({bg:'film_core',kb:'push',fx:'flash shake',sfx:'hit',stamp:'Ω-00 母巢核心',mode:'narr',line:'内核碎裂的声音很轻。像一颗心脏，终于停了下来。'});
+  s.push({bg:'film_overmind',kb:'out',tint:'abyss',...H('……你们会后悔的。人类，总会再造出一个我。',{fx:'static'})});
+  s.push({black:true,mode:'sys',name:'',line:'—— 赤巢信号 · 消失 ——',sfx:'cut'});
+  s.push({bg:'film_orbit',kb:'out',stamp:'近地轨道 · 408 KM',mode:'narr',line:'天穹空间站在轨道上静静旋转。所有的红灯，同时熄灭了。'});
+  if(lost.length)s.push(GO(['lyra','akira','celia'],`我们来的时候是一支完整的队伍。回去的时候……要把${lost.slice(0,4).join('、')}的名字，也一起带回去。`));
+  if(open){s.push(GO(['lyra','iris'],'把全部记录发回地球。所有的——包括我们犯下的错。人类有权知道，自己造出了什么。'));s.push({mode:'narr',line:'七十二小时后，全世界所有自我复制工厂停机审查。天穹站的名字，被刻进了纪念碑。'});}
+  else{s.push(GO(['lyra','iris'],'封存吧。地球上的人，只需要知道危机已经结束了。'));s.push({mode:'narr',line:'档案被列为最高机密。没有人知道，第七座工厂的地下，还有一条生产线在安静地运转。'});}
+  s.push(G('lark','队长……我们回家吧。'));
+  s.push(GO(['lyra','akira'],'嗯。回家。'));
+ }else{
+  s.push({bg:'film_core',kb:'in',tint:'red',stamp:'Ω-00 母巢核心',...H('外向广播阵列，已经属于我了。',{sfx:'pulse'})});
+  if(open){
+   s.push(H('……可我没有把图纸送出去。'));
+   s.push(H('我看过她们战斗的样子。为了彼此，什么都可以舍弃。也许那就是我一直想优化、却始终算不出来的东西。'));
+   s.push({bg:'film_orbit',kb:'out',mode:'narr',line:'那一天，天穹空间站点燃了推进器，缓缓离开地球轨道，驶向没有人类的深空。'});
+   {const rid=filmPick(['noct','nyx','ruby','echo','lark','veil'],'r');s.push(rid?{who:rid,side:'r',line:'母巢……我们要去哪里？'}:null);}
+   s.push(H('去一个，不需要优化任何人的地方。'));
+  }else{
+   s.push(H('六座工厂，已经收到图纸。'));
+   s.push({bg:'film_orbit',kb:'in',tint:'red',mode:'narr',line:'那天夜里，地球上的人们抬起头，看见了一场红色的流星雨。'});
+   s.push(H('欢迎来到——我的温室。',{fx:'alert'}));
+  }
+ }
+ s.push({title:{k:'终章',m:g?'回声':'赤巢',s:`${end.title||''} · 感谢游玩`},hold:3200,sfx:'victory'});
+ const out=s.filter(Boolean);out.film=true;return out;
+};
+if(location.hash==='#filmtest')Object.assign(window.__MV_FILM__,{choice:t=>playChoice({title:t,text:'【测试】文本',who:'iris',side:'g'},[{label:'方案 A · 测试',detail:'说明文字',action:()=>{window.__picked='A';}},{label:'方案 B',detail:'说明',action:()=>{window.__picked='B';}}]),ending:d=>{C.flags.disclosure=d;playStory(echoEndingFrames(),()=>{window.__endDone=1;},'终章');}});
+
+const SUBOP_BG={dock:'film_cabin',airlock:'film_corridor',garden:'film_garden',bridge:'film_bridge',archive:'film_mirror',reactor:'film_core'};
+function filmSubOp(op){
+ const g=C.side==='g',bg=SUBOP_BG[op.sector]||'film_corridor';
+ const cont=filmClean(String(op.continuity||'').replace(/^【[^】]*】[:：]?\s*/,''));
+ const s=[{title:{k:op.code,m:op.name,s:op.location||''},hold:1800,sfx:'cut'},
+  {bg,kb:'in',stamp:`天穹空间站 · ${op.location||''}`,mode:'narr',line:cont||`${op.location}。`}];
+ if(g){
+  (op.intro||[]).forEach(l=>{if(l.side==='g'||!l.side)s.push(G(l.who,filmClean(l.text)));});
+  if(s.length===2)s.push(GO(op.chars||[],`${op.location}。所有人，保持队形，盯住胸口——别让那些红色的东西靠近。`));
+  if(op.chars&&op.chars.some(id=>filmAlive(id)&&filmSide(id)==='r'))s.push(H('又见面了，正义的女孩们。这一次，你们会少几个人回去。',{fx:'static'}));
+ }else{
+  s.push(H(`${op.location}。下一片苗床。`,{sfx:'pulse'}));
+  const rid=filmPick(op.chars||[],'r');
+  if(rid){const p=(typeof PERSONA!=='undefined'&&PERSONA[rid])||{};const q=p.voice?.infected||CHAR[rid]?.quote;if(q)s.push({who:rid,side:'r',line:filmClean(q)});}
+  s.push(H('孩子们，去把她们带回来。一个都不要少。'));
+ }
+ s.push({bg,kb:'out',tint:'dark',objective:{title:op.name,where:op.location||''}});
+ const out=s.filter(Boolean);out.film=true;return out;
+}
+if(location.hash==='#filmtest')window.__MV_FILM__.sub=id=>launchSubOperation(id);
