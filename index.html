@@ -2146,7 +2146,8 @@ body.side-r .m24-hint-btn {
   color: #fde047;
 }
 
-/* ===== M26 — MASTER-GRADE EMBEDDED 3D VIEWPORT, SHAPED 3D MAPS, LIVING CARDS & BUTTERFLY HUD ===== */
+/* ===== M26/M27 — PURE 0° TOP-DOWN VIEW + HEARTHSTONE-STYLE 3D DIORAMA BOARD COMPONENTS
+   + EMBEDDED DIEGETIC UI + DETROIT: BECOME HUMAN LINEAR CAUSALITY FLOW ===== */
 :root{
  --m26-cy:#6fd6ff;
  --m26-cy-glow:rgba(111,214,255,.45);
@@ -2155,7 +2156,15 @@ body.side-r .m24-hint-btn {
  --m26-gold:#f4c96b;
 }
 
-/* 1. Full-Screen 3D Environment Backdrop Canvas */
+/* 0. Strictly Hide All Level-Select / Star-Map Buttons (Detroit Linear Flow Only) */
+#title15 .t15-menu button[data-t="map"],
+#starmap-btn,
+#flow-btn,
+#m24-ops-btn{
+ display:none!important;
+}
+
+/* 1. Full-Screen Top-Down Environment Backdrop Canvas */
 #m26-env-canvas{
  position:fixed;
  inset:0;
@@ -2192,6 +2201,7 @@ body.m26-in-game .site-header .header-actions{
  position:fixed!important;
  top:-200px!important;
 }
+
 /* Diegetic Top-Left Chapter Watermark (embedded directly into the scene, no box) */
 body.m26-in-game .site-header .mission-heading,
 body.m26-in-game #game > .mission-heading{
@@ -2234,7 +2244,7 @@ body.m26-in-game .mission-heading-right{
  display:none!important;
 }
 
-/* Hide cluttered toolbar above board; controls live in sleek corner triggers + Command Drawer */
+/* Hide cluttered toolbar above board */
 body.m26-in-game #game .board-toolbar,
 body.m26-in-game #game .stage-ribbon,
 body.m26-in-game #game .board-bottomline{
@@ -2251,15 +2261,14 @@ html body.hud15.m26-in-game #game:not([hidden]){
  padding:0!important;
  margin:0!important;
  display:block!important;
- background:radial-gradient(ellipse at 50% 48%,rgba(12,24,36,.35) 0%,rgba(5,10,16,.82) 70%,rgba(2,5,9,.96) 100%)!important;
+ background:radial-gradient(ellipse at 50% 50%,rgba(14,28,42,.38) 0%,rgba(5,10,16,.85) 70%,rgba(2,5,9,.97) 100%)!important;
  overflow:hidden!important;
  z-index:10!important;
 }
 body.side-r.hud15.m26-in-game #game:not([hidden]){
- background:radial-gradient(ellipse at 50% 48%,rgba(38,10,18,.35) 0%,rgba(14,4,8,.84) 70%,rgba(5,1,3,.97) 100%)!important;
+ background:radial-gradient(ellipse at 50% 50%,rgba(40,10,18,.38) 0%,rgba(14,4,8,.86) 70%,rgba(5,1,3,.98) 100%)!important;
 }
 
-/* Center Battlefield takes 100% of screen so the 3D board is huge and centered */
 html body.hud15.m26-in-game #game .battlefield{
  position:fixed!important;
  inset:0!important;
@@ -2268,7 +2277,7 @@ html body.hud15.m26-in-game #game .battlefield{
  display:flex!important;
  align-items:center!important;
  justify-content:center!important;
- padding:18px 230px 44px 220px!important;
+ padding:18px 228px 46px 218px!important;
  margin:0!important;
  z-index:12!important;
  pointer-events:none!important;
@@ -2289,7 +2298,7 @@ html body.hud15.m26-in-game #hud-left{
  top:68px!important;
  left:18px!important;
  bottom:56px!important;
- width:clamp(200px,15.5vw,252px)!important;
+ width:clamp(198px,15vw,248px)!important;
  z-index:25!important;
  display:flex!important;
  flex-direction:column!important;
@@ -2349,7 +2358,7 @@ html body.hud15.m26-in-game #operation-brief #condition-note{
  text-shadow:0 1px 6px #000!important;
 }
 
-/* Butterfly Effect Causality Echo Strip (embedded under objectives) */
+/* Butterfly Effect Causality Echo Strip */
 .m26-butterfly-strip{
  display:flex;
  flex-direction:column;
@@ -2358,6 +2367,11 @@ html body.hud15.m26-in-game #operation-brief #condition-note{
  padding:7px 10px 7px 12px;
  border-left:2px solid var(--m26-gold);
  background:linear-gradient(90deg,rgba(28,20,6,.72) 0%,rgba(14,10,4,.35) 80%,transparent 100%);
+ cursor:pointer;
+ transition:background .2s;
+}
+.m26-butterfly-strip:hover{
+ background:linear-gradient(90deg,rgba(44,32,10,.85) 0%,rgba(22,16,6,.48) 85%,transparent 100%);
 }
 .m26-butterfly-strip-title{
  font-size:10px;
@@ -2367,6 +2381,7 @@ html body.hud15.m26-in-game #operation-brief #condition-note{
  text-transform:uppercase;
  display:flex;
  align-items:center;
+ justify-content:space-between;
  gap:6px;
 }
 .m26-butterfly-item{
@@ -2380,7 +2395,6 @@ html body.hud15.m26-in-game #operation-brief #condition-note{
  font-weight:700;
 }
 
-/* Minimal frameless telemetry for forces & combat log at bottom-left */
 html body.hud15.m26-in-game #hud-left .forces-panel{
  background:none!important;
  border:0!important;
@@ -2416,7 +2430,7 @@ html body.hud15.m26-in-game #game .right-rail{
  top:58px!important;
  right:16px!important;
  bottom:96px!important;
- width:clamp(215px,16.5vw,264px)!important;
+ width:clamp(212px,16vw,260px)!important;
  z-index:25!important;
  display:flex!important;
  flex-direction:column!important;
@@ -2431,12 +2445,10 @@ html body.hud15.m26-in-game #game .right-rail{
 html body.hud15.m26-in-game #game .right-rail > *{
  pointer-events:auto!important;
 }
-/* Hide duplicate panels if presentation.js moved them into right-rail */
 html body.hud15.m26-in-game #game .right-rail .forces-panel,
 html body.hud15.m26-in-game #game .right-rail .log-panel{
  display:none!important;
 }
-
 html body.hud15.m26-in-game #game .dossier{
  background:linear-gradient(270deg,rgba(5,12,20,.84) 0%,rgba(5,12,20,.58) 72%,transparent 100%)!important;
  border:0!important;
@@ -2481,7 +2493,6 @@ html body.hud15.m26-in-game #game .roster-panel .panel-title{
  display:none!important;
 }
 
-/* Dynamic Persona Evolution Tag inside Dossier */
 .m26-persona-evo{
  font-size:11px;
  line-height:1.35;
@@ -2560,7 +2571,6 @@ html body.hud15.m26-in-game #game .hud-side .end-phase{
  border-radius:5px!important;
 }
 
-/* Diegetic Quick Tactical Icons on the Action Controller */
 .m26-quick-actions{
  display:flex;
  align-items:center;
@@ -2595,7 +2605,7 @@ html body.hud15.m26-in-game #game .hud-side .end-phase{
  box-shadow:0 0 12px rgba(111,214,255,.35);
 }
 
-/* 7. Top-Right Sleek Diegetic Command Drawer Trigger & Overlay (Replaces 10+ cluttered buttons) */
+/* 7. Top-Right Sleek Diegetic Controls & Drawer (Zero Level-Select) */
 #m26-top-controls{
  position:fixed;
  top:14px;
@@ -2632,17 +2642,20 @@ body.m26-in-game #m26-top-controls{
  color:#fff;
  box-shadow:0 0 18px rgba(111,214,255,.35);
 }
-body.side-r .m26-corner-pill{
- border-color:rgba(255,80,105,.38);
- background:rgba(22,5,11,.78);
- color:#ffdce2;
+.m26-corner-pill.gold{
+ border-color:rgba(244,201,107,.45);
+ color:#ffeab8;
+}
+.m26-corner-pill.gold:hover{
+ border-color:var(--m26-gold);
+ box-shadow:0 0 18px rgba(244,201,107,.35);
 }
 
 #m26-drawer{
  position:fixed;
  top:56px;
  right:18px;
- width:min(360px,92vw);
+ width:min(340px,92vw);
  z-index:65;
  background:linear-gradient(165deg,rgba(8,18,28,.96),rgba(4,9,15,.98));
  border:1px solid rgba(111,214,255,.42);
@@ -2701,9 +2714,9 @@ html body.hud15.m26-in-game #game .radio-bar{
  left:50%!important;
  bottom:14px!important;
  transform:translateX(-50%)!important;
- width:min(640px,50vw)!important;
+ width:min(620px,48vw)!important;
  z-index:28!important;
- background:linear-gradient(90deg,transparent 0%,rgba(3,8,14,.82) 15%,rgba(3,8,14,.82) 85%,transparent 100%)!important;
+ background:linear-gradient(90deg,transparent 0%,rgba(3,8,14,.84) 15%,rgba(3,8,14,.84) 85%,transparent 100%)!important;
  border:0!important;
  padding:6px 24px!important;
  pointer-events:none!important;
@@ -2725,156 +2738,319 @@ body.side-r.hud15.m26-in-game #game .radio-bar .radio-indicator{
  50%{opacity:1;transform:scaleY(1.25)}
 }
 
-/* 9. 3D Tactile Board Architecture & True Shaped Void Chasms */
+/* =========================================================================
+   9. PURE 0° TOP-DOWN BOARD + HEARTHSTONE-STYLE 3D TABLETOP DIORAMA FRAME
+   (纯粹俯视图，绝不倾斜角度；棋盘边框、角落交互沙盘摆件与棋格为立体3D浮雕组件)
+   ========================================================================= */
 html body.m26-in-game .board-surround{
- background:radial-gradient(ellipse at 50% 50%,rgba(14,28,42,.52),rgba(4,9,15,.18) 72%,transparent 100%)!important;
- border:0!important;
- box-shadow:none!important;
- padding:24px 14px 18px 28px!important;
- transition:transform .45s cubic-bezier(.2,.8,.2,1)!important;
+ transform:none!important;
+ position:relative!important;
+ background:
+  radial-gradient(circle at 50% 50%,rgba(16,32,48,.92) 0%,rgba(9,18,28,.97) 68%,rgba(5,10,16,.99) 100%)!important;
+ border:3px solid #243b4f!important;
+ border-radius:18px!important;
+ padding:30px 22px 22px 34px!important;
+ box-shadow:
+  0 10px 0 #071019,
+  0 14px 0 #162636,
+  0 28px 70px rgba(0,0,0,.92),
+  inset 0 2px 1px rgba(200,240,255,.26),
+  inset 0 -6px 14px rgba(0,0,0,.85),
+  inset 0 0 0 5px rgba(10,20,30,.92),
+  inset 0 0 0 6px rgba(111,214,255,.22)!important;
 }
-html body.m26-in-game.m26-3d .board-surround{
- transform:perspective(1350px) rotateX(13deg) scale(1.02)!important;
- transform-style:preserve-3d;
+body.side-r.m26-in-game .board-surround{
+ background:
+  radial-gradient(circle at 50% 50%,rgba(38,10,18,.92) 0%,rgba(20,5,10,.97) 68%,rgba(10,2,5,.99) 100%)!important;
+ border-color:#4a1826!important;
+ box-shadow:
+  0 10px 0 #140408,
+  0 14px 0 #2b0b14,
+  0 28px 70px rgba(0,0,0,.92),
+  inset 0 2px 1px rgba(255,180,195,.24),
+  inset 0 -6px 14px rgba(0,0,0,.88),
+  inset 0 0 0 5px rgba(22,5,10,.92),
+  inset 0 0 0 6px rgba(255,59,92,.25)!important;
 }
 html body.m26-in-game .board-surround.m26-cam-impulse{
- animation:m26CamImpulse .32s cubic-bezier(.2,.8,.2,1)!important;
+ animation:m27BoardRecoil .24s cubic-bezier(.2,.8,.2,1)!important;
 }
-@keyframes m26CamImpulse{
- 0%{transform:perspective(1350px) rotateX(13deg) scale(1.02)}
- 35%{transform:perspective(1350px) rotateX(14.8deg) translateY(4px) scale(1.032)}
- 100%{transform:perspective(1350px) rotateX(13deg) scale(1.02)}
+@keyframes m27BoardRecoil{
+ 0%,100%{transform:none}
+ 35%{transform:scale(.992) translateY(3px)}
 }
+
+/* Hearthstone-Style 4 Interactive 3D Corner Diorama Widgets (.m27-prop) */
+.m27-prop{
+ position:absolute;
+ width:44px;
+ height:44px;
+ z-index:18;
+ border-radius:10px;
+ background:radial-gradient(circle at 38% 32%,#28435a 0%,#122130 62%,#081018 100%);
+ border:1.5px solid rgba(140,215,250,.45);
+ box-shadow:
+  0 5px 0 #050a10,
+  0 9px 16px rgba(0,0,0,.85),
+  inset 0 2px 2px rgba(255,255,255,.28),
+  inset 0 -3px 6px rgba(0,0,0,.8);
+ display:grid;
+ place-items:center;
+ cursor:pointer;
+ user-select:none;
+ transition:transform .16s cubic-bezier(.2,.8,.2,1),box-shadow .16s ease,border-color .16s ease;
+}
+body.side-r .m27-prop{
+ background:radial-gradient(circle at 38% 32%,#4d1828 0%,#260912 62%,#120308 100%);
+ border-color:rgba(255,90,115,.48);
+ box-shadow:
+  0 5px 0 #0f0206,
+  0 9px 16px rgba(0,0,0,.85),
+  inset 0 2px 2px rgba(255,200,210,.25),
+  inset 0 -3px 6px rgba(0,0,0,.85);
+}
+.m27-prop.tl{top:-14px;left:-14px}
+.m27-prop.tr{top:-14px;right:-14px}
+.m27-prop.bl{bottom:-14px;left:-14px}
+.m27-prop.br{bottom:-14px;right:-14px}
+.m27-prop:hover{
+ transform:translateY(-2px) scale(1.07);
+ border-color:#b8f0ff;
+ box-shadow:
+  0 7px 0 #050a10,
+  0 12px 22px rgba(0,0,0,.9),
+  0 0 18px rgba(111,214,255,.45),
+  inset 0 2px 3px rgba(255,255,255,.4);
+}
+.m27-prop:active,.m27-prop.m27-prop-burst{
+ animation:m27PropClick .48s cubic-bezier(.2,.8,.2,1);
+}
+@keyframes m27PropClick{
+ 0%{transform:translateY(3px) scale(.92)}
+ 40%{transform:translateY(-5px) scale(1.14) rotate(6deg);filter:brightness(1.45) drop-shadow(0 0 16px var(--m26-cy))}
+ 100%{transform:none;filter:none}
+}
+.m27-prop svg{
+ width:26px;
+ height:26px;
+ filter:drop-shadow(0 2px 3px rgba(0,0,0,.85)) drop-shadow(0 0 6px currentColor);
+}
+.m27-prop-core{
+ color:#7ce0ff;
+}
+.m27-prop.warn .m27-prop-core{
+ color:#ff5470;
+}
+.m27-prop.gold .m27-prop-core{
+ color:#f5ca69;
+}
+.m27-prop.bio .m27-prop-core{
+ color:#6ef2be;
+}
+.m27-prop-label{
+ position:absolute;
+ bottom:-16px;
+ left:50%;
+ transform:translateX(-50%);
+ font-size:9.5px;
+ font-weight:800;
+ letter-spacing:.08em;
+ white-space:nowrap;
+ color:rgba(195,232,250,.85);
+ text-shadow:0 1px 4px #000,0 0 8px #000;
+ pointer-events:none;
+ opacity:0;
+ transition:opacity .16s ease;
+}
+.m27-prop:hover .m27-prop-label{
+ opacity:1;
+}
+
+/* Pure 0° Top-Down Recessed Board Grid Trench */
 html body.m26-in-game #board{
- background:transparent!important;
- border:0!important;
- box-shadow:none!important;
- gap:3px!important;
- padding:4px!important;
+ transform:none!important;
+ background:rgba(4,9,15,.85)!important;
+ border:2px solid rgba(111,214,255,.24)!important;
+ border-radius:10px!important;
+ box-shadow:inset 0 6px 16px rgba(0,0,0,.92),0 1px 0 rgba(255,255,255,.08)!important;
+ gap:4px!important;
+ padding:6px!important;
 }
 html body.m26-in-game #board::after{
  display:none!important;
 }
 
-/* 3D Sculpted Playable Tiles */
+/* Top-Down 3D Sculpted Playable Tiles (Physical Beveled Blocks Viewed from Above) */
 html body.m26-in-game #board .cell:not(.void){
- background:linear-gradient(155deg,rgba(26,46,66,.92) 0%,rgba(13,24,36,.95) 60%,rgba(8,15,24,.98) 100%)!important;
- border-radius:5px!important;
+ background:
+  radial-gradient(circle at 30% 25%,rgba(65,115,155,.22),transparent 60%),
+  linear-gradient(145deg,#1d3347 0%,#122231 58%,#0b1520 100%)!important;
+ border-radius:6px!important;
  box-shadow:
-  0 7px 0 #050b12,
-  0 12px 20px rgba(0,0,0,.78),
-  inset 0 1px 0 rgba(180,235,255,.22),
-  inset 0 0 0 1px rgba(111,214,255,.14)!important;
- transition:transform .18s ease,background .18s ease,box-shadow .18s ease!important;
+  0 4px 0 #050b12,
+  0 6px 10px rgba(0,0,0,.78),
+  inset 0 1.5px 0 rgba(195,240,255,.28),
+  inset 1.5px 0 0 rgba(195,240,255,.14),
+  inset 0 -2px 3px rgba(0,0,0,.65),
+  inset 0 0 0 1px rgba(111,214,255,.16)!important;
+ transition:transform .15s ease,background .15s ease,box-shadow .15s ease!important;
 }
 html body.m26-in-game #board .cell.dark:not(.void){
- background:linear-gradient(155deg,rgba(18,33,48,.94) 0%,rgba(9,18,28,.96) 60%,rgba(5,11,18,.98) 100%)!important;
+ background:
+  radial-gradient(circle at 30% 25%,rgba(45,85,120,.18),transparent 60%),
+  linear-gradient(145deg,#152636 0%,#0d1824 58%,#081018 100%)!important;
  box-shadow:
-  0 7px 0 #04080e,
-  0 12px 20px rgba(0,0,0,.82),
-  inset 0 1px 0 rgba(150,215,245,.15),
-  inset 0 0 0 1px rgba(111,214,255,.1)!important;
+  0 4px 0 #04080e,
+  0 6px 10px rgba(0,0,0,.82),
+  inset 0 1.5px 0 rgba(160,220,245,.2),
+  inset 0 -2px 3px rgba(0,0,0,.7),
+  inset 0 0 0 1px rgba(111,214,255,.12)!important;
 }
 
-/* Chapter-Specific 3D Architectural Tile Themes */
-/* Theme 1: Bioluminescent Cryo-Garden (Octagonal Bio-Dome) */
+/* Chapter-Specific Top-Down 3D Diorama Tile Materials */
 html body.m26-in-game #board[data-theme="garden"] .cell:not(.void){
- background:linear-gradient(155deg,rgba(18,52,48,.92) 0%,rgba(10,30,28,.95) 60%,rgba(5,18,17,.98) 100%)!important;
- box-shadow:0 7px 0 #03100f,0 12px 20px rgba(0,0,0,.8),inset 0 1px 0 rgba(140,255,220,.24),inset 0 0 0 1px rgba(90,230,190,.16)!important;
+ background:radial-gradient(circle at 30% 25%,rgba(70,210,175,.18),transparent 60%),linear-gradient(145deg,#143a36 0%,#0c2422 58%,#061413 100%)!important;
+ box-shadow:0 4px 0 #030d0c,0 6px 10px rgba(0,0,0,.8),inset 0 1.5px 0 rgba(150,255,220,.28),inset 0 -2px 3px rgba(0,0,0,.65),inset 0 0 0 1px rgba(90,230,190,.18)!important;
 }
 html body.m26-in-game #board[data-theme="garden"] .cell.dark:not(.void){
- background:linear-gradient(155deg,rgba(12,38,35,.94) 0%,rgba(7,22,21,.96) 60%,rgba(4,13,12,.98) 100%)!important;
+ background:radial-gradient(circle at 30% 25%,rgba(50,170,145,.14),transparent 60%),linear-gradient(145deg,#0e2c29 0%,#081b19 58%,#040f0e 100%)!important;
 }
-/* Theme 2: High-Orbit Titanium Twin Bridge */
 html body.m26-in-game #board[data-theme="bridge"] .cell:not(.void){
- background:linear-gradient(155deg,rgba(34,48,68,.93) 0%,rgba(18,27,42,.96) 60%,rgba(10,16,26,.98) 100%)!important;
- box-shadow:0 8px 0 #050912,0 14px 24px rgba(0,0,0,.85),inset 0 1px 0 rgba(200,235,255,.28),inset 0 0 0 1px rgba(130,200,255,.18)!important;
+ background:radial-gradient(circle at 30% 25%,rgba(120,185,245,.22),transparent 60%),linear-gradient(145deg,#24354c 0%,#152133 58%,#0b121e 100%)!important;
+ box-shadow:0 5px 0 #050912,0 8px 14px rgba(0,0,0,.85),inset 0 1.5px 0 rgba(210,240,255,.32),inset 0 -2px 4px rgba(0,0,0,.7),inset 0 0 0 1px rgba(130,200,255,.2)!important;
 }
-/* Theme 3: Quantum Mirror Sanctum (Crystalline Violet-Obsidian) */
 html body.m26-in-game #board[data-theme="mirror"] .cell:not(.void){
- background:linear-gradient(155deg,rgba(32,26,58,.92) 0%,rgba(18,14,36,.95) 60%,rgba(10,8,22,.98) 100%)!important;
- box-shadow:0 7px 0 #070512,0 12px 22px rgba(0,0,0,.82),inset 0 1px 0 rgba(210,190,255,.26),inset 0 0 0 1px rgba(165,140,255,.18)!important;
+ background:radial-gradient(circle at 30% 25%,rgba(170,140,255,.2),transparent 60%),linear-gradient(145deg,#221c3d 0%,#141028 58%,#0b0818 100%)!important;
+ box-shadow:0 4px 0 #060410,0 6px 12px rgba(0,0,0,.82),inset 0 1.5px 0 rgba(220,200,255,.3),inset 0 -2px 3px rgba(0,0,0,.68),inset 0 0 0 1px rgba(165,140,255,.2)!important;
 }
 html body.m26-in-game #board[data-theme="mirror"] .cell.dark:not(.void){
- background:linear-gradient(155deg,rgba(22,18,42,.94) 0%,rgba(12,10,26,.96) 60%,rgba(7,5,16,.98) 100%)!important;
+ background:radial-gradient(circle at 30% 25%,rgba(130,105,220,.15),transparent 60%),linear-gradient(145deg,#18142e 0%,#0e0b1e 58%,#070512 100%)!important;
 }
-/* Theme 4: Red Zero Overmind Citadel (Volcanic Biomech) */
 html body.m26-in-game #board[data-theme="core"] .cell:not(.void){
- background:linear-gradient(155deg,rgba(48,16,26,.93) 0%,rgba(28,8,15,.96) 60%,rgba(16,4,9,.98) 100%)!important;
- box-shadow:0 8px 0 #0d0206,0 14px 24px rgba(0,0,0,.86),inset 0 1px 0 rgba(255,150,175,.24),inset 0 0 0 1px rgba(255,65,95,.2)!important;
+ background:radial-gradient(circle at 30% 25%,rgba(255,70,105,.2),transparent 60%),linear-gradient(145deg,#33121d 0%,#1f0911 58%,#120409 100%)!important;
+ box-shadow:0 4px 0 #0c0205,0 6px 12px rgba(0,0,0,.86),inset 0 1.5px 0 rgba(255,165,185,.28),inset 0 -2px 3px rgba(0,0,0,.72),inset 0 0 0 1px rgba(255,65,95,.22)!important;
 }
 html body.m26-in-game #board[data-theme="core"] .cell.dark:not(.void){
- background:linear-gradient(155deg,rgba(34,10,18,.95) 0%,rgba(20,5,11,.97) 60%,rgba(11,2,6,.99) 100%)!important;
-}
-body.side-r.m26-in-game #board .cell:not(.void){
- box-shadow:
-  0 7px 0 #110408,
-  0 12px 20px rgba(0,0,0,.82),
-  inset 0 1px 0 rgba(255,160,180,.18),
-  inset 0 0 0 1px rgba(255,59,92,.14)!important;
-}
-html body.m26-in-game #board .cell:not(.void):hover{
- transform:translateY(-2px);
- box-shadow:
-  0 9px 0 #060e17,
-  0 16px 26px rgba(0,0,0,.85),
-  inset 0 1px 0 rgba(210,245,255,.35),
-  inset 0 0 0 1px rgba(111,214,255,.38)!important;
+ background:radial-gradient(circle at 30% 25%,rgba(210,50,80,.15),transparent 60%),linear-gradient(145deg,#260c15 0%,#16060c 58%,#0c0206 100%)!important;
 }
 
-/* TRUE CARVED ABYSS / VOID CELLS — Creates Non-Rectangular Shaped Maps! */
+/* Carved Abyss / Void Chasms with Hearthstone-Style Top-Down 3D Diorama Scenery Props */
 html body.m26-in-game #board .cell.void{
- background:radial-gradient(circle at 50% 50%,rgba(111,214,255,.04) 0%,transparent 70%)!important;
- border:1px dashed rgba(111,214,255,.07)!important;
- border-radius:6px!important;
- box-shadow:inset 0 0 28px rgba(0,0,0,.75)!important;
- opacity:.22!important;
- pointer-events:none!important;
- transform:translateY(8px) scale(.92)!important;
-}
-body.side-r.m26-in-game #board .cell.void{
- border-color:rgba(255,59,92,.09)!important;
+ background:radial-gradient(circle at 50% 50%,rgba(6,13,22,.82) 0%,rgba(2,5,9,.96) 100%)!important;
+ border:1px solid rgba(111,214,255,.09)!important;
+ border-radius:8px!important;
+ box-shadow:inset 0 8px 20px rgba(0,0,0,.96),inset 0 0 0 1px rgba(0,0,0,.9)!important;
+ opacity:1!important;
+ pointer-events:auto!important;
+ cursor:default!important;
+ transform:none!important;
+ overflow:hidden!important;
 }
 html body.m26-in-game #board .cell.void::before,
 html body.m26-in-game #board .cell.void::after{
  display:none!important;
 }
 
-/* 3D Elevated Walls / Bulkheads */
-html body.m26-in-game #board .cell.wall:not(.void){
- background:linear-gradient(160deg,#243544 0%,#121d27 65%,#0a1118 100%)!important;
- transform:translateY(-4px)!important;
+/* 3D Diorama Scenery Objects inside Void Chasms (Pure Top-Down 3D Miniatures) */
+.m27-void-prop{
+ position:absolute;
+ inset:12%;
+ border-radius:8px;
+ display:grid;
+ place-items:center;
+ background:radial-gradient(circle at 35% 30%,rgba(42,72,98,.85) 0%,rgba(16,29,42,.92) 65%,rgba(7,13,20,.98) 100%);
+ border:1px solid rgba(130,205,245,.32);
  box-shadow:
-  0 11px 0 #04080d,
-  0 18px 26px rgba(0,0,0,.9),
-  inset 0 1px 0 rgba(255,255,255,.22),
-  inset 0 0 0 1px rgba(111,214,255,.22)!important;
+  0 5px 0 #04080e,
+  0 10px 16px rgba(0,0,0,.9),
+  inset 0 2px 2px rgba(255,255,255,.26),
+  inset 0 -3px 6px rgba(0,0,0,.8);
+ cursor:pointer;
+ transition:transform .18s cubic-bezier(.2,.8,.2,1),filter .18s ease;
+}
+#board[data-theme="garden"] .m27-void-prop{
+ background:radial-gradient(circle at 35% 30%,rgba(28,88,78,.88) 0%,rgba(11,42,38,.94) 65%,rgba(5,19,17,.98) 100%);
+ border-color:rgba(105,240,200,.38);
+}
+#board[data-theme="bridge"] .m27-void-prop{
+ background:radial-gradient(circle at 35% 30%,rgba(54,76,108,.85) 0%,rgba(20,32,48,.94) 65%,rgba(8,14,24,.98) 100%);
+ border-color:rgba(160,215,255,.36);
+}
+#board[data-theme="mirror"] .m27-void-prop{
+ background:radial-gradient(circle at 35% 30%,rgba(66,48,112,.88) 0%,rgba(26,18,52,.94) 65%,rgba(11,7,24,.98) 100%);
+ border-color:rgba(195,165,255,.4);
+}
+#board[data-theme="core"] .m27-void-prop,
+body.side-r .m27-void-prop{
+ background:radial-gradient(circle at 35% 30%,rgba(92,24,42,.88) 0%,rgba(42,9,19,.94) 65%,rgba(18,3,8,.98) 100%);
+ border-color:rgba(255,80,110,.42);
+}
+.m27-void-prop:hover{
+ transform:scale(1.06) translateY(-2px);
+ filter:brightness(1.22);
+}
+.m27-void-prop.m27-prop-burst{
+ animation:m27PropClick .46s cubic-bezier(.2,.8,.2,1);
+}
+.m27-void-prop svg{
+ width:54%;
+ height:54%;
+ color:rgba(145,225,255,.82);
+ filter:drop-shadow(0 3px 4px rgba(0,0,0,.9)) drop-shadow(0 0 8px currentColor);
+ animation:m27SceneryIdle 4s ease-in-out infinite;
+}
+#board[data-theme="garden"] .m27-void-prop svg{color:rgba(110,245,205,.88)}
+#board[data-theme="mirror"] .m27-void-prop svg{color:rgba(205,175,255,.88)}
+#board[data-theme="core"] .m27-void-prop svg,body.side-r .m27-void-prop svg{color:rgba(255,90,115,.88)}
+@keyframes m27SceneryIdle{
+ 0%,100%{transform:scale(.95) rotate(0deg);opacity:.82}
+ 50%{transform:scale(1.05) rotate(6deg);opacity:1}
 }
 
-/* 3D Holographic Beacon Pillars on Relays & Exits */
+/* Top-Down 3D Armored Pillar Bulkheads (.cell.wall) */
+html body.m26-in-game #board .cell.wall:not(.void){
+ background:linear-gradient(145deg,#2e4252 0%,#182530 65%,#0d151c 100%)!important;
+ box-shadow:
+  0 6px 0 #050a0f,
+  0 10px 18px rgba(0,0,0,.92),
+  inset 0 2px 1px rgba(255,255,255,.28),
+  inset 0 0 0 1px rgba(140,205,235,.28)!important;
+}
+
+/* Top-Down 3D Relay Turrets & Extraction Hatches */
 html body.m26-in-game #board .cell.relay:not(.void){
  box-shadow:
-  0 7px 0 #1b1405,
-  0 12px 24px rgba(0,0,0,.82),
-  inset 0 0 0 1.5px rgba(244,201,107,.65),
-  inset 0 0 26px rgba(244,201,107,.22)!important;
+  0 4px 0 #1b1405,
+  0 8px 16px rgba(0,0,0,.84),
+  inset 0 0 0 2px rgba(244,201,107,.72),
+  inset 0 0 22px rgba(244,201,107,.28)!important;
 }
 html body.m26-in-game #board .cell.relay.g:not(.void){
  box-shadow:
-  0 7px 0 #061824,
-  0 12px 24px rgba(0,0,0,.82),
-  inset 0 0 0 1.5px rgba(111,214,255,.78),
-  inset 0 0 28px rgba(111,214,255,.28)!important;
+  0 4px 0 #061824,
+  0 8px 16px rgba(0,0,0,.84),
+  inset 0 0 0 2px rgba(111,214,255,.85),
+  inset 0 0 24px rgba(111,214,255,.32)!important;
 }
 html body.m26-in-game #board .cell.relay.r:not(.void){
  box-shadow:
-  0 7px 0 #24050c,
-  0 12px 24px rgba(0,0,0,.82),
-  inset 0 0 0 1.5px rgba(255,59,92,.82),
-  inset 0 0 28px rgba(255,59,92,.32)!important;
+  0 4px 0 #24050c,
+  0 8px 16px rgba(0,0,0,.84),
+  inset 0 0 0 2px rgba(255,59,92,.85),
+  inset 0 0 24px rgba(255,59,92,.35)!important;
 }
 
-/* 10. Dynamic Living Character Cards on the Board */
+/* 10. Hearthstone-Style 3D Thick Sculpted Character Cards on the Flat Board */
+html body.m26-in-game #board .token{
+ box-shadow:
+  0 5px 0 #050d14,
+  0 9px 14px rgba(0,0,0,.82)!important;
+}
+html body.m26-in-game #board .token.r{
+ box-shadow:
+  0 5px 0 #160409,
+  0 9px 14px rgba(0,0,0,.85)!important;
+}
 html body.m26-in-game #board .token.character-token:not(.moved){
  animation:m26TokenFloat 3.2s ease-in-out infinite;
 }
@@ -2885,15 +3061,15 @@ html body.m26-in-game #board .cell:nth-child(5n) .token.character-token:not(.mov
  animation-delay:-2.2s;
 }
 @keyframes m26TokenFloat{
- 0%,100%{transform:translateY(-2px)}
- 50%{transform:translateY(-6px)}
+ 0%,100%{transform:translateY(-1px)}
+ 50%{transform:translateY(-4px)}
 }
 
 /* Holographic Sheen Sweep across Active Character Tokens */
 html body.m26-in-game #board .token.character-token:not(.moved)::after{
  background:
-  linear-gradient(115deg,transparent 30%,rgba(255,255,255,.18) 48%,transparent 66%) 0 0 / 240% 100% no-repeat,
-  linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,0) 26%),
+  linear-gradient(115deg,transparent 30%,rgba(255,255,255,.2) 48%,transparent 66%) 0 0 / 240% 100% no-repeat,
+  linear-gradient(180deg,rgba(255,255,255,.15),rgba(255,255,255,0) 26%),
   linear-gradient(0deg,rgba(4,8,12,.92) 0,rgba(4,8,12,.52) 22%,rgba(4,8,12,0) 42%)!important;
  animation:m26TokenSheen 5.5s ease-in-out infinite;
 }
@@ -2902,14 +3078,20 @@ html body.m26-in-game #board .token.character-token:not(.moved)::after{
  100%{background-position:-80% 0,0 0,0 0}
 }
 
-/* Selected Unit 3D Levitation + Ground Tactical Lock Ring */
+/* Selected Unit 3D Card Lift (Pure Top-Down Elevation Shadow) */
 html body.m26-in-game #board .cell.selected .token{
  animation:none!important;
- transform:translateY(-9px) scale(1.07)!important;
- filter:drop-shadow(0 18px 12px rgba(0,0,0,.82)) drop-shadow(0 0 16px rgba(111,214,255,.78))!important;
+ transform:translateY(-6px) scale(1.06)!important;
+ box-shadow:
+  0 10px 0 #071520,
+  0 18px 22px rgba(0,0,0,.9),
+  0 0 18px rgba(111,214,255,.75)!important;
 }
 body.side-r.m26-in-game #board .cell.selected .token{
- filter:drop-shadow(0 18px 12px rgba(0,0,0,.85)) drop-shadow(0 0 16px rgba(255,59,92,.82))!important;
+ box-shadow:
+  0 10px 0 #1e050b,
+  0 18px 22px rgba(0,0,0,.9),
+  0 0 18px rgba(255,59,92,.8)!important;
 }
 
 /* Animated Pulsing Chest Red Spider on Infected Girls */
@@ -2948,7 +3130,7 @@ body.side-r.m26-in-game #board .cell.selected .token{
  50%{transform:translateY(-2px) scale(1.12)}
 }
 
-/* 3D Floor Shockwave Ring on Move / Attack Landing */
+/* Floor Shockwave Ring on Move / Attack Landing */
 .m26-floor-wave{
  position:absolute;
  inset:4%;
@@ -2966,7 +3148,6 @@ body.side-r.m26-in-game #board .cell.selected .token{
  100%{opacity:0;transform:scale(1.38);box-shadow:0 0 0 transparent}
 }
 
-/* Map Shape Subtitle Tag in Top-Left Watermark */
 .m26-map-shape-tag{
  display:inline-block;
  margin-left:8px;
@@ -2983,6 +3164,81 @@ body.side-r .m26-map-shape-tag{
  background:rgba(255,59,92,.18);
  border-color:rgba(255,59,92,.4);
  color:#ffc4cf;
+}
+
+/* 11. Detroit: Become Human Style Linear Causality Flowchart Modal */
+.m27-detroit-tree{
+ display:flex;
+ flex-direction:column;
+ gap:14px;
+ padding:6px 2px;
+}
+.m27-detroit-node{
+ position:relative;
+ display:grid;
+ grid-template-columns:110px 1fr;
+ gap:14px;
+ padding:14px 16px;
+ border-radius:8px;
+ background:linear-gradient(90deg,rgba(12,24,36,.92),rgba(7,14,22,.82));
+ border:1px solid rgba(111,214,255,.28);
+ border-left:4px solid var(--m26-cy);
+}
+.m27-detroit-node.locked{
+ opacity:.52;
+ border-left-color:rgba(140,170,190,.35);
+ border-style:dashed;
+}
+.m27-detroit-node.current{
+ border-left-color:var(--m26-gold);
+ box-shadow:0 0 24px rgba(244,201,107,.16);
+}
+.m27-detroit-step{
+ display:flex;
+ flex-direction:column;
+ justify-content:center;
+ border-right:1px solid rgba(255,255,255,.08);
+ padding-right:10px;
+}
+.m27-detroit-step small{
+ font-size:10px;
+ letter-spacing:.2em;
+ color:rgba(150,210,240,.75);
+}
+.m27-detroit-step strong{
+ font-size:16px;
+ color:#fff;
+ margin-top:2px;
+}
+.m27-detroit-branches{
+ display:flex;
+ flex-wrap:wrap;
+ gap:8px;
+ margin-top:8px;
+}
+.m27-branch-pill{
+ padding:4px 10px;
+ border-radius:4px;
+ font-size:12px;
+ font-weight:700;
+ background:rgba(111,214,255,.14);
+ border:1px solid rgba(111,214,255,.45);
+ color:#dff6ff;
+}
+.m27-branch-pill.gold{
+ background:rgba(244,201,107,.16);
+ border-color:rgba(244,201,107,.55);
+ color:#ffebb3;
+}
+.m27-branch-pill.red{
+ background:rgba(255,59,92,.18);
+ border-color:rgba(255,59,92,.55);
+ color:#ffd0d8;
+}
+.m27-branch-pill.dim{
+ background:rgba(255,255,255,.04);
+ border:1px dashed rgba(255,255,255,.16);
+ color:rgba(170,190,205,.5);
 }
 
 @media (max-width:1100px){
@@ -13714,8 +13970,9 @@ const K23={};
 
 
 
-/* ===== M26 — EMBEDDED FULL-BLEED 3D VIEWPORT, PROGRESSIVE PACING, SHAPED MAPS,
-   LIVING DYNAMIC CARDS & BUTTERFLY EFFECT CAUSALITY SYSTEM ===== */
+/* ===== M26/M27 — PURE 0° TOP-DOWN VIEW + HEARTHSTONE-STYLE 3D DIORAMA BOARD PROPS
+   + DETROIT: BECOME HUMAN PURE LINEAR CAUSALITY FLOW (NO LEVEL SELECT)
+   + PROGRESSIVE 3V3-TO-6V6 PACING + SHAPED MAPS & LIVING CARDS ===== */
 (function(){
  'use strict';
  if(typeof window==='undefined')return;
@@ -13724,7 +13981,7 @@ const K23={};
  const isFilmTest=()=>location.hash==='#filmtest';
 
  /* =========================================================================
-    1. BUTTERFLY EFFECT ENGINE (C.butterfly — 前面影响后面，跨章因果连锁)
+    1. BUTTERFLY EFFECT ENGINE (C.butterfly — 底特律变人式纯线性因果链)
     ========================================================================= */
  function ensureButterfly(){
   if(!C)return null;
@@ -13737,7 +13994,7 @@ const K23={};
     bridgeKey:null,       // 'egis' | 'hive'
     mirrorChoice:null,    // 'mercy' | 'sever'
     zeroCasualtyCh1:false,
-    echoes:[]             // [{ch, title, effect, side}]
+    echoes:[]             // [{ch, title, effect}]
    };
   }
   return C.butterfly;
@@ -13764,41 +14021,39 @@ const K23={};
      const larkDead=(larkUnit&&larkUnit.dead)||(larkRec&&larkRec.status==='destroyed');
      if(larkInf){
       bf.larkFate='infected';
-      addButterflyEcho(1,'折翼入巢','第一章璃雀被赤蛛寄生 → 后续章节她将作为「赤巢猎首」率伏兵倒戈阻击，零音解锁【孤狼决意】');
+      addButterflyEcho(1,'折翼入巢','第一章璃雀被赤蛛寄生 → 触发线性遭遇【崩塌隔离区】，第二章她将作为「赤巢猎首」倒戈阻击，零音解锁【孤狼决意】');
      }else if(larkDead){
       bf.larkFate='fallen';
-      addButterflyEcho(1,'翠风绝响','第一章璃雀陨落 → 小队全员背负哀恸，开局同步率 +1');
+      addButterflyEcho(1,'翠风绝响','第一章璃雀陨落 → 小队全员背负哀恸，后续开局同步率 +1');
      }else{
       bf.larkFate='saved';
-      addButterflyEcho(1,'翠风生还','第一章成功护住璃雀 → 后续章节璃雀提前侦测赤蛛伏击并部署前哨信标');
+      addButterflyEcho(1,'翠风生还','第一章成功护住璃雀 → 第二章璃雀提前标出通风盲区令弥砂同步 +1');
      }
      if(S.flags.courierEscaped){
       bf.courierFate='escaped';
-      addButterflyEcho(1,'信使脱逃','第一章载毒信使逃入深空 → 母巢解析走法，后续赤蛛群进化出高阶捕食蛛');
+      addButterflyEcho(1,'信使脱逃','第一章载毒信使逃离 → 线性触发【轨道列车截击】，后续赤蛛群进化出高阶捕食蛛');
      }else{
       bf.courierFate='intercepted';
-      addButterflyEcho(1,'截断信使','第一章成功截杀载毒信使 → 第二章温室泄压延后 1 轮，终章西护盾预破解');
+      addButterflyEcho(1,'截断信使','第一章截杀载毒信使 → 第二章封闭中央玻璃深渊格化为捷径，首次泄压延后 1 轮');
      }
      const gLost=S.units.some(u=>u.char&&(u.dead||u.side==='r'));
-     if(!gLost&&C.side==='g'){
-      bf.zeroCasualtyCh1=true;
-     }
+     if(!gLost&&C.side==='g')bf.zeroCasualtyCh1=true;
     }else if(S.mid===1){
      const misaUnit=S.units.find(u=>u.char==='misa');
      if((misaUnit&&misaUnit.side==='r')||(misaRec&&misaRec.side==='r')){
       bf.misaFate='infected';
-      addButterflyEcho(2,'工匠失守','第二章弥砂被红蜘蛛寄生 → 第三章天桥被赤巢菌丝腐蚀，坍塌提前');
+      addButterflyEcho(2,'工匠失守','第二章弥砂被红蜘蛛寄生 → 线性触发【熔心死守】，第三章天桥被菌丝腐蚀提前坍塌');
      }else{
       bf.misaFate='saved';
-      addButterflyEcho(2,'工匠护航','第二章保住弥砂 → 第三章天桥结构加固，外侧桥面延缓坍塌 2 轮');
+      addButterflyEcho(2,'工匠护航','第二章保住弥砂 → 线性触发【三塔连锁过载】，第三章天桥外侧焊接两座加固踏板并延缓坍塌');
      }
     }else if(S.mid===2){
      if(S.flags.delivered==='g'||C.flags.keyOwner==='g'){
       bf.bridgeKey='egis';
-      addButterflyEcho(3,'方舟过桥','第三章成功护送方舟密钥 → 第四章镜室朔夜残存记忆共鸣，全队同步提升');
+      addButterflyEcho(3,'方舟过桥','第三章成功护送方舟密钥 → 线性触发【胸甲共鸣审判】，第四章镜室全队同步提升');
      }else{
       bf.bridgeKey='hive';
-      addButterflyEcho(3,'密钥落入赤巢','第三章密钥被母巢截获 → 第四章镜室防御哨塔强化');
+      addButterflyEcho(3,'密钥落入赤巢','第三章密钥被母巢截获 → 线性触发【双核夺密】，第四章镜室防御哨塔强化');
      }
     }
    }
@@ -13806,20 +14061,49 @@ const K23={};
   return m26BaseResolveBattle.apply(this,arguments);
  };
 
+ // Deterministic Detroit-Style Linear Interlude Routing based on Butterfly State!
+ // Overrides random interlude selection so the linear campaign branches strictly by cause-and-effect.
+ const m27PreNextMission=nextMission;
+ nextMission=function(){
+  try{
+   if(!isQA()&&!isFilmTest()&&C&&C.step>0&&C.step<4&&!C.finished&&!(S&&S.saga)){
+    const bf=ensureButterfly();
+    if(!C.m27LinearInterlude)C.m27LinearInterlude={};
+    const gap=C.step;
+    if(!C.m27LinearInterlude[gap]&&window.__M24__&&typeof window.__M24__.launchM24Interlude==='function'){
+     C.m27LinearInterlude[gap]=1;
+     // Mark m24/p23 interlude slot as handled so we don't double-fire random interludes
+     if(C.m24&&C.m24.interludes)C.m24.interludes[gap]=1;
+     if(C.p23&&C.p23.done)C.p23.done[gap]=1;
+     let linearKind='blackout';
+     if(gap===1){
+      if(bf?.larkFate==='infected')linearKind='quarantine';
+      else if(bf?.courierFate==='escaped')linearKind='convoy';
+      else linearKind='blackout';
+     }else if(gap===2){
+      if(bf?.misaFate==='infected')linearKind='siege';
+      else linearKind='overload';
+     }else if(gap===3){
+      if(bf?.bridgeKey==='egis')linearKind='awakening';
+      else linearKind='heist';
+     }
+     persist();
+     window.__M24__.launchM24Interlude(linearKind);
+     return;
+    }
+   }
+  }catch(e){console.warn('m27 linear nextMission',e);}
+  return m27PreNextMission.apply(this,arguments);
+ };
+
  /* =========================================================================
     2. PROGRESSIVE CAMPAIGN PACING & DIVERSE SHAPED MAPS (由简入繁 + 异形地图)
     ========================================================================= */
- // Distinct non-rectangular map silhouettes per chapter & special mode
  const CHAPTER_MAP_SHAPES={
-  // Ch1: Airlock Corridor (Narrow notched boarding corridor — intimate 3v3 opening)
   0:['0,0','0,1','7,1','0,3','7,3','0,5','0,6'],
-  // Ch2: Octagonal Bio-Dome (Cut corners + central glass pit)
   1:['0,0','1,0','0,1','6,0','0,6','1,7','6,7','7,6','7,7','3,4'],
-  // Ch3: Hourglass Twin-Bridge (Deep orbital chasm flanks + cut corners)
   2:['0,0','1,0','6,0','7,1','0,6','1,7','6,7','7,7'],
-  // Ch4: Cruciform Mirror Sanctum (Diamond/Cross archive hall)
   3:['0,0','1,0','0,1','6,0','7,1','0,6','1,7','6,7','7,6','7,7'],
-  // Ch5: Stepped Throne Citadel (Royal pyramid leading to Overmind Core)
   4:['0,0','1,0','6,0','0,1','7,1','0,4','7,4','0,6','7,6']
  };
 
@@ -13847,12 +14131,6 @@ const K23={};
   }
  }
 
- // Progressive Unit Cap per Chapter:
- // Ch1: 3 vs 3 (Simple, fast, tense intro!)
- // Ch2: 4 vs 4 (Medium squad + environment)
- // Ch3: 4+capsule vs 5 (Bridge escort)
- // Ch4: 5 vs 5 (Mirror sanctum)
- // Ch5: 6 vs 6 (Grand finale)
  const m26BaseMakeMission=makeMission;
  makeMission=function(id){
   const s=m26BaseMakeMission.apply(this,arguments);
@@ -13860,10 +14138,8 @@ const K23={};
   try{
    const bf=ensureButterfly();
 
-   // 1) Progressive Unit Pacing: Trim overcrowded starting boards in early chapters!
+   // 1) Progressive Unit Pacing: Simple 3v3 in Ch1 -> gradually expanding to 6v6 in Ch5
    if(id===0){
-    // CHAPTER 1: Intimate Vanguard Encounter!
-    // Guardians deploy only Lyra, Akira, Lark (3 core heroes) onto the narrow airlock corridor
     const ch1KeepG=new Set(['lyra','akira','lark']);
     s.units=s.units.filter(u=>{
      if(u.side==='g'){
@@ -13872,11 +14148,9 @@ const K23={};
      }
      return true;
     });
-    // Position Lyra, Akira, Lark in a clean vanguard triangle near C4 uplink & south airlock
     const lyra=s.units.find(u=>u.char==='lyra');if(lyra){lyra.x=2;lyra.y=6;}
     const akira=s.units.find(u=>u.char==='akira');if(akira){akira.x=4;akira.y=6;}
     const lark=s.units.find(u=>u.char==='lark');if(lark){lark.side='g';lark.x=2;lark.y=5;}
-    // Trim Red Spiders in Ch1: 2 spiders (+1 courier) when playing Guardian, 3 spiders (+1 courier) when playing Red Hive
     const maxSpiders=C.side==='r'?3:2;
     let spidersSeen=0;
     s.units=s.units.filter(u=>{
@@ -13891,7 +14165,6 @@ const K23={};
     if(spList[1]){spList[1].x=5;spList[1].y=2;}
     if(spList[2]){spList[2].x=3;spList[2].y=1;}
    }else if(id===1){
-    // CHAPTER 2: 4v4 Bio-Dome Expansion
     const priorityG=['lyra','misa','sera','akira','lark','iris','celia'];
     const gChars=s.units.filter(u=>u.side==='g'&&u.char);
     if(gChars.length>4){
@@ -13899,16 +14172,13 @@ const K23={};
      const keepSet=new Set(gChars.slice(0,4).map(u=>u.uid));
      s.units=s.units.filter(u=>!(u.side==='g'&&u.char&&!keepSet.has(u.uid)));
     }
-    // Remove extra generic drone so the 4 mecha girls shine
     s.units=s.units.filter(u=>!(u.side==='g'&&u.kind==='drone'));
-    // Cap Red Spiders at 3 in Ch2 (plus infected girls like Veil/Lark)
     let sp=0;
     s.units=s.units.filter(u=>{
      if(u.side==='r'&&u.kind==='spider'){sp++;return sp<=3;}
      return true;
     });
    }else if(id===2){
-    // CHAPTER 3: 4 Guardians + Capsule vs 3 Spiders + Infected Hunters
     const priorityG=['lyra','akira','vega','astra','misa','lark','iris'];
     const gChars=s.units.filter(u=>u.side==='g'&&u.char);
     if(gChars.length>4){
@@ -13923,7 +14193,6 @@ const K23={};
      return true;
     });
    }else if(id===3){
-    // CHAPTER 4: 5 Guardians vs Red Hive Sanctum
     const gChars=s.units.filter(u=>u.side==='g'&&u.char);
     if(gChars.length>5){
      const keepSet=new Set(gChars.slice(0,5).map(u=>u.uid));
@@ -13935,7 +14204,6 @@ const K23={};
      return true;
     });
    }else if(id===4){
-    // CHAPTER 5: 6 Guardians Grand Finale
     const gChars=s.units.filter(u=>u.side==='g'&&u.char);
     if(gChars.length>6){
      const keepSet=new Set(gChars.slice(0,6).map(u=>u.uid));
@@ -13943,7 +14211,7 @@ const K23={};
     }
    }
 
-   // 2) Apply Butterfly Effect Gameplay Consequences to Later Chapters!
+   // 2) Apply Butterfly Effect Gameplay Consequences to Later Chapters
    if(bf){
     if(id===1){
      if(bf.larkFate==='saved'){
@@ -13986,15 +14254,13 @@ const K23={};
     }
    }
 
-   // 3) Carve Non-Rectangular 3D Map Shape for this Chapter (with Butterfly Geometry Mutations!)
+   // 3) Carve Non-Rectangular Top-Down Map Shape (with Butterfly Geometry Mutations!)
    if(CHAPTER_MAP_SHAPES[id]){
     let shapeVoids=[...CHAPTER_MAP_SHAPES[id]];
     if(bf){
-     // Butterfly Map Geometry Mutation 1: Intercepting Ch1 Courier seals Ch2 central glass pit (3,4)
      if(id===1&&bf.courierFate==='intercepted'){
       shapeVoids=shapeVoids.filter(k=>k!=='3,4');
      }
-     // Butterfly Map Geometry Mutation 2: Saving Misa in Ch2 welds stabilizer plates on Ch3 outer bridge (1,3 & 6,3)
      if(id===2&&bf.misaFate==='saved'){
       s.voids=s.voids.filter(k=>k!=='1,3'&&k!=='6,3');
      }
@@ -14006,10 +14272,9 @@ const K23={};
   return s;
  };
 
- // Also apply custom map shapes to the 12 special missions when launched
- if(window.__M24__&&typeof launchM24Interlude==='function'){
-  const origLaunch24=launchM24Interlude;
-  launchM24Interlude=function(kind){
+ if(window.__M24__&&typeof window.__M24__.launchM24Interlude==='function'){
+  const origLaunch24=window.__M24__.launchM24Interlude;
+  window.__M24__.launchM24Interlude=function(kind){
    const res=origLaunch24.apply(this,arguments);
    try{
     if(S&&SPECIAL_MAP_SHAPES[kind]){
@@ -14019,14 +14284,12 @@ const K23={};
    }catch(e){}
    return res;
   };
-  window.__M24__.launchM24Interlude=launchM24Interlude;
  }
 
  /* =========================================================================
     3. MASTER CINEMA PACING FOR CHAPTER 1 & BUTTERFLY ECHO INJECTIONS
     ========================================================================= */
  if(typeof FILM_INTRO!=='undefined'){
-  // Replace Chapter 1 Guardian intro with a tight, suspenseful, master-paced 3-character opening
   FILM_INTRO[0].g=function(){
    const first=!(C.history&&C.history.length);
    const prologue=first?[
@@ -14047,7 +14310,6 @@ const K23={};
    ];
   };
 
-  // Wrap filmIntro to inject Butterfly Effect Echoes at the start of Chapters 2–5
   const m26OrigFilmIntro=filmIntro;
   filmIntro=function(mid){
    const shots=m26OrigFilmIntro.apply(this,arguments)||[];
@@ -14073,7 +14335,150 @@ const K23={};
  }
 
  /* =========================================================================
-    4. DYNAMIC LIVING CARDS, CHEST SPIDER EMBLEM & DYNAMIC PERSONA EVOLUTION
+    4. HEARTHSTONE-STYLE 3D INTERACTIVE CORNER DIORAMA PROPS (炉石式沙盘可交互3D组件)
+    ========================================================================= */
+ const DIORAMA_PROPS={
+  dock:[
+   {pos:'tl',cls:'cy',name:'高压气闸阀',icon:'relay',msg:'【场景互动 · 高压气闸阀】阀门旋转，喷出一股零下41度的液氮白雾！'},
+   {pos:'tr',cls:'warn',name:'破损先遣头盔',icon:'spider',msg:'【场景互动 · 破损头盔】目镜闪过一道微弱红光，播放出17天前的电流残响……'},
+   {pos:'bl',cls:'cy',name:'深空雷达盘',icon:'eye',msg:'【场景互动 · 深空雷达阵列】脉冲波扫过甲板，锁死暗处的机械蜘蛛回波！'},
+   {pos:'br',cls:'gold',name:'备用聚变匣',icon:'cube',msg:'【场景互动 · 备用聚变匣】电容嗡鸣，跃出一串湛蓝的高压电弧！'}
+  ],
+  garden:[
+   {pos:'tl',cls:'bio',name:'翡翠培养舱',icon:'core',msg:'【场景互动 · 翡翠培养舱】营养液泛起荧光气泡，玻璃内壁映出藤蔓神经。'},
+   {pos:'tr',cls:'cy',name:'液氮冷却塔',icon:'relay',msg:'【场景互动 · 液氮冷却塔】冷却叶片高速旋转，散发出刺骨寒气！'},
+   {pos:'bl',cls:'warn',name:'赤巢孢子囊',icon:'spider',msg:'【场景互动 · 赤巢孢子囊】表皮微微搏动，飘出几缕猩红的纳米光尘。'},
+   {pos:'br',cls:'gold',name:'紧急泄压阀',icon:'lock',msg:'【场景互动 · 紧急泄压阀】气压表指针剧烈摆动，发出低沉的金属共鸣。'}
+  ],
+  bridge:[
+   {pos:'tl',cls:'gold',name:'磁浮牵引器',icon:'relay',msg:'【场景互动 · 磁浮牵引线圈】超导磁环亮起金光，稳住摇晃的桥面！'},
+   {pos:'tr',cls:'warn',name:'断裂太空锚',icon:'exit',msg:'【场景互动 · 断裂太空锚链】失重铁链在深空微风中轻轻碰撞，下方408公里即是地球。'},
+   {pos:'bl',cls:'cy',name:'天基测距仪',icon:'eye',msg:'【场景互动 · 天基测距仪】激光束穿透云层，校准外环轨道坐标。'},
+   {pos:'br',cls:'gold',name:'聚变稳压器',icon:'cube',msg:'【场景互动 · 聚变稳压器】稳压阀喷出蓝白色离子尾焰！'}
+  ],
+  mirror:[
+   {pos:'tl',cls:'cy',name:'记忆水晶柱',icon:'cube',msg:'【场景互动 · 量子记忆水晶】水晶内部浮现出三千二百名驻站人员的笑脸残影。'},
+   {pos:'tr',cls:'gold',name:'全息神经棱镜',icon:'eye',msg:'【场景互动 · 全息神经棱镜】折射出七彩的量子光斑，映照着镜室的过去与未来。'},
+   {pos:'bl',cls:'cy',name:'中枢服务器',icon:'relay',msg:'【场景互动 · 中枢服务器塔】光导纤维高速闪烁，回荡着朔夜写下的第一行代码。'},
+   {pos:'br',cls:'warn',name:'休眠人格舱',icon:'lock',msg:'【场景互动 · 休眠人格舱】舱盖紧锁，生命维持读数停留在第17天前。'}
+  ],
+  core:[
+   {pos:'tl',cls:'warn',name:'母巢孵化囊',icon:'spider',msg:'【场景互动 · 母巢孵化囊】金属卵壳剧烈跳动，内部传来机械蜘蛛八足抓挠的声响！'},
+   {pos:'tr',cls:'warn',name:'赤蛛神经节',icon:'core',msg:'【场景互动 · 赤蛛神经节】猩红光纤束同步闪烁，向整座空间站广播母巢心跳！'},
+   {pos:'bl',cls:'gold',name:'护盾发生器',icon:'lock',msg:'【场景互动 · 护盾发生器】偏导力场发生器过载运转，激起一圈金色能量涟漪！'},
+   {pos:'br',cls:'cy',name:'深渊反应釜',icon:'relay',msg:'【场景互动 · 深渊反应釜】高压等离子体在磁约束环内翻涌咆哮！'}
+  ]
+ };
+
+ function mountHearthstoneDioramaProps(theme){
+  const sur=document.querySelector('.board-surround');
+  if(!sur)return;
+  const list=DIORAMA_PROPS[theme]||DIORAMA_PROPS.dock;
+  sur.querySelectorAll('.m27-prop').forEach(el=>el.remove());
+  for(const item of list){
+   const btn=document.createElement('button');
+   btn.type='button';
+   btn.className=`m27-prop ${item.pos} ${item.cls}`;
+   btn.title=`点击互动：${item.name}（3D 战场环境组件）`;
+   btn.innerHTML=`<span class="m27-prop-core">${svg(item.icon)}</span><span class="m27-prop-label">${esc(item.name)}</span>`;
+   btn.onclick=(e)=>{
+    e.stopPropagation();
+    btn.classList.remove('m27-prop-burst');
+    void btn.offsetWidth;
+    btn.classList.add('m27-prop-burst');
+    try{if(typeof sfx==='function')sfx('select');}catch(_){}
+    try{radio('战场环境互动',item.msg);}catch(_){}
+    // Spawn a floor wave on the nearest corner cell for tactile feedback
+    const cx=item.pos.includes('l')?0:7,cy=item.pos.includes('t')?0:7;
+    const cell=$('board')?.querySelector(`.cell[data-x="${cx}"][data-y="${cy}"]`);
+    if(cell){
+     const w=document.createElement('span');
+     w.className='m26-floor-wave'+(item.cls==='warn'?' r':'');
+     cell.appendChild(w);
+     setTimeout(()=>w.remove(),550);
+    }
+   };
+   sur.appendChild(btn);
+  }
+ }
+
+ /* =========================================================================
+    5. DETROIT: BECOME HUMAN LINEAR CAUSALITY FLOWCHART (只读因果世界线树，无选关)
+    ========================================================================= */
+ function openDetroitFlowchart27(){
+  const bf=ensureButterfly()||{};
+  const step=C?C.step:0;
+  const nodes=[
+   {
+    ch:'CHAPTER 01',
+    name:'无声接舷 · A-12 气闸走廊',
+    state:step>0?'done':'current',
+    desc:'3 对 3 极简先遣遭遇战。零音、绛刃、璃雀三人切入寒铁气闸走廊，你的每一步操作直接决定后续章节的生死分流：',
+    branches:[
+     {label:'分支 A：护住璃雀（翠风生还）',cls:bf.larkFate==='saved'?'gold':bf.larkFate?'dim':'',unlocked:bf.larkFate==='saved'},
+     {label:'分支 B：璃雀被红蜘蛛寄生（折翼入巢 → 触发崩塌隔离区）',cls:bf.larkFate==='infected'?'red':bf.larkFate?'dim':'',unlocked:bf.larkFate==='infected'},
+     {label:'分支 C：截杀载毒信使（封闭第2章深渊格+延缓泄压）',cls:bf.courierFate==='intercepted'?'gold':bf.courierFate?'dim':'',unlocked:bf.courierFate==='intercepted'},
+     {label:'分支 D：信使逃脱（触发轨道列车截击+赤蛛进化）',cls:bf.courierFate==='escaped'?'red':bf.courierFate?'dim':'',unlocked:bf.courierFate==='escaped'}
+    ]
+   },
+   {
+    ch:'CHAPTER 02',
+    name:'玻璃花园 · B-04 八角生态环',
+    state:step>1?'done':step===1?'current':'locked',
+    desc:step>=1?'4 对 4 生态冷却环争夺战。前序蝴蝶效应已实时改变本关地形与初始兵力。':'【未解锁节点】需沿线性剧情完成第一章后自动进入。',
+    branches:[
+     {label:'分支 A：保住弥砂（焊接第3章天桥外侧踏板+触发三塔过载）',cls:bf.misaFate==='saved'?'gold':bf.misaFate?'dim':'',unlocked:bf.misaFate==='saved'},
+     {label:'分支 B：弥砂被红蜘蛛寄生（触发熔心死守+天桥腐蚀）',cls:bf.misaFate==='infected'?'red':bf.misaFate?'dim':'',unlocked:bf.misaFate==='infected'}
+    ]
+   },
+   {
+    ch:'CHAPTER 03',
+    name:'断轨天桥 · C-07 沙漏双桥',
+    state:step>2?'done':step===2?'current':'locked',
+    desc:step>=2?'高轨断桥方舟密钥护送战。两侧深渊坍塌倒计时受第二章战果直接影响。':'【未解锁节点】需沿线性剧情推进解锁。',
+    branches:[
+     {label:'分支 A：方舟密钥送抵北端（触发胸甲共鸣审判+第4章全队同步+1）',cls:bf.bridgeKey==='egis'?'gold':bf.bridgeKey?'dim':'',unlocked:bf.bridgeKey==='egis'},
+     {label:'分支 B：密钥落入赤巢（触发双核夺密+第4章敌方哨塔强化）',cls:bf.bridgeKey==='hive'?'red':bf.bridgeKey?'dim':'',unlocked:bf.bridgeKey==='hive'}
+    ]
+   },
+   {
+    ch:'CHAPTER 04',
+    name:'镜室叛歌 · D-00 十字棱镜殿',
+    state:step>3?'done':step===3?'current':'locked',
+    desc:step>=3?'5 对 5 量子镜像库中枢决战。解开朔夜最初的记忆签名。':'【未解锁节点】需沿线性剧情推进解锁。',
+    branches:[
+     {label:'命运抉择：保留她们真正的名字 vs 切断人格链',cls:C?.flags?.mercy!==null?'gold':'dim',unlocked:C?.flags?.mercy!==null}
+    ]
+   },
+   {
+    ch:'CHAPTER 05',
+    name:'赤巢零点 · Ω-00 阶梯母巢王座',
+    state:step===4?'current':'locked',
+    desc:step>=4?'6 对 6 终局审判。前四章积累的全部蝴蝶效应在此汇流！':'【未解锁终局】所有前序章节的蝴蝶效应将共同决定最终结局。',
+    branches:[
+     {label:'多重结局：根据全战役存活机娘、感染状态与因果抉择自动触发',cls:'dim',unlocked:false}
+    ]
+   }
+  ];
+
+  const html=`<div class="manual-note"><b>🦋《底特律：变人》式纯线性因果世界线（无自由选关 · 每一步皆有后果）</b><br>本作采用严格的<b>单向线性推进机制</b>：不设选关菜单，你在每一场战斗中是否保住同伴、是否截住信使、做出的每一次剧场抉择，都会实时改写后续章节的物理地形、登场首领与幕间遭遇战。</div>
+  <div class="m27-detroit-tree" style="margin-top:12px">
+   ${nodes.map(n=>`<div class="m27-detroit-node ${n.state}">
+    <div class="m27-detroit-step"><small>${n.ch}</small><strong>${n.state==='done'?'✓ 已完成':n.state==='current'?'▶ 当前章节':'🔒 未知命运'}</strong></div>
+    <div>
+     <h3 style="margin:0 0 4px;font-size:16px;color:#fff">${n.name}</h3>
+     <p style="margin:0;font-size:12.5px;color:#b8cedc;line-height:1.45">${n.desc}</p>
+     <div class="m27-detroit-branches">
+      ${n.branches.map(b=>`<span class="m27-branch-pill ${b.cls}">${b.unlocked?'🦋 已激活 · ':''}${b.label}</span>`).join('')}
+     </div>
+    </div>
+   </div>`).join('')}
+  </div>`;
+  openModal('蝴蝶效应 · 线性因果世界线树','DETROIT-STYLE CAUSALITY FLOWCHART',html);
+ }
+
+ /* =========================================================================
+    6. DYNAMIC LIVING CARDS, CHEST SPIDER EMBLEM & DYNAMIC PERSONA EVOLUTION
     ========================================================================= */
  function getDynamicPersona26(u){
   if(!u||!u.char)return null;
@@ -14122,7 +14527,6 @@ const K23={};
   };
  }
 
- // Inject animated chest spider SVG on infected girls & Butterfly Causality Crest on evolved heroes
  const m26BaseTokenHTML=tokenHTML;
  tokenHTML=function(u){
   let html=m26BaseTokenHTML.apply(this,arguments);
@@ -14143,22 +14547,22 @@ const K23={};
   return html;
  };
 
- // Set 3D Map Architectural Theme & Shape Subtitle Tag on renderBoard
  const MAP_THEMES_26={0:'dock',1:'garden',2:'bridge',3:'mirror',4:'core'};
  const MAP_SHAPE_NAMES_26={
-  0:'3D 狭长气闸廊 · 3v3微局',
-  1:'3D 八角生态双环',
-  2:'3D 沙漏断轨双桥',
-  3:'3D 十字棱镜圣殿',
-  4:'3D 阶梯母巢王座',
-  siege:'3D 熔心六角堡',
-  heist:'3D 菱形金库',
-  blackout:'3D 裂谷暗夜廊',
-  awakening:'3D 王座八角场',
-  convoy:'3D 磁浮峡谷轨',
-  overload:'3D 三角电容阵',
-  quarantine:'3D 坍缩孤岛'
+  0:'狭长气闸廊 · 3v3先遣战',
+  1:'八角生态双环',
+  2:'沙漏断轨双桥',
+  3:'十字棱镜圣殿',
+  4:'阶梯母巢王座',
+  siege:'熔心六角堡',
+  heist:'菱形金库',
+  blackout:'裂谷暗夜廊',
+  awakening:'王座八角场',
+  convoy:'磁浮峡谷轨',
+  overload:'三角电容阵',
+  quarantine:'坍缩孤岛'
  };
+ let lastMountedTheme27=null;
  const m26BaseRenderBoard=renderBoard;
  renderBoard=function(){
   const r=m26BaseRenderBoard.apply(this,arguments);
@@ -14168,9 +14572,40 @@ const K23={};
     const k=S.kind24||S.kind23;
     const theme=k==='siege'||k==='overload'?'core':k==='heist'||k==='awakening'?'mirror':k==='blackout'?'garden':(MAP_THEMES_26[S.mid]||'dock');
     bd.dataset.theme=theme;
+    if(lastMountedTheme27!==theme||!document.querySelector('.m27-prop')){
+     lastMountedTheme27=theme;
+     mountHearthstoneDioramaProps(theme);
+    }
+    // Populate .cell.void chasm tiles with Hearthstone-style interactive 3D top-down scenery miniatures
+    const voidIcons={dock:['relay','lock','cube'],garden:['core','cube','relay'],bridge:['exit','relay','lock'],mirror:['cube','eye','core'],core:['spider','core','lock']}[theme]||['relay','cube'];
+    const voidMsgs={
+     dock:'【3D 场景组件 · 气闸机械】悬空走廊外侧的深空锚点正在运转。',
+     garden:'【3D 场景组件 · 生态培养皿】深渊下方的低温培养罐泛着微光。',
+     bridge:'【3D 场景组件 · 轨道桥墩】断裂天桥外侧的磁浮稳压器闪烁着电火花。',
+     mirror:'【3D 场景组件 · 记忆棱柱】全息棱柱在深渊中投射出三千人的记忆残影。',
+     core:'【3D 场景组件 · 母巢苗床】深渊裂隙中的机械卵囊正在随母巢心跳搏动。'
+    };
+    bd.querySelectorAll('.cell.void').forEach((cell,idx)=>{
+     if(!cell.querySelector('.m27-void-prop')){
+      const ic=voidIcons[idx%voidIcons.length];
+      const prop=document.createElement('span');
+      prop.className='m27-void-prop';
+      prop.title='点击互动：3D 战场沙盘环境组件';
+      prop.innerHTML=svg(ic);
+      prop.onclick=(ev)=>{
+       ev.stopPropagation();
+       prop.classList.remove('m27-prop-burst');
+       void prop.offsetWidth;
+       prop.classList.add('m27-prop-burst');
+       try{if(typeof sfx==='function')sfx('select');}catch(_){}
+       try{radio('战场环境组件',voidMsgs[theme]||voidMsgs.dock);}catch(_){}
+      };
+      cell.appendChild(prop);
+     }
+    });
     const locEl=$('mission-location');
     if(locEl){
-     const shapeLabel=MAP_SHAPE_NAMES_26[k]||MAP_SHAPE_NAMES_26[S.mid]||'3D 异形战区';
+     const shapeLabel=MAP_SHAPE_NAMES_26[k]||MAP_SHAPE_NAMES_26[S.mid]||'异形战术沙盘';
      if(!locEl.querySelector('.m26-map-shape-tag')){
       locEl.insertAdjacentHTML('beforeend',`<span class="m26-map-shape-tag">${shapeLabel}</span>`);
      }else{
@@ -14182,7 +14617,6 @@ const K23={};
   return r;
  };
 
- // Hook deployLine so characters speak Butterfly-Effect-aware lines during board deployment
  if(typeof deployLine==='function'){
   const m26OrigDeployLine=deployLine;
   deployLine=function(id,side){
@@ -14199,7 +14633,6 @@ const K23={};
   };
  }
 
- // Enhance renderObjectives with Butterfly Echo Strip
  const m26BaseRenderObjectives=renderObjectives;
  renderObjectives=function(){
   const r=m26BaseRenderObjectives.apply(this,arguments);
@@ -14212,10 +14645,12 @@ const K23={};
      if(!strip){
       strip=document.createElement('div');
       strip.className='m26-butterfly-strip';
+      strip.title='点击查看《底特律：变人》式线性因果世界线树';
+      strip.onclick=()=>openDetroitFlowchart27();
       panel.appendChild(strip);
      }
      const items=bf.echoes.slice(-2);
-     strip.innerHTML=`<div class="m26-butterfly-strip-title">🦋 蝴蝶效应 · 因果回响</div>`+
+     strip.innerHTML=`<div class="m26-butterfly-strip-title"><span>🦋 蝴蝶效应 · 因果回响</span><span>查看世界线 ↗</span></div>`+
       items.map(e=>`<div class="m26-butterfly-item"><b>${esc(e.title)}</b>：${esc(e.effect)}</div>`).join('');
     }else if(strip){
      strip.remove();
@@ -14225,7 +14660,6 @@ const K23={};
   return r;
  };
 
- // Enhance renderDossier with Dynamic Persona Evolution tag
  const m26BaseRenderDossier=renderDossier;
  renderDossier=function(){
   const r=m26BaseRenderDossier.apply(this,arguments);
@@ -14248,17 +14682,14 @@ const K23={};
  };
 
  /* =========================================================================
-    5. EMBEDDED FULL-BLEED VIEWPORT SIZING, DIEGETIC COMMAND DRAWER & 3D ENV CANVAS
+    7. EMBEDDED FULL-BLEED VIEWPORT SIZING & DIEGETIC CONTROLS (NO LEVEL SELECT)
     ========================================================================= */
- let m26Use3D=true;
-
  function syncInGameClass26(){
   const inGame=!!($('game')&&!$('game').hidden);
   document.body.classList.toggle('m26-in-game',inGame);
-  document.body.classList.toggle('m26-3d',inGame&&m26Use3D);
+  document.body.classList.remove('m26-3d');
  }
 
- // Override refreshPieceSize so the board scales generously inside the 100vw x 100vh embedded stage
  const m26BaseRefreshSize=typeof refreshPieceSize==='function'?refreshPieceSize:null;
  if(m26BaseRefreshSize){
   refreshPieceSize=function(){
@@ -14269,22 +14700,20 @@ const K23={};
    }
    const availW=window.innerWidth-460;
    const availH=window.innerHeight-76;
-   const baseSize=Math.max(460,Math.min(availW,availH,880));
+   const baseSize=Math.max(460,Math.min(availW,availH,860));
    surround.style.width=Math.round(baseSize)+'px';
    surround.style.minWidth=Math.round(baseSize)+'px';
    surround.style.maxWidth='none';
   };
  }
 
- // Build Top-Right Sleek Diegetic Controls & Command Drawer (replacing 10+ boxy buttons)
  function setupDiegeticControls26(){
   if($('m26-top-controls'))return;
   const topBar=document.createElement('div');
   topBar.id='m26-top-controls';
   topBar.innerHTML=`
-   <button type="button" class="m26-corner-pill" id="m26-ops-quick" title="切换或直接体验 12 种特殊战术关卡">🎯 特遣关卡</button>
-   <button type="button" class="m26-corner-pill" id="m26-3d-toggle" title="切换 3D 立体倾角棋盘 / 正交俯视">🧊 3D 视界</button>
-   <button type="button" class="m26-corner-pill" id="m26-cmd-btn" title="打开战术终端菜单（图鉴/星图/AI强度/音效/重开）">≡ 战术终端</button>
+   <button type="button" class="m26-corner-pill gold" id="m27-causality-btn" title="查看《底特律：变人》式线性蝴蝶效应世界线树">🦋 因果世界线</button>
+   <button type="button" class="m26-corner-pill" id="m26-cmd-btn" title="打开战术终端菜单（角色图鉴/AI强度/音效/重开）">≡ 战术终端</button>
   `;
   document.body.appendChild(topBar);
 
@@ -14293,12 +14722,12 @@ const K23={};
   drawer.hidden=true;
   drawer.innerHTML=`
    <div class="m26-drawer-sec">
-    <small>TACTICAL ARCHIVE / 档案与星图</small>
+    <small>CAUSALITY & ARCHIVE / 因果与角色图鉴</small>
     <div class="m26-drawer-grid">
+     <button type="button" class="m26-drawer-btn" data-m26-act="causality">🦋 因果世界线树</button>
      <button type="button" class="m26-drawer-btn" data-m26-act="archive">角色图鉴 (18人)</button>
-     <button type="button" class="m26-drawer-btn" data-m26-act="starmap">战役分支星图</button>
-     <button type="button" class="m26-drawer-btn" data-m26-act="ops">12种特遣关卡</button>
      <button type="button" class="m26-drawer-btn" data-m26-act="cg">剧情 CG 画廊</button>
+     <button type="button" class="m26-drawer-btn" data-m26-act="casefile">调查卷宗记录</button>
     </div>
    </div>
    <div class="m26-drawer-sec">
@@ -14314,21 +14743,16 @@ const K23={};
     <div class="m26-drawer-grid">
      <button type="button" class="m26-drawer-btn" data-m26-act="help">作战规则手册</button>
      <button type="button" class="m26-drawer-btn" data-m26-act="audio">音乐与音效</button>
-     <button type="button" class="m26-drawer-btn" data-m26-act="retry">重开当前关卡</button>
+     <button type="button" class="m26-drawer-btn" data-m26-act="retry">重开当前章节</button>
      <button type="button" class="m26-drawer-btn" data-m26-act="menu">系统菜单 / 主界面</button>
     </div>
    </div>
   `;
   document.body.appendChild(drawer);
 
-  $('m26-ops-quick').onclick=()=>{
+  $('m27-causality-btn').onclick=()=>{
    drawer.hidden=true;
-   if(window.__M24__&&window.__M24__.openOpsSelector24)window.__M24__.openOpsSelector24();
-  };
-  $('m26-3d-toggle').onclick=()=>{
-   m26Use3D=!m26Use3D;
-   $('m26-3d-toggle').textContent=m26Use3D?'🧊 3D 视界':'📐 平面视界';
-   syncInGameClass26();
+   openDetroitFlowchart27();
   };
   $('m26-cmd-btn').onclick=(e)=>{
    e.stopPropagation();
@@ -14352,17 +14776,16 @@ const K23={};
    if(!actBtn)return;
    const act=actBtn.dataset.m26Act;
    drawer.hidden=true;
-   if(act==='archive')$('archive-btn')?.click();
-   else if(act==='starmap')$('starmap-btn')?.click();
-   else if(act==='ops'&&window.__M24__?.openOpsSelector24)window.__M24__.openOpsSelector24();
+   if(act==='causality')openDetroitFlowchart27();
+   else if(act==='archive')$('archive-btn')?.click();
    else if(act==='cg')$('cg-gallery-btn')?.click();
+   else if(act==='casefile')$('casefile-btn')?.click();
    else if(act==='help')$('help-btn')?.click();
    else if(act==='audio')$('audio-btn')?.click();
    else if(act==='retry')$('retry-btn')?.click();
    else if(act==='menu')$('menu-btn')?.click();
   });
 
-  // Add Quick Tactical Triggers (👁 威胁 & ⚡ 推演) right into the bottom-right Action Bar
   const actionButtons=document.querySelector('#game .action-buttons');
   if(actionButtons&&!actionButtons.querySelector('.m26-quick-actions')){
    const qa=document.createElement('div');
@@ -14382,7 +14805,6 @@ const K23={};
   }
  }
 
- // 3D Camera Impulse & Landing Shockwave Ring on Move / Attack
  const m26BasePerformMove=performMove;
  performMove=async function(m,isPlayer){
   try{
@@ -14409,7 +14831,7 @@ const K23={};
  };
 
  /* =========================================================================
-    6. REALTIME 3D BATTLEFIELD ENVIRONMENT CANVAS (#m26-env-canvas)
+    8. REALTIME TOP-DOWN AMBIENT ENVIRONMENT CANVAS (#m26-env-canvas)
     ========================================================================= */
  function setupEnvCanvas26(){
   if($('m26-env-canvas')||reducedMotion)return;
@@ -14443,63 +14865,29 @@ const K23={};
    const isRed=C&&C.side==='r';
    const t=ts*0.001;
 
-   // 1) 3D Perspective Abyssal Horizon Grid below the board
    ctx.save();
-   const horizonY=h*0.18;
-   const centerX=w*0.5;
-   const gridCol=isRed?'rgba(255,59,92,0.065)':mid===1?'rgba(110,240,190,0.06)':mid===4?'rgba(255,70,95,0.075)':'rgba(111,214,255,0.065)';
-   ctx.strokeStyle=gridCol;
-   ctx.lineWidth=1;
-   for(let i=-10;i<=10;i++){
-    ctx.beginPath();
-    ctx.moveTo(centerX+i*(w*0.035),horizonY);
-    ctx.lineTo(centerX+i*(w*0.14),h);
-    ctx.stroke();
-   }
-   const sweep=((t*0.18)%1);
-   for(let j=0;j<8;j++){
-    const p=(j/8+sweep*0.125)%1;
-    const py=horizonY+Math.pow(p,1.7)*(h-horizonY);
-    ctx.beginPath();
-    ctx.moveTo(w*0.08,py);
-    ctx.lineTo(w*0.92,py);
-    ctx.stroke();
-   }
-
-   // 2) Chapter-Specific 3D Planetary / Reactor Depth Feature
    if(mid===0||mid===2){
-    // Curved Orbital Earth Limb Glow in the abyss below
-    const grad=ctx.createRadialGradient(w*0.5,h*1.32,h*0.35,w*0.5,h*1.32,h*0.95);
-    grad.addColorStop(0,'rgba(75,185,255,0.22)');
-    grad.addColorStop(0.45,'rgba(30,110,200,0.08)');
+    const grad=ctx.createRadialGradient(w*0.5,h*1.28,h*0.3,w*0.5,h*1.28,h*0.92);
+    grad.addColorStop(0,'rgba(75,185,255,0.2)');
+    grad.addColorStop(0.45,'rgba(30,110,200,0.07)');
     grad.addColorStop(1,'rgba(0,0,0,0)');
     ctx.fillStyle=grad;
     ctx.fillRect(0,0,w,h);
    }else if(mid===1){
-    // Cryogenic Bio-Dome Aurora Mist
     const grad=ctx.createRadialGradient(w*0.5,h*0.5,h*0.1,w*0.5,h*0.5,h*0.7);
     grad.addColorStop(0,'rgba(80,230,180,0.08)');
     grad.addColorStop(1,'rgba(0,0,0,0)');
     ctx.fillStyle=grad;
     ctx.fillRect(0,0,w,h);
-   }else if(mid===3){
-    // Mirror Sanctum Vertical Quantum Pillars
-    ctx.fillStyle='rgba(140,210,255,0.035)';
-    for(let k=1;k<=6;k++){
-     const px=w*(k/7)+Math.sin(t*0.4+k)*12;
-     ctx.fillRect(px-8,h*0.1,16,h*0.8);
-    }
    }else if(mid===4){
-    // Red Zero Overmind Core Pulse
-    const pulse=0.12+0.05*Math.sin(t*2.2);
-    const grad=ctx.createRadialGradient(w*0.5,h*0.24,10,w*0.5,h*0.24,h*0.65);
+    const pulse=0.11+0.04*Math.sin(t*2.2);
+    const grad=ctx.createRadialGradient(w*0.5,h*0.5,10,w*0.5,h*0.5,h*0.65);
     grad.addColorStop(0,`rgba(255,40,75,${pulse})`);
     grad.addColorStop(1,'rgba(0,0,0,0)');
     ctx.fillStyle=grad;
     ctx.fillRect(0,0,w,h);
    }
 
-   // 3) Floating 3D Atmospheric Particles (Spores / Cryo Frost / Embers / Star Debris)
    for(const p of particles){
     p.x=(p.x+p.vx+1)%1;
     p.y=(p.y+p.vy+1)%1;
@@ -14516,7 +14904,6 @@ const K23={};
   requestAnimationFrame(drawEnv);
  }
 
- // Initialize UI hooks
  function initM26(){
   setupDiegeticControls26();
   setupEnvCanvas26();
@@ -14537,7 +14924,7 @@ const K23={};
  window.__M26__={
   ensureButterfly,
   getDynamicPersona26,
-  toggle3D(){m26Use3D=!m26Use3D;syncInGameClass26();return m26Use3D;}
+  openDetroitFlowchart27
  };
 })();
 

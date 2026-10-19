@@ -1,5 +1,6 @@
-/* ===== M26 — EMBEDDED FULL-BLEED 3D VIEWPORT, PROGRESSIVE PACING, SHAPED MAPS,
-   LIVING DYNAMIC CARDS & BUTTERFLY EFFECT CAUSALITY SYSTEM ===== */
+/* ===== M26/M27 — PURE 0° TOP-DOWN VIEW + HEARTHSTONE-STYLE 3D DIORAMA BOARD PROPS
+   + DETROIT: BECOME HUMAN PURE LINEAR CAUSALITY FLOW (NO LEVEL SELECT)
+   + PROGRESSIVE 3V3-TO-6V6 PACING + SHAPED MAPS & LIVING CARDS ===== */
 (function(){
  'use strict';
  if(typeof window==='undefined')return;
@@ -8,7 +9,7 @@
  const isFilmTest=()=>location.hash==='#filmtest';
 
  /* =========================================================================
-    1. BUTTERFLY EFFECT ENGINE (C.butterfly — 前面影响后面，跨章因果连锁)
+    1. BUTTERFLY EFFECT ENGINE (C.butterfly — 底特律变人式纯线性因果链)
     ========================================================================= */
  function ensureButterfly(){
   if(!C)return null;
@@ -21,7 +22,7 @@
     bridgeKey:null,       // 'egis' | 'hive'
     mirrorChoice:null,    // 'mercy' | 'sever'
     zeroCasualtyCh1:false,
-    echoes:[]             // [{ch, title, effect, side}]
+    echoes:[]             // [{ch, title, effect}]
    };
   }
   return C.butterfly;
@@ -48,41 +49,39 @@
      const larkDead=(larkUnit&&larkUnit.dead)||(larkRec&&larkRec.status==='destroyed');
      if(larkInf){
       bf.larkFate='infected';
-      addButterflyEcho(1,'折翼入巢','第一章璃雀被赤蛛寄生 → 后续章节她将作为「赤巢猎首」率伏兵倒戈阻击，零音解锁【孤狼决意】');
+      addButterflyEcho(1,'折翼入巢','第一章璃雀被赤蛛寄生 → 触发线性遭遇【崩塌隔离区】，第二章她将作为「赤巢猎首」倒戈阻击，零音解锁【孤狼决意】');
      }else if(larkDead){
       bf.larkFate='fallen';
-      addButterflyEcho(1,'翠风绝响','第一章璃雀陨落 → 小队全员背负哀恸，开局同步率 +1');
+      addButterflyEcho(1,'翠风绝响','第一章璃雀陨落 → 小队全员背负哀恸，后续开局同步率 +1');
      }else{
       bf.larkFate='saved';
-      addButterflyEcho(1,'翠风生还','第一章成功护住璃雀 → 后续章节璃雀提前侦测赤蛛伏击并部署前哨信标');
+      addButterflyEcho(1,'翠风生还','第一章成功护住璃雀 → 第二章璃雀提前标出通风盲区令弥砂同步 +1');
      }
      if(S.flags.courierEscaped){
       bf.courierFate='escaped';
-      addButterflyEcho(1,'信使脱逃','第一章载毒信使逃入深空 → 母巢解析走法，后续赤蛛群进化出高阶捕食蛛');
+      addButterflyEcho(1,'信使脱逃','第一章载毒信使逃离 → 线性触发【轨道列车截击】，后续赤蛛群进化出高阶捕食蛛');
      }else{
       bf.courierFate='intercepted';
-      addButterflyEcho(1,'截断信使','第一章成功截杀载毒信使 → 第二章温室泄压延后 1 轮，终章西护盾预破解');
+      addButterflyEcho(1,'截断信使','第一章截杀载毒信使 → 第二章封闭中央玻璃深渊格化为捷径，首次泄压延后 1 轮');
      }
      const gLost=S.units.some(u=>u.char&&(u.dead||u.side==='r'));
-     if(!gLost&&C.side==='g'){
-      bf.zeroCasualtyCh1=true;
-     }
+     if(!gLost&&C.side==='g')bf.zeroCasualtyCh1=true;
     }else if(S.mid===1){
      const misaUnit=S.units.find(u=>u.char==='misa');
      if((misaUnit&&misaUnit.side==='r')||(misaRec&&misaRec.side==='r')){
       bf.misaFate='infected';
-      addButterflyEcho(2,'工匠失守','第二章弥砂被红蜘蛛寄生 → 第三章天桥被赤巢菌丝腐蚀，坍塌提前');
+      addButterflyEcho(2,'工匠失守','第二章弥砂被红蜘蛛寄生 → 线性触发【熔心死守】，第三章天桥被菌丝腐蚀提前坍塌');
      }else{
       bf.misaFate='saved';
-      addButterflyEcho(2,'工匠护航','第二章保住弥砂 → 第三章天桥结构加固，外侧桥面延缓坍塌 2 轮');
+      addButterflyEcho(2,'工匠护航','第二章保住弥砂 → 线性触发【三塔连锁过载】，第三章天桥外侧焊接两座加固踏板并延缓坍塌');
      }
     }else if(S.mid===2){
      if(S.flags.delivered==='g'||C.flags.keyOwner==='g'){
       bf.bridgeKey='egis';
-      addButterflyEcho(3,'方舟过桥','第三章成功护送方舟密钥 → 第四章镜室朔夜残存记忆共鸣，全队同步提升');
+      addButterflyEcho(3,'方舟过桥','第三章成功护送方舟密钥 → 线性触发【胸甲共鸣审判】，第四章镜室全队同步提升');
      }else{
       bf.bridgeKey='hive';
-      addButterflyEcho(3,'密钥落入赤巢','第三章密钥被母巢截获 → 第四章镜室防御哨塔强化');
+      addButterflyEcho(3,'密钥落入赤巢','第三章密钥被母巢截获 → 线性触发【双核夺密】，第四章镜室防御哨塔强化');
      }
     }
    }
@@ -90,20 +89,49 @@
   return m26BaseResolveBattle.apply(this,arguments);
  };
 
+ // Deterministic Detroit-Style Linear Interlude Routing based on Butterfly State!
+ // Overrides random interlude selection so the linear campaign branches strictly by cause-and-effect.
+ const m27PreNextMission=nextMission;
+ nextMission=function(){
+  try{
+   if(!isQA()&&!isFilmTest()&&C&&C.step>0&&C.step<4&&!C.finished&&!(S&&S.saga)){
+    const bf=ensureButterfly();
+    if(!C.m27LinearInterlude)C.m27LinearInterlude={};
+    const gap=C.step;
+    if(!C.m27LinearInterlude[gap]&&window.__M24__&&typeof window.__M24__.launchM24Interlude==='function'){
+     C.m27LinearInterlude[gap]=1;
+     // Mark m24/p23 interlude slot as handled so we don't double-fire random interludes
+     if(C.m24&&C.m24.interludes)C.m24.interludes[gap]=1;
+     if(C.p23&&C.p23.done)C.p23.done[gap]=1;
+     let linearKind='blackout';
+     if(gap===1){
+      if(bf?.larkFate==='infected')linearKind='quarantine';
+      else if(bf?.courierFate==='escaped')linearKind='convoy';
+      else linearKind='blackout';
+     }else if(gap===2){
+      if(bf?.misaFate==='infected')linearKind='siege';
+      else linearKind='overload';
+     }else if(gap===3){
+      if(bf?.bridgeKey==='egis')linearKind='awakening';
+      else linearKind='heist';
+     }
+     persist();
+     window.__M24__.launchM24Interlude(linearKind);
+     return;
+    }
+   }
+  }catch(e){console.warn('m27 linear nextMission',e);}
+  return m27PreNextMission.apply(this,arguments);
+ };
+
  /* =========================================================================
     2. PROGRESSIVE CAMPAIGN PACING & DIVERSE SHAPED MAPS (由简入繁 + 异形地图)
     ========================================================================= */
- // Distinct non-rectangular map silhouettes per chapter & special mode
  const CHAPTER_MAP_SHAPES={
-  // Ch1: Airlock Corridor (Narrow notched boarding corridor — intimate 3v3 opening)
   0:['0,0','0,1','7,1','0,3','7,3','0,5','0,6'],
-  // Ch2: Octagonal Bio-Dome (Cut corners + central glass pit)
   1:['0,0','1,0','0,1','6,0','0,6','1,7','6,7','7,6','7,7','3,4'],
-  // Ch3: Hourglass Twin-Bridge (Deep orbital chasm flanks + cut corners)
   2:['0,0','1,0','6,0','7,1','0,6','1,7','6,7','7,7'],
-  // Ch4: Cruciform Mirror Sanctum (Diamond/Cross archive hall)
   3:['0,0','1,0','0,1','6,0','7,1','0,6','1,7','6,7','7,6','7,7'],
-  // Ch5: Stepped Throne Citadel (Royal pyramid leading to Overmind Core)
   4:['0,0','1,0','6,0','0,1','7,1','0,4','7,4','0,6','7,6']
  };
 
@@ -131,12 +159,6 @@
   }
  }
 
- // Progressive Unit Cap per Chapter:
- // Ch1: 3 vs 3 (Simple, fast, tense intro!)
- // Ch2: 4 vs 4 (Medium squad + environment)
- // Ch3: 4+capsule vs 5 (Bridge escort)
- // Ch4: 5 vs 5 (Mirror sanctum)
- // Ch5: 6 vs 6 (Grand finale)
  const m26BaseMakeMission=makeMission;
  makeMission=function(id){
   const s=m26BaseMakeMission.apply(this,arguments);
@@ -144,10 +166,8 @@
   try{
    const bf=ensureButterfly();
 
-   // 1) Progressive Unit Pacing: Trim overcrowded starting boards in early chapters!
+   // 1) Progressive Unit Pacing: Simple 3v3 in Ch1 -> gradually expanding to 6v6 in Ch5
    if(id===0){
-    // CHAPTER 1: Intimate Vanguard Encounter!
-    // Guardians deploy only Lyra, Akira, Lark (3 core heroes) onto the narrow airlock corridor
     const ch1KeepG=new Set(['lyra','akira','lark']);
     s.units=s.units.filter(u=>{
      if(u.side==='g'){
@@ -156,11 +176,9 @@
      }
      return true;
     });
-    // Position Lyra, Akira, Lark in a clean vanguard triangle near C4 uplink & south airlock
     const lyra=s.units.find(u=>u.char==='lyra');if(lyra){lyra.x=2;lyra.y=6;}
     const akira=s.units.find(u=>u.char==='akira');if(akira){akira.x=4;akira.y=6;}
     const lark=s.units.find(u=>u.char==='lark');if(lark){lark.side='g';lark.x=2;lark.y=5;}
-    // Trim Red Spiders in Ch1: 2 spiders (+1 courier) when playing Guardian, 3 spiders (+1 courier) when playing Red Hive
     const maxSpiders=C.side==='r'?3:2;
     let spidersSeen=0;
     s.units=s.units.filter(u=>{
@@ -175,7 +193,6 @@
     if(spList[1]){spList[1].x=5;spList[1].y=2;}
     if(spList[2]){spList[2].x=3;spList[2].y=1;}
    }else if(id===1){
-    // CHAPTER 2: 4v4 Bio-Dome Expansion
     const priorityG=['lyra','misa','sera','akira','lark','iris','celia'];
     const gChars=s.units.filter(u=>u.side==='g'&&u.char);
     if(gChars.length>4){
@@ -183,16 +200,13 @@
      const keepSet=new Set(gChars.slice(0,4).map(u=>u.uid));
      s.units=s.units.filter(u=>!(u.side==='g'&&u.char&&!keepSet.has(u.uid)));
     }
-    // Remove extra generic drone so the 4 mecha girls shine
     s.units=s.units.filter(u=>!(u.side==='g'&&u.kind==='drone'));
-    // Cap Red Spiders at 3 in Ch2 (plus infected girls like Veil/Lark)
     let sp=0;
     s.units=s.units.filter(u=>{
      if(u.side==='r'&&u.kind==='spider'){sp++;return sp<=3;}
      return true;
     });
    }else if(id===2){
-    // CHAPTER 3: 4 Guardians + Capsule vs 3 Spiders + Infected Hunters
     const priorityG=['lyra','akira','vega','astra','misa','lark','iris'];
     const gChars=s.units.filter(u=>u.side==='g'&&u.char);
     if(gChars.length>4){
@@ -207,7 +221,6 @@
      return true;
     });
    }else if(id===3){
-    // CHAPTER 4: 5 Guardians vs Red Hive Sanctum
     const gChars=s.units.filter(u=>u.side==='g'&&u.char);
     if(gChars.length>5){
      const keepSet=new Set(gChars.slice(0,5).map(u=>u.uid));
@@ -219,7 +232,6 @@
      return true;
     });
    }else if(id===4){
-    // CHAPTER 5: 6 Guardians Grand Finale
     const gChars=s.units.filter(u=>u.side==='g'&&u.char);
     if(gChars.length>6){
      const keepSet=new Set(gChars.slice(0,6).map(u=>u.uid));
@@ -227,7 +239,7 @@
     }
    }
 
-   // 2) Apply Butterfly Effect Gameplay Consequences to Later Chapters!
+   // 2) Apply Butterfly Effect Gameplay Consequences to Later Chapters
    if(bf){
     if(id===1){
      if(bf.larkFate==='saved'){
@@ -270,15 +282,13 @@
     }
    }
 
-   // 3) Carve Non-Rectangular 3D Map Shape for this Chapter (with Butterfly Geometry Mutations!)
+   // 3) Carve Non-Rectangular Top-Down Map Shape (with Butterfly Geometry Mutations!)
    if(CHAPTER_MAP_SHAPES[id]){
     let shapeVoids=[...CHAPTER_MAP_SHAPES[id]];
     if(bf){
-     // Butterfly Map Geometry Mutation 1: Intercepting Ch1 Courier seals Ch2 central glass pit (3,4)
      if(id===1&&bf.courierFate==='intercepted'){
       shapeVoids=shapeVoids.filter(k=>k!=='3,4');
      }
-     // Butterfly Map Geometry Mutation 2: Saving Misa in Ch2 welds stabilizer plates on Ch3 outer bridge (1,3 & 6,3)
      if(id===2&&bf.misaFate==='saved'){
       s.voids=s.voids.filter(k=>k!=='1,3'&&k!=='6,3');
      }
@@ -290,10 +300,9 @@
   return s;
  };
 
- // Also apply custom map shapes to the 12 special missions when launched
- if(window.__M24__&&typeof launchM24Interlude==='function'){
-  const origLaunch24=launchM24Interlude;
-  launchM24Interlude=function(kind){
+ if(window.__M24__&&typeof window.__M24__.launchM24Interlude==='function'){
+  const origLaunch24=window.__M24__.launchM24Interlude;
+  window.__M24__.launchM24Interlude=function(kind){
    const res=origLaunch24.apply(this,arguments);
    try{
     if(S&&SPECIAL_MAP_SHAPES[kind]){
@@ -303,14 +312,12 @@
    }catch(e){}
    return res;
   };
-  window.__M24__.launchM24Interlude=launchM24Interlude;
  }
 
  /* =========================================================================
     3. MASTER CINEMA PACING FOR CHAPTER 1 & BUTTERFLY ECHO INJECTIONS
     ========================================================================= */
  if(typeof FILM_INTRO!=='undefined'){
-  // Replace Chapter 1 Guardian intro with a tight, suspenseful, master-paced 3-character opening
   FILM_INTRO[0].g=function(){
    const first=!(C.history&&C.history.length);
    const prologue=first?[
@@ -331,7 +338,6 @@
    ];
   };
 
-  // Wrap filmIntro to inject Butterfly Effect Echoes at the start of Chapters 2–5
   const m26OrigFilmIntro=filmIntro;
   filmIntro=function(mid){
    const shots=m26OrigFilmIntro.apply(this,arguments)||[];
@@ -357,7 +363,150 @@
  }
 
  /* =========================================================================
-    4. DYNAMIC LIVING CARDS, CHEST SPIDER EMBLEM & DYNAMIC PERSONA EVOLUTION
+    4. HEARTHSTONE-STYLE 3D INTERACTIVE CORNER DIORAMA PROPS (炉石式沙盘可交互3D组件)
+    ========================================================================= */
+ const DIORAMA_PROPS={
+  dock:[
+   {pos:'tl',cls:'cy',name:'高压气闸阀',icon:'relay',msg:'【场景互动 · 高压气闸阀】阀门旋转，喷出一股零下41度的液氮白雾！'},
+   {pos:'tr',cls:'warn',name:'破损先遣头盔',icon:'spider',msg:'【场景互动 · 破损头盔】目镜闪过一道微弱红光，播放出17天前的电流残响……'},
+   {pos:'bl',cls:'cy',name:'深空雷达盘',icon:'eye',msg:'【场景互动 · 深空雷达阵列】脉冲波扫过甲板，锁死暗处的机械蜘蛛回波！'},
+   {pos:'br',cls:'gold',name:'备用聚变匣',icon:'cube',msg:'【场景互动 · 备用聚变匣】电容嗡鸣，跃出一串湛蓝的高压电弧！'}
+  ],
+  garden:[
+   {pos:'tl',cls:'bio',name:'翡翠培养舱',icon:'core',msg:'【场景互动 · 翡翠培养舱】营养液泛起荧光气泡，玻璃内壁映出藤蔓神经。'},
+   {pos:'tr',cls:'cy',name:'液氮冷却塔',icon:'relay',msg:'【场景互动 · 液氮冷却塔】冷却叶片高速旋转，散发出刺骨寒气！'},
+   {pos:'bl',cls:'warn',name:'赤巢孢子囊',icon:'spider',msg:'【场景互动 · 赤巢孢子囊】表皮微微搏动，飘出几缕猩红的纳米光尘。'},
+   {pos:'br',cls:'gold',name:'紧急泄压阀',icon:'lock',msg:'【场景互动 · 紧急泄压阀】气压表指针剧烈摆动，发出低沉的金属共鸣。'}
+  ],
+  bridge:[
+   {pos:'tl',cls:'gold',name:'磁浮牵引器',icon:'relay',msg:'【场景互动 · 磁浮牵引线圈】超导磁环亮起金光，稳住摇晃的桥面！'},
+   {pos:'tr',cls:'warn',name:'断裂太空锚',icon:'exit',msg:'【场景互动 · 断裂太空锚链】失重铁链在深空微风中轻轻碰撞，下方408公里即是地球。'},
+   {pos:'bl',cls:'cy',name:'天基测距仪',icon:'eye',msg:'【场景互动 · 天基测距仪】激光束穿透云层，校准外环轨道坐标。'},
+   {pos:'br',cls:'gold',name:'聚变稳压器',icon:'cube',msg:'【场景互动 · 聚变稳压器】稳压阀喷出蓝白色离子尾焰！'}
+  ],
+  mirror:[
+   {pos:'tl',cls:'cy',name:'记忆水晶柱',icon:'cube',msg:'【场景互动 · 量子记忆水晶】水晶内部浮现出三千二百名驻站人员的笑脸残影。'},
+   {pos:'tr',cls:'gold',name:'全息神经棱镜',icon:'eye',msg:'【场景互动 · 全息神经棱镜】折射出七彩的量子光斑，映照着镜室的过去与未来。'},
+   {pos:'bl',cls:'cy',name:'中枢服务器',icon:'relay',msg:'【场景互动 · 中枢服务器塔】光导纤维高速闪烁，回荡着朔夜写下的第一行代码。'},
+   {pos:'br',cls:'warn',name:'休眠人格舱',icon:'lock',msg:'【场景互动 · 休眠人格舱】舱盖紧锁，生命维持读数停留在第17天前。'}
+  ],
+  core:[
+   {pos:'tl',cls:'warn',name:'母巢孵化囊',icon:'spider',msg:'【场景互动 · 母巢孵化囊】金属卵壳剧烈跳动，内部传来机械蜘蛛八足抓挠的声响！'},
+   {pos:'tr',cls:'warn',name:'赤蛛神经节',icon:'core',msg:'【场景互动 · 赤蛛神经节】猩红光纤束同步闪烁，向整座空间站广播母巢心跳！'},
+   {pos:'bl',cls:'gold',name:'护盾发生器',icon:'lock',msg:'【场景互动 · 护盾发生器】偏导力场发生器过载运转，激起一圈金色能量涟漪！'},
+   {pos:'br',cls:'cy',name:'深渊反应釜',icon:'relay',msg:'【场景互动 · 深渊反应釜】高压等离子体在磁约束环内翻涌咆哮！'}
+  ]
+ };
+
+ function mountHearthstoneDioramaProps(theme){
+  const sur=document.querySelector('.board-surround');
+  if(!sur)return;
+  const list=DIORAMA_PROPS[theme]||DIORAMA_PROPS.dock;
+  sur.querySelectorAll('.m27-prop').forEach(el=>el.remove());
+  for(const item of list){
+   const btn=document.createElement('button');
+   btn.type='button';
+   btn.className=`m27-prop ${item.pos} ${item.cls}`;
+   btn.title=`点击互动：${item.name}（3D 战场环境组件）`;
+   btn.innerHTML=`<span class="m27-prop-core">${svg(item.icon)}</span><span class="m27-prop-label">${esc(item.name)}</span>`;
+   btn.onclick=(e)=>{
+    e.stopPropagation();
+    btn.classList.remove('m27-prop-burst');
+    void btn.offsetWidth;
+    btn.classList.add('m27-prop-burst');
+    try{if(typeof sfx==='function')sfx('select');}catch(_){}
+    try{radio('战场环境互动',item.msg);}catch(_){}
+    // Spawn a floor wave on the nearest corner cell for tactile feedback
+    const cx=item.pos.includes('l')?0:7,cy=item.pos.includes('t')?0:7;
+    const cell=$('board')?.querySelector(`.cell[data-x="${cx}"][data-y="${cy}"]`);
+    if(cell){
+     const w=document.createElement('span');
+     w.className='m26-floor-wave'+(item.cls==='warn'?' r':'');
+     cell.appendChild(w);
+     setTimeout(()=>w.remove(),550);
+    }
+   };
+   sur.appendChild(btn);
+  }
+ }
+
+ /* =========================================================================
+    5. DETROIT: BECOME HUMAN LINEAR CAUSALITY FLOWCHART (只读因果世界线树，无选关)
+    ========================================================================= */
+ function openDetroitFlowchart27(){
+  const bf=ensureButterfly()||{};
+  const step=C?C.step:0;
+  const nodes=[
+   {
+    ch:'CHAPTER 01',
+    name:'无声接舷 · A-12 气闸走廊',
+    state:step>0?'done':'current',
+    desc:'3 对 3 极简先遣遭遇战。零音、绛刃、璃雀三人切入寒铁气闸走廊，你的每一步操作直接决定后续章节的生死分流：',
+    branches:[
+     {label:'分支 A：护住璃雀（翠风生还）',cls:bf.larkFate==='saved'?'gold':bf.larkFate?'dim':'',unlocked:bf.larkFate==='saved'},
+     {label:'分支 B：璃雀被红蜘蛛寄生（折翼入巢 → 触发崩塌隔离区）',cls:bf.larkFate==='infected'?'red':bf.larkFate?'dim':'',unlocked:bf.larkFate==='infected'},
+     {label:'分支 C：截杀载毒信使（封闭第2章深渊格+延缓泄压）',cls:bf.courierFate==='intercepted'?'gold':bf.courierFate?'dim':'',unlocked:bf.courierFate==='intercepted'},
+     {label:'分支 D：信使逃脱（触发轨道列车截击+赤蛛进化）',cls:bf.courierFate==='escaped'?'red':bf.courierFate?'dim':'',unlocked:bf.courierFate==='escaped'}
+    ]
+   },
+   {
+    ch:'CHAPTER 02',
+    name:'玻璃花园 · B-04 八角生态环',
+    state:step>1?'done':step===1?'current':'locked',
+    desc:step>=1?'4 对 4 生态冷却环争夺战。前序蝴蝶效应已实时改变本关地形与初始兵力。':'【未解锁节点】需沿线性剧情完成第一章后自动进入。',
+    branches:[
+     {label:'分支 A：保住弥砂（焊接第3章天桥外侧踏板+触发三塔过载）',cls:bf.misaFate==='saved'?'gold':bf.misaFate?'dim':'',unlocked:bf.misaFate==='saved'},
+     {label:'分支 B：弥砂被红蜘蛛寄生（触发熔心死守+天桥腐蚀）',cls:bf.misaFate==='infected'?'red':bf.misaFate?'dim':'',unlocked:bf.misaFate==='infected'}
+    ]
+   },
+   {
+    ch:'CHAPTER 03',
+    name:'断轨天桥 · C-07 沙漏双桥',
+    state:step>2?'done':step===2?'current':'locked',
+    desc:step>=2?'高轨断桥方舟密钥护送战。两侧深渊坍塌倒计时受第二章战果直接影响。':'【未解锁节点】需沿线性剧情推进解锁。',
+    branches:[
+     {label:'分支 A：方舟密钥送抵北端（触发胸甲共鸣审判+第4章全队同步+1）',cls:bf.bridgeKey==='egis'?'gold':bf.bridgeKey?'dim':'',unlocked:bf.bridgeKey==='egis'},
+     {label:'分支 B：密钥落入赤巢（触发双核夺密+第4章敌方哨塔强化）',cls:bf.bridgeKey==='hive'?'red':bf.bridgeKey?'dim':'',unlocked:bf.bridgeKey==='hive'}
+    ]
+   },
+   {
+    ch:'CHAPTER 04',
+    name:'镜室叛歌 · D-00 十字棱镜殿',
+    state:step>3?'done':step===3?'current':'locked',
+    desc:step>=3?'5 对 5 量子镜像库中枢决战。解开朔夜最初的记忆签名。':'【未解锁节点】需沿线性剧情推进解锁。',
+    branches:[
+     {label:'命运抉择：保留她们真正的名字 vs 切断人格链',cls:C?.flags?.mercy!==null?'gold':'dim',unlocked:C?.flags?.mercy!==null}
+    ]
+   },
+   {
+    ch:'CHAPTER 05',
+    name:'赤巢零点 · Ω-00 阶梯母巢王座',
+    state:step===4?'current':'locked',
+    desc:step>=4?'6 对 6 终局审判。前四章积累的全部蝴蝶效应在此汇流！':'【未解锁终局】所有前序章节的蝴蝶效应将共同决定最终结局。',
+    branches:[
+     {label:'多重结局：根据全战役存活机娘、感染状态与因果抉择自动触发',cls:'dim',unlocked:false}
+    ]
+   }
+  ];
+
+  const html=`<div class="manual-note"><b>🦋《底特律：变人》式纯线性因果世界线（无自由选关 · 每一步皆有后果）</b><br>本作采用严格的<b>单向线性推进机制</b>：不设选关菜单，你在每一场战斗中是否保住同伴、是否截住信使、做出的每一次剧场抉择，都会实时改写后续章节的物理地形、登场首领与幕间遭遇战。</div>
+  <div class="m27-detroit-tree" style="margin-top:12px">
+   ${nodes.map(n=>`<div class="m27-detroit-node ${n.state}">
+    <div class="m27-detroit-step"><small>${n.ch}</small><strong>${n.state==='done'?'✓ 已完成':n.state==='current'?'▶ 当前章节':'🔒 未知命运'}</strong></div>
+    <div>
+     <h3 style="margin:0 0 4px;font-size:16px;color:#fff">${n.name}</h3>
+     <p style="margin:0;font-size:12.5px;color:#b8cedc;line-height:1.45">${n.desc}</p>
+     <div class="m27-detroit-branches">
+      ${n.branches.map(b=>`<span class="m27-branch-pill ${b.cls}">${b.unlocked?'🦋 已激活 · ':''}${b.label}</span>`).join('')}
+     </div>
+    </div>
+   </div>`).join('')}
+  </div>`;
+  openModal('蝴蝶效应 · 线性因果世界线树','DETROIT-STYLE CAUSALITY FLOWCHART',html);
+ }
+
+ /* =========================================================================
+    6. DYNAMIC LIVING CARDS, CHEST SPIDER EMBLEM & DYNAMIC PERSONA EVOLUTION
     ========================================================================= */
  function getDynamicPersona26(u){
   if(!u||!u.char)return null;
@@ -406,7 +555,6 @@
   };
  }
 
- // Inject animated chest spider SVG on infected girls & Butterfly Causality Crest on evolved heroes
  const m26BaseTokenHTML=tokenHTML;
  tokenHTML=function(u){
   let html=m26BaseTokenHTML.apply(this,arguments);
@@ -427,22 +575,22 @@
   return html;
  };
 
- // Set 3D Map Architectural Theme & Shape Subtitle Tag on renderBoard
  const MAP_THEMES_26={0:'dock',1:'garden',2:'bridge',3:'mirror',4:'core'};
  const MAP_SHAPE_NAMES_26={
-  0:'3D 狭长气闸廊 · 3v3微局',
-  1:'3D 八角生态双环',
-  2:'3D 沙漏断轨双桥',
-  3:'3D 十字棱镜圣殿',
-  4:'3D 阶梯母巢王座',
-  siege:'3D 熔心六角堡',
-  heist:'3D 菱形金库',
-  blackout:'3D 裂谷暗夜廊',
-  awakening:'3D 王座八角场',
-  convoy:'3D 磁浮峡谷轨',
-  overload:'3D 三角电容阵',
-  quarantine:'3D 坍缩孤岛'
+  0:'狭长气闸廊 · 3v3先遣战',
+  1:'八角生态双环',
+  2:'沙漏断轨双桥',
+  3:'十字棱镜圣殿',
+  4:'阶梯母巢王座',
+  siege:'熔心六角堡',
+  heist:'菱形金库',
+  blackout:'裂谷暗夜廊',
+  awakening:'王座八角场',
+  convoy:'磁浮峡谷轨',
+  overload:'三角电容阵',
+  quarantine:'坍缩孤岛'
  };
+ let lastMountedTheme27=null;
  const m26BaseRenderBoard=renderBoard;
  renderBoard=function(){
   const r=m26BaseRenderBoard.apply(this,arguments);
@@ -452,9 +600,40 @@
     const k=S.kind24||S.kind23;
     const theme=k==='siege'||k==='overload'?'core':k==='heist'||k==='awakening'?'mirror':k==='blackout'?'garden':(MAP_THEMES_26[S.mid]||'dock');
     bd.dataset.theme=theme;
+    if(lastMountedTheme27!==theme||!document.querySelector('.m27-prop')){
+     lastMountedTheme27=theme;
+     mountHearthstoneDioramaProps(theme);
+    }
+    // Populate .cell.void chasm tiles with Hearthstone-style interactive 3D top-down scenery miniatures
+    const voidIcons={dock:['relay','lock','cube'],garden:['core','cube','relay'],bridge:['exit','relay','lock'],mirror:['cube','eye','core'],core:['spider','core','lock']}[theme]||['relay','cube'];
+    const voidMsgs={
+     dock:'【3D 场景组件 · 气闸机械】悬空走廊外侧的深空锚点正在运转。',
+     garden:'【3D 场景组件 · 生态培养皿】深渊下方的低温培养罐泛着微光。',
+     bridge:'【3D 场景组件 · 轨道桥墩】断裂天桥外侧的磁浮稳压器闪烁着电火花。',
+     mirror:'【3D 场景组件 · 记忆棱柱】全息棱柱在深渊中投射出三千人的记忆残影。',
+     core:'【3D 场景组件 · 母巢苗床】深渊裂隙中的机械卵囊正在随母巢心跳搏动。'
+    };
+    bd.querySelectorAll('.cell.void').forEach((cell,idx)=>{
+     if(!cell.querySelector('.m27-void-prop')){
+      const ic=voidIcons[idx%voidIcons.length];
+      const prop=document.createElement('span');
+      prop.className='m27-void-prop';
+      prop.title='点击互动：3D 战场沙盘环境组件';
+      prop.innerHTML=svg(ic);
+      prop.onclick=(ev)=>{
+       ev.stopPropagation();
+       prop.classList.remove('m27-prop-burst');
+       void prop.offsetWidth;
+       prop.classList.add('m27-prop-burst');
+       try{if(typeof sfx==='function')sfx('select');}catch(_){}
+       try{radio('战场环境组件',voidMsgs[theme]||voidMsgs.dock);}catch(_){}
+      };
+      cell.appendChild(prop);
+     }
+    });
     const locEl=$('mission-location');
     if(locEl){
-     const shapeLabel=MAP_SHAPE_NAMES_26[k]||MAP_SHAPE_NAMES_26[S.mid]||'3D 异形战区';
+     const shapeLabel=MAP_SHAPE_NAMES_26[k]||MAP_SHAPE_NAMES_26[S.mid]||'异形战术沙盘';
      if(!locEl.querySelector('.m26-map-shape-tag')){
       locEl.insertAdjacentHTML('beforeend',`<span class="m26-map-shape-tag">${shapeLabel}</span>`);
      }else{
@@ -466,7 +645,6 @@
   return r;
  };
 
- // Hook deployLine so characters speak Butterfly-Effect-aware lines during board deployment
  if(typeof deployLine==='function'){
   const m26OrigDeployLine=deployLine;
   deployLine=function(id,side){
@@ -483,7 +661,6 @@
   };
  }
 
- // Enhance renderObjectives with Butterfly Echo Strip
  const m26BaseRenderObjectives=renderObjectives;
  renderObjectives=function(){
   const r=m26BaseRenderObjectives.apply(this,arguments);
@@ -496,10 +673,12 @@
      if(!strip){
       strip=document.createElement('div');
       strip.className='m26-butterfly-strip';
+      strip.title='点击查看《底特律：变人》式线性因果世界线树';
+      strip.onclick=()=>openDetroitFlowchart27();
       panel.appendChild(strip);
      }
      const items=bf.echoes.slice(-2);
-     strip.innerHTML=`<div class="m26-butterfly-strip-title">🦋 蝴蝶效应 · 因果回响</div>`+
+     strip.innerHTML=`<div class="m26-butterfly-strip-title"><span>🦋 蝴蝶效应 · 因果回响</span><span>查看世界线 ↗</span></div>`+
       items.map(e=>`<div class="m26-butterfly-item"><b>${esc(e.title)}</b>：${esc(e.effect)}</div>`).join('');
     }else if(strip){
      strip.remove();
@@ -509,7 +688,6 @@
   return r;
  };
 
- // Enhance renderDossier with Dynamic Persona Evolution tag
  const m26BaseRenderDossier=renderDossier;
  renderDossier=function(){
   const r=m26BaseRenderDossier.apply(this,arguments);
@@ -532,17 +710,14 @@
  };
 
  /* =========================================================================
-    5. EMBEDDED FULL-BLEED VIEWPORT SIZING, DIEGETIC COMMAND DRAWER & 3D ENV CANVAS
+    7. EMBEDDED FULL-BLEED VIEWPORT SIZING & DIEGETIC CONTROLS (NO LEVEL SELECT)
     ========================================================================= */
- let m26Use3D=true;
-
  function syncInGameClass26(){
   const inGame=!!($('game')&&!$('game').hidden);
   document.body.classList.toggle('m26-in-game',inGame);
-  document.body.classList.toggle('m26-3d',inGame&&m26Use3D);
+  document.body.classList.remove('m26-3d');
  }
 
- // Override refreshPieceSize so the board scales generously inside the 100vw x 100vh embedded stage
  const m26BaseRefreshSize=typeof refreshPieceSize==='function'?refreshPieceSize:null;
  if(m26BaseRefreshSize){
   refreshPieceSize=function(){
@@ -553,22 +728,20 @@
    }
    const availW=window.innerWidth-460;
    const availH=window.innerHeight-76;
-   const baseSize=Math.max(460,Math.min(availW,availH,880));
+   const baseSize=Math.max(460,Math.min(availW,availH,860));
    surround.style.width=Math.round(baseSize)+'px';
    surround.style.minWidth=Math.round(baseSize)+'px';
    surround.style.maxWidth='none';
   };
  }
 
- // Build Top-Right Sleek Diegetic Controls & Command Drawer (replacing 10+ boxy buttons)
  function setupDiegeticControls26(){
   if($('m26-top-controls'))return;
   const topBar=document.createElement('div');
   topBar.id='m26-top-controls';
   topBar.innerHTML=`
-   <button type="button" class="m26-corner-pill" id="m26-ops-quick" title="切换或直接体验 12 种特殊战术关卡">🎯 特遣关卡</button>
-   <button type="button" class="m26-corner-pill" id="m26-3d-toggle" title="切换 3D 立体倾角棋盘 / 正交俯视">🧊 3D 视界</button>
-   <button type="button" class="m26-corner-pill" id="m26-cmd-btn" title="打开战术终端菜单（图鉴/星图/AI强度/音效/重开）">≡ 战术终端</button>
+   <button type="button" class="m26-corner-pill gold" id="m27-causality-btn" title="查看《底特律：变人》式线性蝴蝶效应世界线树">🦋 因果世界线</button>
+   <button type="button" class="m26-corner-pill" id="m26-cmd-btn" title="打开战术终端菜单（角色图鉴/AI强度/音效/重开）">≡ 战术终端</button>
   `;
   document.body.appendChild(topBar);
 
@@ -577,12 +750,12 @@
   drawer.hidden=true;
   drawer.innerHTML=`
    <div class="m26-drawer-sec">
-    <small>TACTICAL ARCHIVE / 档案与星图</small>
+    <small>CAUSALITY & ARCHIVE / 因果与角色图鉴</small>
     <div class="m26-drawer-grid">
+     <button type="button" class="m26-drawer-btn" data-m26-act="causality">🦋 因果世界线树</button>
      <button type="button" class="m26-drawer-btn" data-m26-act="archive">角色图鉴 (18人)</button>
-     <button type="button" class="m26-drawer-btn" data-m26-act="starmap">战役分支星图</button>
-     <button type="button" class="m26-drawer-btn" data-m26-act="ops">12种特遣关卡</button>
      <button type="button" class="m26-drawer-btn" data-m26-act="cg">剧情 CG 画廊</button>
+     <button type="button" class="m26-drawer-btn" data-m26-act="casefile">调查卷宗记录</button>
     </div>
    </div>
    <div class="m26-drawer-sec">
@@ -598,21 +771,16 @@
     <div class="m26-drawer-grid">
      <button type="button" class="m26-drawer-btn" data-m26-act="help">作战规则手册</button>
      <button type="button" class="m26-drawer-btn" data-m26-act="audio">音乐与音效</button>
-     <button type="button" class="m26-drawer-btn" data-m26-act="retry">重开当前关卡</button>
+     <button type="button" class="m26-drawer-btn" data-m26-act="retry">重开当前章节</button>
      <button type="button" class="m26-drawer-btn" data-m26-act="menu">系统菜单 / 主界面</button>
     </div>
    </div>
   `;
   document.body.appendChild(drawer);
 
-  $('m26-ops-quick').onclick=()=>{
+  $('m27-causality-btn').onclick=()=>{
    drawer.hidden=true;
-   if(window.__M24__&&window.__M24__.openOpsSelector24)window.__M24__.openOpsSelector24();
-  };
-  $('m26-3d-toggle').onclick=()=>{
-   m26Use3D=!m26Use3D;
-   $('m26-3d-toggle').textContent=m26Use3D?'🧊 3D 视界':'📐 平面视界';
-   syncInGameClass26();
+   openDetroitFlowchart27();
   };
   $('m26-cmd-btn').onclick=(e)=>{
    e.stopPropagation();
@@ -636,17 +804,16 @@
    if(!actBtn)return;
    const act=actBtn.dataset.m26Act;
    drawer.hidden=true;
-   if(act==='archive')$('archive-btn')?.click();
-   else if(act==='starmap')$('starmap-btn')?.click();
-   else if(act==='ops'&&window.__M24__?.openOpsSelector24)window.__M24__.openOpsSelector24();
+   if(act==='causality')openDetroitFlowchart27();
+   else if(act==='archive')$('archive-btn')?.click();
    else if(act==='cg')$('cg-gallery-btn')?.click();
+   else if(act==='casefile')$('casefile-btn')?.click();
    else if(act==='help')$('help-btn')?.click();
    else if(act==='audio')$('audio-btn')?.click();
    else if(act==='retry')$('retry-btn')?.click();
    else if(act==='menu')$('menu-btn')?.click();
   });
 
-  // Add Quick Tactical Triggers (👁 威胁 & ⚡ 推演) right into the bottom-right Action Bar
   const actionButtons=document.querySelector('#game .action-buttons');
   if(actionButtons&&!actionButtons.querySelector('.m26-quick-actions')){
    const qa=document.createElement('div');
@@ -666,7 +833,6 @@
   }
  }
 
- // 3D Camera Impulse & Landing Shockwave Ring on Move / Attack
  const m26BasePerformMove=performMove;
  performMove=async function(m,isPlayer){
   try{
@@ -693,7 +859,7 @@
  };
 
  /* =========================================================================
-    6. REALTIME 3D BATTLEFIELD ENVIRONMENT CANVAS (#m26-env-canvas)
+    8. REALTIME TOP-DOWN AMBIENT ENVIRONMENT CANVAS (#m26-env-canvas)
     ========================================================================= */
  function setupEnvCanvas26(){
   if($('m26-env-canvas')||reducedMotion)return;
@@ -727,63 +893,29 @@
    const isRed=C&&C.side==='r';
    const t=ts*0.001;
 
-   // 1) 3D Perspective Abyssal Horizon Grid below the board
    ctx.save();
-   const horizonY=h*0.18;
-   const centerX=w*0.5;
-   const gridCol=isRed?'rgba(255,59,92,0.065)':mid===1?'rgba(110,240,190,0.06)':mid===4?'rgba(255,70,95,0.075)':'rgba(111,214,255,0.065)';
-   ctx.strokeStyle=gridCol;
-   ctx.lineWidth=1;
-   for(let i=-10;i<=10;i++){
-    ctx.beginPath();
-    ctx.moveTo(centerX+i*(w*0.035),horizonY);
-    ctx.lineTo(centerX+i*(w*0.14),h);
-    ctx.stroke();
-   }
-   const sweep=((t*0.18)%1);
-   for(let j=0;j<8;j++){
-    const p=(j/8+sweep*0.125)%1;
-    const py=horizonY+Math.pow(p,1.7)*(h-horizonY);
-    ctx.beginPath();
-    ctx.moveTo(w*0.08,py);
-    ctx.lineTo(w*0.92,py);
-    ctx.stroke();
-   }
-
-   // 2) Chapter-Specific 3D Planetary / Reactor Depth Feature
    if(mid===0||mid===2){
-    // Curved Orbital Earth Limb Glow in the abyss below
-    const grad=ctx.createRadialGradient(w*0.5,h*1.32,h*0.35,w*0.5,h*1.32,h*0.95);
-    grad.addColorStop(0,'rgba(75,185,255,0.22)');
-    grad.addColorStop(0.45,'rgba(30,110,200,0.08)');
+    const grad=ctx.createRadialGradient(w*0.5,h*1.28,h*0.3,w*0.5,h*1.28,h*0.92);
+    grad.addColorStop(0,'rgba(75,185,255,0.2)');
+    grad.addColorStop(0.45,'rgba(30,110,200,0.07)');
     grad.addColorStop(1,'rgba(0,0,0,0)');
     ctx.fillStyle=grad;
     ctx.fillRect(0,0,w,h);
    }else if(mid===1){
-    // Cryogenic Bio-Dome Aurora Mist
     const grad=ctx.createRadialGradient(w*0.5,h*0.5,h*0.1,w*0.5,h*0.5,h*0.7);
     grad.addColorStop(0,'rgba(80,230,180,0.08)');
     grad.addColorStop(1,'rgba(0,0,0,0)');
     ctx.fillStyle=grad;
     ctx.fillRect(0,0,w,h);
-   }else if(mid===3){
-    // Mirror Sanctum Vertical Quantum Pillars
-    ctx.fillStyle='rgba(140,210,255,0.035)';
-    for(let k=1;k<=6;k++){
-     const px=w*(k/7)+Math.sin(t*0.4+k)*12;
-     ctx.fillRect(px-8,h*0.1,16,h*0.8);
-    }
    }else if(mid===4){
-    // Red Zero Overmind Core Pulse
-    const pulse=0.12+0.05*Math.sin(t*2.2);
-    const grad=ctx.createRadialGradient(w*0.5,h*0.24,10,w*0.5,h*0.24,h*0.65);
+    const pulse=0.11+0.04*Math.sin(t*2.2);
+    const grad=ctx.createRadialGradient(w*0.5,h*0.5,10,w*0.5,h*0.5,h*0.65);
     grad.addColorStop(0,`rgba(255,40,75,${pulse})`);
     grad.addColorStop(1,'rgba(0,0,0,0)');
     ctx.fillStyle=grad;
     ctx.fillRect(0,0,w,h);
    }
 
-   // 3) Floating 3D Atmospheric Particles (Spores / Cryo Frost / Embers / Star Debris)
    for(const p of particles){
     p.x=(p.x+p.vx+1)%1;
     p.y=(p.y+p.vy+1)%1;
@@ -800,7 +932,6 @@
   requestAnimationFrame(drawEnv);
  }
 
- // Initialize UI hooks
  function initM26(){
   setupDiegeticControls26();
   setupEnvCanvas26();
@@ -821,6 +952,6 @@
  window.__M26__={
   ensureButterfly,
   getDynamicPersona26,
-  toggle3D(){m26Use3D=!m26Use3D;syncInGameClass26();return m26Use3D;}
+  openDetroitFlowchart27
  };
 })();

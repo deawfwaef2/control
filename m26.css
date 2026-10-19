@@ -1,4 +1,5 @@
-/* ===== M26 — MASTER-GRADE EMBEDDED 3D VIEWPORT, SHAPED 3D MAPS, LIVING CARDS & BUTTERFLY HUD ===== */
+/* ===== M26/M27 — PURE 0° TOP-DOWN VIEW + HEARTHSTONE-STYLE 3D DIORAMA BOARD COMPONENTS
+   + EMBEDDED DIEGETIC UI + DETROIT: BECOME HUMAN LINEAR CAUSALITY FLOW ===== */
 :root{
  --m26-cy:#6fd6ff;
  --m26-cy-glow:rgba(111,214,255,.45);
@@ -7,7 +8,15 @@
  --m26-gold:#f4c96b;
 }
 
-/* 1. Full-Screen 3D Environment Backdrop Canvas */
+/* 0. Strictly Hide All Level-Select / Star-Map Buttons (Detroit Linear Flow Only) */
+#title15 .t15-menu button[data-t="map"],
+#starmap-btn,
+#flow-btn,
+#m24-ops-btn{
+ display:none!important;
+}
+
+/* 1. Full-Screen Top-Down Environment Backdrop Canvas */
 #m26-env-canvas{
  position:fixed;
  inset:0;
@@ -44,6 +53,7 @@ body.m26-in-game .site-header .header-actions{
  position:fixed!important;
  top:-200px!important;
 }
+
 /* Diegetic Top-Left Chapter Watermark (embedded directly into the scene, no box) */
 body.m26-in-game .site-header .mission-heading,
 body.m26-in-game #game > .mission-heading{
@@ -86,7 +96,7 @@ body.m26-in-game .mission-heading-right{
  display:none!important;
 }
 
-/* Hide cluttered toolbar above board; controls live in sleek corner triggers + Command Drawer */
+/* Hide cluttered toolbar above board */
 body.m26-in-game #game .board-toolbar,
 body.m26-in-game #game .stage-ribbon,
 body.m26-in-game #game .board-bottomline{
@@ -103,15 +113,14 @@ html body.hud15.m26-in-game #game:not([hidden]){
  padding:0!important;
  margin:0!important;
  display:block!important;
- background:radial-gradient(ellipse at 50% 48%,rgba(12,24,36,.35) 0%,rgba(5,10,16,.82) 70%,rgba(2,5,9,.96) 100%)!important;
+ background:radial-gradient(ellipse at 50% 50%,rgba(14,28,42,.38) 0%,rgba(5,10,16,.85) 70%,rgba(2,5,9,.97) 100%)!important;
  overflow:hidden!important;
  z-index:10!important;
 }
 body.side-r.hud15.m26-in-game #game:not([hidden]){
- background:radial-gradient(ellipse at 50% 48%,rgba(38,10,18,.35) 0%,rgba(14,4,8,.84) 70%,rgba(5,1,3,.97) 100%)!important;
+ background:radial-gradient(ellipse at 50% 50%,rgba(40,10,18,.38) 0%,rgba(14,4,8,.86) 70%,rgba(5,1,3,.98) 100%)!important;
 }
 
-/* Center Battlefield takes 100% of screen so the 3D board is huge and centered */
 html body.hud15.m26-in-game #game .battlefield{
  position:fixed!important;
  inset:0!important;
@@ -120,7 +129,7 @@ html body.hud15.m26-in-game #game .battlefield{
  display:flex!important;
  align-items:center!important;
  justify-content:center!important;
- padding:18px 230px 44px 220px!important;
+ padding:18px 228px 46px 218px!important;
  margin:0!important;
  z-index:12!important;
  pointer-events:none!important;
@@ -141,7 +150,7 @@ html body.hud15.m26-in-game #hud-left{
  top:68px!important;
  left:18px!important;
  bottom:56px!important;
- width:clamp(200px,15.5vw,252px)!important;
+ width:clamp(198px,15vw,248px)!important;
  z-index:25!important;
  display:flex!important;
  flex-direction:column!important;
@@ -201,7 +210,7 @@ html body.hud15.m26-in-game #operation-brief #condition-note{
  text-shadow:0 1px 6px #000!important;
 }
 
-/* Butterfly Effect Causality Echo Strip (embedded under objectives) */
+/* Butterfly Effect Causality Echo Strip */
 .m26-butterfly-strip{
  display:flex;
  flex-direction:column;
@@ -210,6 +219,11 @@ html body.hud15.m26-in-game #operation-brief #condition-note{
  padding:7px 10px 7px 12px;
  border-left:2px solid var(--m26-gold);
  background:linear-gradient(90deg,rgba(28,20,6,.72) 0%,rgba(14,10,4,.35) 80%,transparent 100%);
+ cursor:pointer;
+ transition:background .2s;
+}
+.m26-butterfly-strip:hover{
+ background:linear-gradient(90deg,rgba(44,32,10,.85) 0%,rgba(22,16,6,.48) 85%,transparent 100%);
 }
 .m26-butterfly-strip-title{
  font-size:10px;
@@ -219,6 +233,7 @@ html body.hud15.m26-in-game #operation-brief #condition-note{
  text-transform:uppercase;
  display:flex;
  align-items:center;
+ justify-content:space-between;
  gap:6px;
 }
 .m26-butterfly-item{
@@ -232,7 +247,6 @@ html body.hud15.m26-in-game #operation-brief #condition-note{
  font-weight:700;
 }
 
-/* Minimal frameless telemetry for forces & combat log at bottom-left */
 html body.hud15.m26-in-game #hud-left .forces-panel{
  background:none!important;
  border:0!important;
@@ -268,7 +282,7 @@ html body.hud15.m26-in-game #game .right-rail{
  top:58px!important;
  right:16px!important;
  bottom:96px!important;
- width:clamp(215px,16.5vw,264px)!important;
+ width:clamp(212px,16vw,260px)!important;
  z-index:25!important;
  display:flex!important;
  flex-direction:column!important;
@@ -283,12 +297,10 @@ html body.hud15.m26-in-game #game .right-rail{
 html body.hud15.m26-in-game #game .right-rail > *{
  pointer-events:auto!important;
 }
-/* Hide duplicate panels if presentation.js moved them into right-rail */
 html body.hud15.m26-in-game #game .right-rail .forces-panel,
 html body.hud15.m26-in-game #game .right-rail .log-panel{
  display:none!important;
 }
-
 html body.hud15.m26-in-game #game .dossier{
  background:linear-gradient(270deg,rgba(5,12,20,.84) 0%,rgba(5,12,20,.58) 72%,transparent 100%)!important;
  border:0!important;
@@ -333,7 +345,6 @@ html body.hud15.m26-in-game #game .roster-panel .panel-title{
  display:none!important;
 }
 
-/* Dynamic Persona Evolution Tag inside Dossier */
 .m26-persona-evo{
  font-size:11px;
  line-height:1.35;
@@ -412,7 +423,6 @@ html body.hud15.m26-in-game #game .hud-side .end-phase{
  border-radius:5px!important;
 }
 
-/* Diegetic Quick Tactical Icons on the Action Controller */
 .m26-quick-actions{
  display:flex;
  align-items:center;
@@ -447,7 +457,7 @@ html body.hud15.m26-in-game #game .hud-side .end-phase{
  box-shadow:0 0 12px rgba(111,214,255,.35);
 }
 
-/* 7. Top-Right Sleek Diegetic Command Drawer Trigger & Overlay (Replaces 10+ cluttered buttons) */
+/* 7. Top-Right Sleek Diegetic Controls & Drawer (Zero Level-Select) */
 #m26-top-controls{
  position:fixed;
  top:14px;
@@ -484,17 +494,20 @@ body.m26-in-game #m26-top-controls{
  color:#fff;
  box-shadow:0 0 18px rgba(111,214,255,.35);
 }
-body.side-r .m26-corner-pill{
- border-color:rgba(255,80,105,.38);
- background:rgba(22,5,11,.78);
- color:#ffdce2;
+.m26-corner-pill.gold{
+ border-color:rgba(244,201,107,.45);
+ color:#ffeab8;
+}
+.m26-corner-pill.gold:hover{
+ border-color:var(--m26-gold);
+ box-shadow:0 0 18px rgba(244,201,107,.35);
 }
 
 #m26-drawer{
  position:fixed;
  top:56px;
  right:18px;
- width:min(360px,92vw);
+ width:min(340px,92vw);
  z-index:65;
  background:linear-gradient(165deg,rgba(8,18,28,.96),rgba(4,9,15,.98));
  border:1px solid rgba(111,214,255,.42);
@@ -553,9 +566,9 @@ html body.hud15.m26-in-game #game .radio-bar{
  left:50%!important;
  bottom:14px!important;
  transform:translateX(-50%)!important;
- width:min(640px,50vw)!important;
+ width:min(620px,48vw)!important;
  z-index:28!important;
- background:linear-gradient(90deg,transparent 0%,rgba(3,8,14,.82) 15%,rgba(3,8,14,.82) 85%,transparent 100%)!important;
+ background:linear-gradient(90deg,transparent 0%,rgba(3,8,14,.84) 15%,rgba(3,8,14,.84) 85%,transparent 100%)!important;
  border:0!important;
  padding:6px 24px!important;
  pointer-events:none!important;
@@ -577,156 +590,319 @@ body.side-r.hud15.m26-in-game #game .radio-bar .radio-indicator{
  50%{opacity:1;transform:scaleY(1.25)}
 }
 
-/* 9. 3D Tactile Board Architecture & True Shaped Void Chasms */
+/* =========================================================================
+   9. PURE 0° TOP-DOWN BOARD + HEARTHSTONE-STYLE 3D TABLETOP DIORAMA FRAME
+   (纯粹俯视图，绝不倾斜角度；棋盘边框、角落交互沙盘摆件与棋格为立体3D浮雕组件)
+   ========================================================================= */
 html body.m26-in-game .board-surround{
- background:radial-gradient(ellipse at 50% 50%,rgba(14,28,42,.52),rgba(4,9,15,.18) 72%,transparent 100%)!important;
- border:0!important;
- box-shadow:none!important;
- padding:24px 14px 18px 28px!important;
- transition:transform .45s cubic-bezier(.2,.8,.2,1)!important;
+ transform:none!important;
+ position:relative!important;
+ background:
+  radial-gradient(circle at 50% 50%,rgba(16,32,48,.92) 0%,rgba(9,18,28,.97) 68%,rgba(5,10,16,.99) 100%)!important;
+ border:3px solid #243b4f!important;
+ border-radius:18px!important;
+ padding:30px 22px 22px 34px!important;
+ box-shadow:
+  0 10px 0 #071019,
+  0 14px 0 #162636,
+  0 28px 70px rgba(0,0,0,.92),
+  inset 0 2px 1px rgba(200,240,255,.26),
+  inset 0 -6px 14px rgba(0,0,0,.85),
+  inset 0 0 0 5px rgba(10,20,30,.92),
+  inset 0 0 0 6px rgba(111,214,255,.22)!important;
 }
-html body.m26-in-game.m26-3d .board-surround{
- transform:perspective(1350px) rotateX(13deg) scale(1.02)!important;
- transform-style:preserve-3d;
+body.side-r.m26-in-game .board-surround{
+ background:
+  radial-gradient(circle at 50% 50%,rgba(38,10,18,.92) 0%,rgba(20,5,10,.97) 68%,rgba(10,2,5,.99) 100%)!important;
+ border-color:#4a1826!important;
+ box-shadow:
+  0 10px 0 #140408,
+  0 14px 0 #2b0b14,
+  0 28px 70px rgba(0,0,0,.92),
+  inset 0 2px 1px rgba(255,180,195,.24),
+  inset 0 -6px 14px rgba(0,0,0,.88),
+  inset 0 0 0 5px rgba(22,5,10,.92),
+  inset 0 0 0 6px rgba(255,59,92,.25)!important;
 }
 html body.m26-in-game .board-surround.m26-cam-impulse{
- animation:m26CamImpulse .32s cubic-bezier(.2,.8,.2,1)!important;
+ animation:m27BoardRecoil .24s cubic-bezier(.2,.8,.2,1)!important;
 }
-@keyframes m26CamImpulse{
- 0%{transform:perspective(1350px) rotateX(13deg) scale(1.02)}
- 35%{transform:perspective(1350px) rotateX(14.8deg) translateY(4px) scale(1.032)}
- 100%{transform:perspective(1350px) rotateX(13deg) scale(1.02)}
+@keyframes m27BoardRecoil{
+ 0%,100%{transform:none}
+ 35%{transform:scale(.992) translateY(3px)}
 }
+
+/* Hearthstone-Style 4 Interactive 3D Corner Diorama Widgets (.m27-prop) */
+.m27-prop{
+ position:absolute;
+ width:44px;
+ height:44px;
+ z-index:18;
+ border-radius:10px;
+ background:radial-gradient(circle at 38% 32%,#28435a 0%,#122130 62%,#081018 100%);
+ border:1.5px solid rgba(140,215,250,.45);
+ box-shadow:
+  0 5px 0 #050a10,
+  0 9px 16px rgba(0,0,0,.85),
+  inset 0 2px 2px rgba(255,255,255,.28),
+  inset 0 -3px 6px rgba(0,0,0,.8);
+ display:grid;
+ place-items:center;
+ cursor:pointer;
+ user-select:none;
+ transition:transform .16s cubic-bezier(.2,.8,.2,1),box-shadow .16s ease,border-color .16s ease;
+}
+body.side-r .m27-prop{
+ background:radial-gradient(circle at 38% 32%,#4d1828 0%,#260912 62%,#120308 100%);
+ border-color:rgba(255,90,115,.48);
+ box-shadow:
+  0 5px 0 #0f0206,
+  0 9px 16px rgba(0,0,0,.85),
+  inset 0 2px 2px rgba(255,200,210,.25),
+  inset 0 -3px 6px rgba(0,0,0,.85);
+}
+.m27-prop.tl{top:-14px;left:-14px}
+.m27-prop.tr{top:-14px;right:-14px}
+.m27-prop.bl{bottom:-14px;left:-14px}
+.m27-prop.br{bottom:-14px;right:-14px}
+.m27-prop:hover{
+ transform:translateY(-2px) scale(1.07);
+ border-color:#b8f0ff;
+ box-shadow:
+  0 7px 0 #050a10,
+  0 12px 22px rgba(0,0,0,.9),
+  0 0 18px rgba(111,214,255,.45),
+  inset 0 2px 3px rgba(255,255,255,.4);
+}
+.m27-prop:active,.m27-prop.m27-prop-burst{
+ animation:m27PropClick .48s cubic-bezier(.2,.8,.2,1);
+}
+@keyframes m27PropClick{
+ 0%{transform:translateY(3px) scale(.92)}
+ 40%{transform:translateY(-5px) scale(1.14) rotate(6deg);filter:brightness(1.45) drop-shadow(0 0 16px var(--m26-cy))}
+ 100%{transform:none;filter:none}
+}
+.m27-prop svg{
+ width:26px;
+ height:26px;
+ filter:drop-shadow(0 2px 3px rgba(0,0,0,.85)) drop-shadow(0 0 6px currentColor);
+}
+.m27-prop-core{
+ color:#7ce0ff;
+}
+.m27-prop.warn .m27-prop-core{
+ color:#ff5470;
+}
+.m27-prop.gold .m27-prop-core{
+ color:#f5ca69;
+}
+.m27-prop.bio .m27-prop-core{
+ color:#6ef2be;
+}
+.m27-prop-label{
+ position:absolute;
+ bottom:-16px;
+ left:50%;
+ transform:translateX(-50%);
+ font-size:9.5px;
+ font-weight:800;
+ letter-spacing:.08em;
+ white-space:nowrap;
+ color:rgba(195,232,250,.85);
+ text-shadow:0 1px 4px #000,0 0 8px #000;
+ pointer-events:none;
+ opacity:0;
+ transition:opacity .16s ease;
+}
+.m27-prop:hover .m27-prop-label{
+ opacity:1;
+}
+
+/* Pure 0° Top-Down Recessed Board Grid Trench */
 html body.m26-in-game #board{
- background:transparent!important;
- border:0!important;
- box-shadow:none!important;
- gap:3px!important;
- padding:4px!important;
+ transform:none!important;
+ background:rgba(4,9,15,.85)!important;
+ border:2px solid rgba(111,214,255,.24)!important;
+ border-radius:10px!important;
+ box-shadow:inset 0 6px 16px rgba(0,0,0,.92),0 1px 0 rgba(255,255,255,.08)!important;
+ gap:4px!important;
+ padding:6px!important;
 }
 html body.m26-in-game #board::after{
  display:none!important;
 }
 
-/* 3D Sculpted Playable Tiles */
+/* Top-Down 3D Sculpted Playable Tiles (Physical Beveled Blocks Viewed from Above) */
 html body.m26-in-game #board .cell:not(.void){
- background:linear-gradient(155deg,rgba(26,46,66,.92) 0%,rgba(13,24,36,.95) 60%,rgba(8,15,24,.98) 100%)!important;
- border-radius:5px!important;
+ background:
+  radial-gradient(circle at 30% 25%,rgba(65,115,155,.22),transparent 60%),
+  linear-gradient(145deg,#1d3347 0%,#122231 58%,#0b1520 100%)!important;
+ border-radius:6px!important;
  box-shadow:
-  0 7px 0 #050b12,
-  0 12px 20px rgba(0,0,0,.78),
-  inset 0 1px 0 rgba(180,235,255,.22),
-  inset 0 0 0 1px rgba(111,214,255,.14)!important;
- transition:transform .18s ease,background .18s ease,box-shadow .18s ease!important;
+  0 4px 0 #050b12,
+  0 6px 10px rgba(0,0,0,.78),
+  inset 0 1.5px 0 rgba(195,240,255,.28),
+  inset 1.5px 0 0 rgba(195,240,255,.14),
+  inset 0 -2px 3px rgba(0,0,0,.65),
+  inset 0 0 0 1px rgba(111,214,255,.16)!important;
+ transition:transform .15s ease,background .15s ease,box-shadow .15s ease!important;
 }
 html body.m26-in-game #board .cell.dark:not(.void){
- background:linear-gradient(155deg,rgba(18,33,48,.94) 0%,rgba(9,18,28,.96) 60%,rgba(5,11,18,.98) 100%)!important;
+ background:
+  radial-gradient(circle at 30% 25%,rgba(45,85,120,.18),transparent 60%),
+  linear-gradient(145deg,#152636 0%,#0d1824 58%,#081018 100%)!important;
  box-shadow:
-  0 7px 0 #04080e,
-  0 12px 20px rgba(0,0,0,.82),
-  inset 0 1px 0 rgba(150,215,245,.15),
-  inset 0 0 0 1px rgba(111,214,255,.1)!important;
+  0 4px 0 #04080e,
+  0 6px 10px rgba(0,0,0,.82),
+  inset 0 1.5px 0 rgba(160,220,245,.2),
+  inset 0 -2px 3px rgba(0,0,0,.7),
+  inset 0 0 0 1px rgba(111,214,255,.12)!important;
 }
 
-/* Chapter-Specific 3D Architectural Tile Themes */
-/* Theme 1: Bioluminescent Cryo-Garden (Octagonal Bio-Dome) */
+/* Chapter-Specific Top-Down 3D Diorama Tile Materials */
 html body.m26-in-game #board[data-theme="garden"] .cell:not(.void){
- background:linear-gradient(155deg,rgba(18,52,48,.92) 0%,rgba(10,30,28,.95) 60%,rgba(5,18,17,.98) 100%)!important;
- box-shadow:0 7px 0 #03100f,0 12px 20px rgba(0,0,0,.8),inset 0 1px 0 rgba(140,255,220,.24),inset 0 0 0 1px rgba(90,230,190,.16)!important;
+ background:radial-gradient(circle at 30% 25%,rgba(70,210,175,.18),transparent 60%),linear-gradient(145deg,#143a36 0%,#0c2422 58%,#061413 100%)!important;
+ box-shadow:0 4px 0 #030d0c,0 6px 10px rgba(0,0,0,.8),inset 0 1.5px 0 rgba(150,255,220,.28),inset 0 -2px 3px rgba(0,0,0,.65),inset 0 0 0 1px rgba(90,230,190,.18)!important;
 }
 html body.m26-in-game #board[data-theme="garden"] .cell.dark:not(.void){
- background:linear-gradient(155deg,rgba(12,38,35,.94) 0%,rgba(7,22,21,.96) 60%,rgba(4,13,12,.98) 100%)!important;
+ background:radial-gradient(circle at 30% 25%,rgba(50,170,145,.14),transparent 60%),linear-gradient(145deg,#0e2c29 0%,#081b19 58%,#040f0e 100%)!important;
 }
-/* Theme 2: High-Orbit Titanium Twin Bridge */
 html body.m26-in-game #board[data-theme="bridge"] .cell:not(.void){
- background:linear-gradient(155deg,rgba(34,48,68,.93) 0%,rgba(18,27,42,.96) 60%,rgba(10,16,26,.98) 100%)!important;
- box-shadow:0 8px 0 #050912,0 14px 24px rgba(0,0,0,.85),inset 0 1px 0 rgba(200,235,255,.28),inset 0 0 0 1px rgba(130,200,255,.18)!important;
+ background:radial-gradient(circle at 30% 25%,rgba(120,185,245,.22),transparent 60%),linear-gradient(145deg,#24354c 0%,#152133 58%,#0b121e 100%)!important;
+ box-shadow:0 5px 0 #050912,0 8px 14px rgba(0,0,0,.85),inset 0 1.5px 0 rgba(210,240,255,.32),inset 0 -2px 4px rgba(0,0,0,.7),inset 0 0 0 1px rgba(130,200,255,.2)!important;
 }
-/* Theme 3: Quantum Mirror Sanctum (Crystalline Violet-Obsidian) */
 html body.m26-in-game #board[data-theme="mirror"] .cell:not(.void){
- background:linear-gradient(155deg,rgba(32,26,58,.92) 0%,rgba(18,14,36,.95) 60%,rgba(10,8,22,.98) 100%)!important;
- box-shadow:0 7px 0 #070512,0 12px 22px rgba(0,0,0,.82),inset 0 1px 0 rgba(210,190,255,.26),inset 0 0 0 1px rgba(165,140,255,.18)!important;
+ background:radial-gradient(circle at 30% 25%,rgba(170,140,255,.2),transparent 60%),linear-gradient(145deg,#221c3d 0%,#141028 58%,#0b0818 100%)!important;
+ box-shadow:0 4px 0 #060410,0 6px 12px rgba(0,0,0,.82),inset 0 1.5px 0 rgba(220,200,255,.3),inset 0 -2px 3px rgba(0,0,0,.68),inset 0 0 0 1px rgba(165,140,255,.2)!important;
 }
 html body.m26-in-game #board[data-theme="mirror"] .cell.dark:not(.void){
- background:linear-gradient(155deg,rgba(22,18,42,.94) 0%,rgba(12,10,26,.96) 60%,rgba(7,5,16,.98) 100%)!important;
+ background:radial-gradient(circle at 30% 25%,rgba(130,105,220,.15),transparent 60%),linear-gradient(145deg,#18142e 0%,#0e0b1e 58%,#070512 100%)!important;
 }
-/* Theme 4: Red Zero Overmind Citadel (Volcanic Biomech) */
 html body.m26-in-game #board[data-theme="core"] .cell:not(.void){
- background:linear-gradient(155deg,rgba(48,16,26,.93) 0%,rgba(28,8,15,.96) 60%,rgba(16,4,9,.98) 100%)!important;
- box-shadow:0 8px 0 #0d0206,0 14px 24px rgba(0,0,0,.86),inset 0 1px 0 rgba(255,150,175,.24),inset 0 0 0 1px rgba(255,65,95,.2)!important;
+ background:radial-gradient(circle at 30% 25%,rgba(255,70,105,.2),transparent 60%),linear-gradient(145deg,#33121d 0%,#1f0911 58%,#120409 100%)!important;
+ box-shadow:0 4px 0 #0c0205,0 6px 12px rgba(0,0,0,.86),inset 0 1.5px 0 rgba(255,165,185,.28),inset 0 -2px 3px rgba(0,0,0,.72),inset 0 0 0 1px rgba(255,65,95,.22)!important;
 }
 html body.m26-in-game #board[data-theme="core"] .cell.dark:not(.void){
- background:linear-gradient(155deg,rgba(34,10,18,.95) 0%,rgba(20,5,11,.97) 60%,rgba(11,2,6,.99) 100%)!important;
-}
-body.side-r.m26-in-game #board .cell:not(.void){
- box-shadow:
-  0 7px 0 #110408,
-  0 12px 20px rgba(0,0,0,.82),
-  inset 0 1px 0 rgba(255,160,180,.18),
-  inset 0 0 0 1px rgba(255,59,92,.14)!important;
-}
-html body.m26-in-game #board .cell:not(.void):hover{
- transform:translateY(-2px);
- box-shadow:
-  0 9px 0 #060e17,
-  0 16px 26px rgba(0,0,0,.85),
-  inset 0 1px 0 rgba(210,245,255,.35),
-  inset 0 0 0 1px rgba(111,214,255,.38)!important;
+ background:radial-gradient(circle at 30% 25%,rgba(210,50,80,.15),transparent 60%),linear-gradient(145deg,#260c15 0%,#16060c 58%,#0c0206 100%)!important;
 }
 
-/* TRUE CARVED ABYSS / VOID CELLS — Creates Non-Rectangular Shaped Maps! */
+/* Carved Abyss / Void Chasms with Hearthstone-Style Top-Down 3D Diorama Scenery Props */
 html body.m26-in-game #board .cell.void{
- background:radial-gradient(circle at 50% 50%,rgba(111,214,255,.04) 0%,transparent 70%)!important;
- border:1px dashed rgba(111,214,255,.07)!important;
- border-radius:6px!important;
- box-shadow:inset 0 0 28px rgba(0,0,0,.75)!important;
- opacity:.22!important;
- pointer-events:none!important;
- transform:translateY(8px) scale(.92)!important;
-}
-body.side-r.m26-in-game #board .cell.void{
- border-color:rgba(255,59,92,.09)!important;
+ background:radial-gradient(circle at 50% 50%,rgba(6,13,22,.82) 0%,rgba(2,5,9,.96) 100%)!important;
+ border:1px solid rgba(111,214,255,.09)!important;
+ border-radius:8px!important;
+ box-shadow:inset 0 8px 20px rgba(0,0,0,.96),inset 0 0 0 1px rgba(0,0,0,.9)!important;
+ opacity:1!important;
+ pointer-events:auto!important;
+ cursor:default!important;
+ transform:none!important;
+ overflow:hidden!important;
 }
 html body.m26-in-game #board .cell.void::before,
 html body.m26-in-game #board .cell.void::after{
  display:none!important;
 }
 
-/* 3D Elevated Walls / Bulkheads */
-html body.m26-in-game #board .cell.wall:not(.void){
- background:linear-gradient(160deg,#243544 0%,#121d27 65%,#0a1118 100%)!important;
- transform:translateY(-4px)!important;
+/* 3D Diorama Scenery Objects inside Void Chasms (Pure Top-Down 3D Miniatures) */
+.m27-void-prop{
+ position:absolute;
+ inset:12%;
+ border-radius:8px;
+ display:grid;
+ place-items:center;
+ background:radial-gradient(circle at 35% 30%,rgba(42,72,98,.85) 0%,rgba(16,29,42,.92) 65%,rgba(7,13,20,.98) 100%);
+ border:1px solid rgba(130,205,245,.32);
  box-shadow:
-  0 11px 0 #04080d,
-  0 18px 26px rgba(0,0,0,.9),
-  inset 0 1px 0 rgba(255,255,255,.22),
-  inset 0 0 0 1px rgba(111,214,255,.22)!important;
+  0 5px 0 #04080e,
+  0 10px 16px rgba(0,0,0,.9),
+  inset 0 2px 2px rgba(255,255,255,.26),
+  inset 0 -3px 6px rgba(0,0,0,.8);
+ cursor:pointer;
+ transition:transform .18s cubic-bezier(.2,.8,.2,1),filter .18s ease;
+}
+#board[data-theme="garden"] .m27-void-prop{
+ background:radial-gradient(circle at 35% 30%,rgba(28,88,78,.88) 0%,rgba(11,42,38,.94) 65%,rgba(5,19,17,.98) 100%);
+ border-color:rgba(105,240,200,.38);
+}
+#board[data-theme="bridge"] .m27-void-prop{
+ background:radial-gradient(circle at 35% 30%,rgba(54,76,108,.85) 0%,rgba(20,32,48,.94) 65%,rgba(8,14,24,.98) 100%);
+ border-color:rgba(160,215,255,.36);
+}
+#board[data-theme="mirror"] .m27-void-prop{
+ background:radial-gradient(circle at 35% 30%,rgba(66,48,112,.88) 0%,rgba(26,18,52,.94) 65%,rgba(11,7,24,.98) 100%);
+ border-color:rgba(195,165,255,.4);
+}
+#board[data-theme="core"] .m27-void-prop,
+body.side-r .m27-void-prop{
+ background:radial-gradient(circle at 35% 30%,rgba(92,24,42,.88) 0%,rgba(42,9,19,.94) 65%,rgba(18,3,8,.98) 100%);
+ border-color:rgba(255,80,110,.42);
+}
+.m27-void-prop:hover{
+ transform:scale(1.06) translateY(-2px);
+ filter:brightness(1.22);
+}
+.m27-void-prop.m27-prop-burst{
+ animation:m27PropClick .46s cubic-bezier(.2,.8,.2,1);
+}
+.m27-void-prop svg{
+ width:54%;
+ height:54%;
+ color:rgba(145,225,255,.82);
+ filter:drop-shadow(0 3px 4px rgba(0,0,0,.9)) drop-shadow(0 0 8px currentColor);
+ animation:m27SceneryIdle 4s ease-in-out infinite;
+}
+#board[data-theme="garden"] .m27-void-prop svg{color:rgba(110,245,205,.88)}
+#board[data-theme="mirror"] .m27-void-prop svg{color:rgba(205,175,255,.88)}
+#board[data-theme="core"] .m27-void-prop svg,body.side-r .m27-void-prop svg{color:rgba(255,90,115,.88)}
+@keyframes m27SceneryIdle{
+ 0%,100%{transform:scale(.95) rotate(0deg);opacity:.82}
+ 50%{transform:scale(1.05) rotate(6deg);opacity:1}
 }
 
-/* 3D Holographic Beacon Pillars on Relays & Exits */
+/* Top-Down 3D Armored Pillar Bulkheads (.cell.wall) */
+html body.m26-in-game #board .cell.wall:not(.void){
+ background:linear-gradient(145deg,#2e4252 0%,#182530 65%,#0d151c 100%)!important;
+ box-shadow:
+  0 6px 0 #050a0f,
+  0 10px 18px rgba(0,0,0,.92),
+  inset 0 2px 1px rgba(255,255,255,.28),
+  inset 0 0 0 1px rgba(140,205,235,.28)!important;
+}
+
+/* Top-Down 3D Relay Turrets & Extraction Hatches */
 html body.m26-in-game #board .cell.relay:not(.void){
  box-shadow:
-  0 7px 0 #1b1405,
-  0 12px 24px rgba(0,0,0,.82),
-  inset 0 0 0 1.5px rgba(244,201,107,.65),
-  inset 0 0 26px rgba(244,201,107,.22)!important;
+  0 4px 0 #1b1405,
+  0 8px 16px rgba(0,0,0,.84),
+  inset 0 0 0 2px rgba(244,201,107,.72),
+  inset 0 0 22px rgba(244,201,107,.28)!important;
 }
 html body.m26-in-game #board .cell.relay.g:not(.void){
  box-shadow:
-  0 7px 0 #061824,
-  0 12px 24px rgba(0,0,0,.82),
-  inset 0 0 0 1.5px rgba(111,214,255,.78),
-  inset 0 0 28px rgba(111,214,255,.28)!important;
+  0 4px 0 #061824,
+  0 8px 16px rgba(0,0,0,.84),
+  inset 0 0 0 2px rgba(111,214,255,.85),
+  inset 0 0 24px rgba(111,214,255,.32)!important;
 }
 html body.m26-in-game #board .cell.relay.r:not(.void){
  box-shadow:
-  0 7px 0 #24050c,
-  0 12px 24px rgba(0,0,0,.82),
-  inset 0 0 0 1.5px rgba(255,59,92,.82),
-  inset 0 0 28px rgba(255,59,92,.32)!important;
+  0 4px 0 #24050c,
+  0 8px 16px rgba(0,0,0,.84),
+  inset 0 0 0 2px rgba(255,59,92,.85),
+  inset 0 0 24px rgba(255,59,92,.35)!important;
 }
 
-/* 10. Dynamic Living Character Cards on the Board */
+/* 10. Hearthstone-Style 3D Thick Sculpted Character Cards on the Flat Board */
+html body.m26-in-game #board .token{
+ box-shadow:
+  0 5px 0 #050d14,
+  0 9px 14px rgba(0,0,0,.82)!important;
+}
+html body.m26-in-game #board .token.r{
+ box-shadow:
+  0 5px 0 #160409,
+  0 9px 14px rgba(0,0,0,.85)!important;
+}
 html body.m26-in-game #board .token.character-token:not(.moved){
  animation:m26TokenFloat 3.2s ease-in-out infinite;
 }
@@ -737,15 +913,15 @@ html body.m26-in-game #board .cell:nth-child(5n) .token.character-token:not(.mov
  animation-delay:-2.2s;
 }
 @keyframes m26TokenFloat{
- 0%,100%{transform:translateY(-2px)}
- 50%{transform:translateY(-6px)}
+ 0%,100%{transform:translateY(-1px)}
+ 50%{transform:translateY(-4px)}
 }
 
 /* Holographic Sheen Sweep across Active Character Tokens */
 html body.m26-in-game #board .token.character-token:not(.moved)::after{
  background:
-  linear-gradient(115deg,transparent 30%,rgba(255,255,255,.18) 48%,transparent 66%) 0 0 / 240% 100% no-repeat,
-  linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,0) 26%),
+  linear-gradient(115deg,transparent 30%,rgba(255,255,255,.2) 48%,transparent 66%) 0 0 / 240% 100% no-repeat,
+  linear-gradient(180deg,rgba(255,255,255,.15),rgba(255,255,255,0) 26%),
   linear-gradient(0deg,rgba(4,8,12,.92) 0,rgba(4,8,12,.52) 22%,rgba(4,8,12,0) 42%)!important;
  animation:m26TokenSheen 5.5s ease-in-out infinite;
 }
@@ -754,14 +930,20 @@ html body.m26-in-game #board .token.character-token:not(.moved)::after{
  100%{background-position:-80% 0,0 0,0 0}
 }
 
-/* Selected Unit 3D Levitation + Ground Tactical Lock Ring */
+/* Selected Unit 3D Card Lift (Pure Top-Down Elevation Shadow) */
 html body.m26-in-game #board .cell.selected .token{
  animation:none!important;
- transform:translateY(-9px) scale(1.07)!important;
- filter:drop-shadow(0 18px 12px rgba(0,0,0,.82)) drop-shadow(0 0 16px rgba(111,214,255,.78))!important;
+ transform:translateY(-6px) scale(1.06)!important;
+ box-shadow:
+  0 10px 0 #071520,
+  0 18px 22px rgba(0,0,0,.9),
+  0 0 18px rgba(111,214,255,.75)!important;
 }
 body.side-r.m26-in-game #board .cell.selected .token{
- filter:drop-shadow(0 18px 12px rgba(0,0,0,.85)) drop-shadow(0 0 16px rgba(255,59,92,.82))!important;
+ box-shadow:
+  0 10px 0 #1e050b,
+  0 18px 22px rgba(0,0,0,.9),
+  0 0 18px rgba(255,59,92,.8)!important;
 }
 
 /* Animated Pulsing Chest Red Spider on Infected Girls */
@@ -800,7 +982,7 @@ body.side-r.m26-in-game #board .cell.selected .token{
  50%{transform:translateY(-2px) scale(1.12)}
 }
 
-/* 3D Floor Shockwave Ring on Move / Attack Landing */
+/* Floor Shockwave Ring on Move / Attack Landing */
 .m26-floor-wave{
  position:absolute;
  inset:4%;
@@ -818,7 +1000,6 @@ body.side-r.m26-in-game #board .cell.selected .token{
  100%{opacity:0;transform:scale(1.38);box-shadow:0 0 0 transparent}
 }
 
-/* Map Shape Subtitle Tag in Top-Left Watermark */
 .m26-map-shape-tag{
  display:inline-block;
  margin-left:8px;
@@ -835,6 +1016,81 @@ body.side-r .m26-map-shape-tag{
  background:rgba(255,59,92,.18);
  border-color:rgba(255,59,92,.4);
  color:#ffc4cf;
+}
+
+/* 11. Detroit: Become Human Style Linear Causality Flowchart Modal */
+.m27-detroit-tree{
+ display:flex;
+ flex-direction:column;
+ gap:14px;
+ padding:6px 2px;
+}
+.m27-detroit-node{
+ position:relative;
+ display:grid;
+ grid-template-columns:110px 1fr;
+ gap:14px;
+ padding:14px 16px;
+ border-radius:8px;
+ background:linear-gradient(90deg,rgba(12,24,36,.92),rgba(7,14,22,.82));
+ border:1px solid rgba(111,214,255,.28);
+ border-left:4px solid var(--m26-cy);
+}
+.m27-detroit-node.locked{
+ opacity:.52;
+ border-left-color:rgba(140,170,190,.35);
+ border-style:dashed;
+}
+.m27-detroit-node.current{
+ border-left-color:var(--m26-gold);
+ box-shadow:0 0 24px rgba(244,201,107,.16);
+}
+.m27-detroit-step{
+ display:flex;
+ flex-direction:column;
+ justify-content:center;
+ border-right:1px solid rgba(255,255,255,.08);
+ padding-right:10px;
+}
+.m27-detroit-step small{
+ font-size:10px;
+ letter-spacing:.2em;
+ color:rgba(150,210,240,.75);
+}
+.m27-detroit-step strong{
+ font-size:16px;
+ color:#fff;
+ margin-top:2px;
+}
+.m27-detroit-branches{
+ display:flex;
+ flex-wrap:wrap;
+ gap:8px;
+ margin-top:8px;
+}
+.m27-branch-pill{
+ padding:4px 10px;
+ border-radius:4px;
+ font-size:12px;
+ font-weight:700;
+ background:rgba(111,214,255,.14);
+ border:1px solid rgba(111,214,255,.45);
+ color:#dff6ff;
+}
+.m27-branch-pill.gold{
+ background:rgba(244,201,107,.16);
+ border-color:rgba(244,201,107,.55);
+ color:#ffebb3;
+}
+.m27-branch-pill.red{
+ background:rgba(255,59,92,.18);
+ border-color:rgba(255,59,92,.55);
+ color:#ffd0d8;
+}
+.m27-branch-pill.dim{
+ background:rgba(255,255,255,.04);
+ border:1px dashed rgba(255,255,255,.16);
+ color:rgba(170,190,205,.5);
 }
 
 @media (max-width:1100px){
