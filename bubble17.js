@@ -73,7 +73,7 @@ const TALK17=(()=>{
  const name=id=>(CHAR[id]&&CHAR[id].name)||id;
  const onB=(side)=>S.units.filter(u=>u.char&&u.side===side&&(typeof onBoard!=='function'||onBoard(u)));
  const coord=(x,y)=>typeof xy==='function'?xy(x,y):`${x},${y}`;
- function lostIds(){try{return (typeof filmLost==='function'?filmLost():[]).filter(id=>CHAR[id]);}catch(e){return[];}}
+ function lostIds(){try{return [...new Set([...(typeof filmLost==='function'?filmLost():[]),...((C.flags&&C.flags.taken17)||[])])].filter(id=>CHAR[id]);}catch(e){return[];}}
  function tactical(){
   const me=C.side,foe=me==='g'?'r':'g';
   const threats=threatMap(S,foe);

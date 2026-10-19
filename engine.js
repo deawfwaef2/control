@@ -136,6 +136,7 @@ async function performMove(m,isPlayer){
  addLog(`${ev.name} ${coord}${ev.converted?' · '+'永久感染'+ev.converted.name:ev.killed?' · 摧毁'+ev.killed.name:''}`,ev.converted?(ev.side===C.side?'good':'capture'):'normal');
  if(ev.converted){
   if(ev.side===C.side)C.stats.conversions++;
+  try{const cid=ev.converted.char||S.units.find(v=>v.name===ev.converted.name)?.char;C.flags.taken17=C.flags.taken17||[];if(cid&&!C.flags.taken17.includes(cid))C.flags.taken17.push(cid);}catch(e){}
   S.events.push(`${ev.converted.name}被赤蛛永久接管，不可解救`);
   captureEffect(ev.converted,ev.side);radioForCapture(ev);sfx('capture');
  }else if(ev.killed){killEffect(ev.killed);if(ev.killed.char){C.stats.losses++;S.events.push(`${ev.killed.name}被${ev.name}击杀 · 永久损毁`);radio(ev.name,`${ev.killed.name}的载体已被击毁。没有阵营转换。`);}if(ev.side===C.side)C.stats.kills=(C.stats.kills||0)+1;sfx('hit');}else sfx(m.type==='wait'?'wait':'move');
