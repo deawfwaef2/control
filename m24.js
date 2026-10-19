@@ -905,7 +905,7 @@
  // Works seamlessly with hive23.js interlude runner AND adds Guardian interlude support!
  try{
   if(typeof K23!=='undefined'&&K23){
-   // 6 · 反应堆死守 (Siege / Survival & Counter-Blitz)
+   // 6 · 反应堆死守 (Siege / Survival & Counter-Blitz, Faction-Aware)
    K23.siege={
     win:'hold',w:2,base:2,name:'熔心死守',en:'REACTOR SIEGE',where:'B–09 副反应堆核心',bg:'film_core',
     cond:()=>activeGirls('g').length>=2,
@@ -913,7 +913,8 @@
     build(d){
      const s=makeMission(1);
      s.mid=1;s.units=[];s.walls=['2,3','5,3','2,5','5,5'];s.voids=[];s.loot=[];s.exits=[];s.delivery=[];
-     s.relays=[{x:3,y:3,owner:'r',name:'D5 熔心锁'},{x:4,y:3,owner:'r',name:'E5 熔心锁'}];
+     const defOwner=C.side;
+     s.relays=[{x:3,y:3,owner:defOwner,name:'D5 熔心锁'},{x:4,y:3,owner:defOwner,name:'E5 熔心锁'}];
      s.subOp='m24_siege';s.subOpOpen=true;s.subOpName='熔心死守';s.where23='B–09 副反应堆核心';
      [[2,1],[5,1],[3,2],[4,2]].forEach(([x,y])=>spawn(s,'spider','r',x,y));
      d.ts.forEach((id,i)=>spawn(s,'mech','r',i===0?1:6,1,id));
@@ -924,41 +925,54 @@
      return s;
     },
     goals(s){
-     const held=s.relays.filter(r=>r.owner==='r').length;
-     const gLeft=movers(s,'g').length;
+     const side=C.side,foe=enemyOf(side);
+     const held=s.relays.filter(r=>r.owner===side).length;
+     const fLeft=movers(s,foe).length;
      return[
-      {text:`守住至少 1 座熔心锁直至第 7 轮末，或全歼/感染来袭敌军（剩余敌军 ${gLeft}）`,done:gLeft===0},
+      {text:`守住至少 1 座熔心锁直至第 7 轮末，或全歼/感染来袭敌军（剩余敌军 ${fLeft}）`,done:fLeft===0},
       {text:`当前控制的熔心锁：${held}/2（失守全部两座熔心锁则立即战败）`,done:held>=1}
      ];
     },
     check(s){
-     if(s.relays.every(r=>r.owner==='g'))return['lose','eggs'];
-     if(movers(s,'g').length===0)return['win','infect'];
+     const side=C.side,foe=enemyOf(side);
+     if(s.relays.every(r=>r.owner===foe))return['lose','eggs'];
+     if(movers(s,foe).length===0)return['win','infect'];
      return null;
     },
     survive:'hatch',
     ev(s){
-     const rHeld=s.relays.filter(r=>r.owner==='r').length;
-     return (2-rHeld)*180-movers(s,'r').length*25;
+     const gHeld=s.relays.filter(r=>r.owner==='g').length;
+     return (gHeld-1)*180+(movers(s,'g').length-movers(s,'r').length)*25;
     },
     target(s,u){
-     if(u.side==='g')return s.relays.find(r=>r.owner==='r')||s.relays[0];
-     return movers(s,'g')[0]||null;
+     return s.relays.find(r=>r.owner!==u.side)||movers(s,enemyOf(u.side))[0]||null;
     },
     intro(d){
      const g0=d.gs[0]||'lyra';
      return[
-      {bg:'film_core',kb:'in',tint:'red',stamp:'B–09 副反应堆核心',mode:'narr',line:'副反应堆的两座熔心锁正在为母巢输送超频算力，苍穹小队的突击队已经杀到门前。'},
-      {who:g0,side:'g',line:'只要同时夺下 D5 和 E5 两座熔心锁，就能切断赤巢的前线算力供应！全员突击！'},
-      {who:'overmind',line:'守住熔心锁，或者把闯进来的她们全部留在这里。',choices:[
-       {label:'🕸️ 过载熔心（全体赤蛛升至 SYNC II 捕食态）',detail:'',action:()=>{for(const u of movers(S,'r'))if(u.kind==='spider')u.xp=2;render();}},
-       {label:'🛡️ 部署重装防线（在熔心锁旁增设1座轨道哨塔）',detail:'',action:()=>{spawn(S,'sentinel','r',3,1);render();}}
-      ]},
+      {bg:'film_core',kb:'in',tint:C.side==='r'?'red':'dark',stamp:'B–09 副反应堆核心',mode:'narr',line:'副反应堆的两座熔心锁正在高负荷运转，双方突击队在核心回廊迎头相撞。'},
+      C.side==='g'
+       ?{who:g0,side:'g',line:'守住 D5 和 E5 两座熔心锁！只要撑到第 7 轮脉冲释放，或者全歼来袭赤蛛，这片扇区就安全了！',choices:[
+         {label:'⚡ 熔心算力注入（出战机娘升至 SYNC II+）',detail:'',action:()=>{for(const u of movers(S,'g'))if(u.char)u.xp=Math.max(2,(u.xp||0)+1);render();}},
+         {label:'🛡️ 启动核心防卫塔（额外部署1台轨道哨塔）',detail:'',action:()=>{spawn(S,'sentinel','g',3,5);render();}}
+        ]}
+       :{who:'overmind',line:'守住熔心锁，或者把闯进来的她们全部留在这里。',choices:[
+         {label:'🕸️ 过载熔心（全体赤蛛升至 SYNC II 捕食态）',detail:'',action:()=>{for(const u of movers(S,'r'))if(u.kind==='spider')u.xp=2;render();}},
+         {label:'🛡️ 部署重装防线（在熔心锁旁增设1座轨道哨塔）',detail:'',action:()=>{spawn(S,'sentinel','r',3,1);render();}}
+        ]},
       {bg:'film_core',kb:'out',tint:'dark',objective:{title:'熔心死守',where:'B–09 副反应堆核心'}}
      ];
     },
     after(s,res){
-     if(res==='hatch'||res==='infect'){
+     const won=res==='hatch'||res==='infect';
+     if(C.side==='g'){
+      if(won){
+       for(const id of activeGirls('g'))if(C.roster[id])C.roster[id].xp=Math.min(5,(C.roster[id].xp||0)+1);
+       return[{mode:'narr',line:'副反应堆成功完成过载脉冲，敌群被一扫而空。'},{who:activeGirls('g')[0]||'lyra',side:'g',line:'防线稳住了！全队同步等级提升，准备接入下一章主战场！'}];
+      }
+      return[{mode:'narr',line:'副反应堆熔心锁失守，小队被迫撤往下一层。'}];
+     }
+     if(won){
       C.flags.brood22=Math.min(2,(C.flags.brood22||0)+1);
       return[{mode:'narr',line:'副反应堆的红光平稳跳动，来袭的小队被彻底瓦解。'},{who:'overmind',line:'算力保住了。下一战，我的孩子们会走得更快。'}];
      }
@@ -966,9 +980,9 @@
     }
    };
 
-   // 7 · 双核夺密 (Twin-Core Heist / Loot Extraction Race)
+   // 7 · 双核夺密 (Twin-Core Heist / Loot Extraction Race, Faction-Aware)
    K23.heist={
-    win:'through',w:2,base:2,name:'双核夺密',en:'TWIN BLACKBOX',where:'C–04 加密数据金库',bg:'film_Mirror',
+    win:'through',w:2,base:2,name:'双核夺密',en:'TWIN BLACKBOX',where:'C–04 加密数据金库',bg:'film_mirror',
     cond:()=>activeGirls('g').length>=2,
     setup(){return{gs:shuf24(activeGirls('g')).slice(0,3),ts:shuf24(activeGirls('r')).slice(0,2)};},
     build(d){
@@ -986,17 +1000,19 @@
      return s;
     },
     goals(s){
-     const rGot=s.loot.some(l=>l.evacuated&&l.side==='r');
-     const gConvs=s.flags.conversionsR.length;
+     const side=C.side,foe=enemyOf(side);
+     const myGot=s.loot.some(l=>l.evacuated&&l.side===side);
+     const fLeft=movers(s,foe).length;
      return[
-      {text:`拾取任一加密黑匣并从 D8/E8 撤离，或感染至少 1 名机娘（${Math.min(s.round,9)}/9 轮）`,done:rGot||gConvs>=1},
-      {text:'阻止守护者携带全部两枚黑匣从南端撤离',done:true}
+      {text:`拾取任一加密黑匣并从己方撤离口脱出，或歼灭/感染敌方主力（${Math.min(s.round,9)}/9 轮）`,done:myGot||fLeft===0},
+      {text:'阻止敌方将全部两枚黑匣带离战场',done:true}
      ];
     },
     check(s){
-     if(s.loot.some(l=>l.evacuated&&l.side==='r')||s.flags.conversionsR.length>=1)return['win','through'];
-     if(s.loot.every(l=>l.evacuated&&l.side==='g'))return['lose','escaped'];
-     if(movers(s,'r').length===0)return['lose','nospider'];
+     const side=C.side,foe=enemyOf(side);
+     if(s.loot.some(l=>l.evacuated&&l.side===side)||movers(s,foe).length===0||(side==='r'&&s.flags.conversionsR.length>=1))return['win','through'];
+     if(s.loot.every(l=>l.evacuated&&l.side===foe))return['lose','escaped'];
+     if(movers(s,side).length===0)return['lose','nospider'];
      return null;
     },
     timeout:'closed',
@@ -1004,7 +1020,7 @@
      let v=0;
      for(const l of s.loot){
       if(l.evacuated&&l.side==='r')v-=600;
-      if(l.evacuated&&l.side==='g')v+=450;
+      if(l.evacuated&&l.side==='g')v+=600;
      }
      return v;
     },
@@ -1016,18 +1032,75 @@
     intro(d){
      const g0=d.gs[0]||'iris';
      return[
-      {bg:'film_corridor',kb:'in',tint:'red',stamp:'C–04 加密数据金库',mode:'narr',line:'金库中央悬浮着两枚未销毁的黑匣，里面记录着天穹站全员的神经特征码。'},
+      {bg:'film_mirror',kb:'in',tint:C.side==='r'?'red':'dark',stamp:'C–04 加密数据金库',mode:'narr',line:'金库中央悬浮着两枚未销毁的黑匣，里面记录着天穹站全员的神经特征码。'},
       {who:g0,side:'g',line:'绝不能让赤巢拿到神经特征码！抢下黑匣，立即撤回南侧气闸！'},
       {who:'overmind',line:'拿到特征码，或者直接把来抢黑匣的她变成我的孩子。'},
-      {bg:'film_corridor',kb:'out',tint:'dark',objective:{title:'双核夺密',where:'C–04 加密数据金库'}}
+      {bg:'film_mirror',kb:'out',tint:'dark',objective:{title:'双核夺密',where:'C–04 加密数据金库'}}
      ];
     },
     after(s,res){
-     if(res==='through'){
-      for(const id of activeGirls('r'))if(C.roster[id])C.roster[id].xp=Math.min(5,(C.roster[id].xp||0)+1);
-      return[{mode:'narr',line:'加密黑匣已被母巢解析，所有受控容器的神经同步率大幅跃升。'},{who:'overmind',line:'她们的弱点，现在每一行都写在我心里。'}];
+     const won=res==='through';
+     if(won){
+      for(const id of activeGirls(C.side))if(C.roster[id])C.roster[id].xp=Math.min(5,(C.roster[id].xp||0)+1);
+      return[{mode:'narr',line:'加密黑匣已被成功解析，全队神经同步率获得突破。'}];
      }
-     return[{mode:'narr',line:'金库气闸落下，黑匣被带离了现场。'},{who:'overmind',line:'没关系。活着的她们本身，就是最好的样本。'}];
+     return[{mode:'narr',line:'金库气闸落下，黑匣争夺战告一段落。'}];
+    }
+   };
+
+   // 9 · 胸甲共鸣审判 (Resonance Awakening Boss Duel)
+   K23.awakening={
+    win:'infect',w:2,base:3,name:'胸甲共鸣审判',en:'RESONANCE TRIAL',where:'D–05 共鸣审判庭',bg:'film_mirror',
+    cond:()=>activeGirls('g').length>=2,
+    setup(){return{gs:shuf24(activeGirls('g')).slice(0,3),ts:shuf24(activeGirls('r')).slice(0,2)};},
+    build(d){
+     const s=makeMission(3);
+     s.mid=3;s.units=[];s.walls=['2,2','5,2','2,5','5,5'];s.voids=[];s.loot=[];s.exits=[];s.delivery=[];
+     s.relays=[{x:3,y:3,owner:null,name:'D5 共鸣王座'},{x:4,y:4,owner:null,name:'E4 共鸣王座'}];
+     s.subOp='m24_awakening';s.subOpOpen=true;s.subOpName='胸甲共鸣审判';s.where23='D–05 共鸣审判庭';
+     d.gs.forEach((id,i)=>{const u=spawn(s,'mech','g',[3,2,5][i],6,id);if(u&&i===0)u.xp=Math.max(4,u.xp||0);});
+     spawn(s,'sentinel','g',4,7);
+     [[2,1],[3,1],[4,1],[5,1]].forEach(([x,y])=>{const sp=spawn(s,'spider','r',x,y);if(sp)sp.xp=2;});
+     d.ts.forEach((id,i)=>{const u=spawn(s,'mech','r',i===0?1:6,1,id);if(u)u.xp=Math.max(4,u.xp||0);});
+     s.k23={limit:8};
+     return s;
+    },
+    goals(s){
+     const side=C.side,foe=enemyOf(side);
+     const rel=s.relays.filter(r=>r.owner===side).length;
+     const fLeft=movers(s,foe).length;
+     return[
+      {text:`同时掌控 D5 与 E4 两座共鸣王座（${rel}/2），或击破/感染全部敌方主力（剩余 ${fLeft}）`,done:rel===2||fLeft===0},
+      {text:'王牌主力已进入 SYNC III★ 超频觉醒状态，善用超频连斩破局',done:true}
+     ];
+    },
+    check(s){
+     const side=C.side,foe=enemyOf(side);
+     if(s.relays.filter(r=>r.owner===side).length===2||movers(s,foe).length===0)return['win','infect'];
+     if(movers(s,side).length===0)return['lose','nospider'];
+     return null;
+    },
+    timeout:'closed',
+    ev(s){
+     return (s.relays.filter(r=>r.owner==='g').length-s.relays.filter(r=>r.owner==='r').length)*190;
+    },
+    target(s,u){
+     return s.relays.find(r=>r.owner!==u.side)||movers(s,enemyOf(u.side))[0]||null;
+    },
+    intro(d){
+     const g0=d.gs[0]||'lyra';
+     return[
+      {bg:'film_mirror',kb:'in',tint:C.side==='r'?'red':'dark',stamp:'D–05 共鸣审判庭',mode:'narr',line:'审判庭中央的两座共鸣王座正在放大所有机娘胸甲的神经信号。王牌与王牌的对决一触即发。'},
+      {who:g0,side:'g',line:'我的超频回路已经全开了！拿下中央共鸣王座，一鼓作气击溃她们！'},
+      {bg:'film_mirror',kb:'out',tint:'dark',objective:{title:'胸甲共鸣审判',where:'D–05 共鸣审判庭'}}
+     ];
+    },
+    after(s,res){
+     if(res==='infect'){
+      for(const id of activeGirls(C.side))if(C.roster[id])C.roster[id].xp=Math.min(5,(C.roster[id].xp||0)+1);
+      return[{mode:'narr',line:'共鸣王座的算力汇入全队，主力机娘完成了终极超频蜕变。'}];
+     }
+     return[{mode:'narr',line:'共鸣审判庭归于沉寂，双方撤出回廊。'}];
     }
    };
 
@@ -1143,6 +1216,18 @@
   return true;
  }
 
+ const HINT24={
+  siege:'死守中央两座熔心锁，利用高同步单位的超频连斩反杀突袭敌军！',
+  heist:'夺取中央加密黑匣并护送携带者抵达己方撤离口，或直接歼灭/感染敌方主力！',
+  blackout:'极夜环境下迅速占领 B5 与 G5 两座照明信标即可直接锁定胜局！',
+  awakening:'王牌主力已进入 SYNC III★ 超频觉醒态，掌控两座共鸣王座或击溃敌军！'
+ };
+ const m24BaseQuestHint=questHint;
+ questHint=function(s){
+  if(isM24Interlude(s)&&HINT24[s.kind24])return HINT24[s.kind24];
+  return m24BaseQuestHint.apply(this,arguments);
+ };
+
  const m24BaseObjectives=objectives;
  objectives=function(s,side){
   if(isM24Interlude(s)){
@@ -1212,8 +1297,8 @@
     const gap=C.step;
     if(C.side==='g'&&st24&&!st24.interludes[gap]){
      st24.interludes[gap]=1;
-     const pool=['blackout','heist'].filter(k=>!st24.usedTypes.includes(k)&&K23[k]&&K23[k].cond());
-     if(pool.length&&Math.random()<0.65){
+     const pool=['siege','heist','blackout','awakening'].filter(k=>!st24.usedTypes.includes(k)&&K23[k]&&K23[k].cond());
+     if(pool.length&&Math.random()<0.75){
       const pickKind=pick24(pool);
       persist();
       launchM24Interlude(pickKind);
@@ -1221,8 +1306,8 @@
      }
     }else if(C.side==='r'&&st24&&!st24.interludes[gap]){
      st24.interludes[gap]=1;
-     const pool=['siege','heist','blackout'].filter(k=>!st24.usedTypes.includes(k)&&K23[k]&&K23[k].cond());
-     if(pool.length&&Math.random()<0.45){
+     const pool=['siege','heist','blackout','awakening'].filter(k=>!st24.usedTypes.includes(k)&&K23[k]&&K23[k].cond());
+     if(pool.length&&Math.random()<0.55){
       if(C.p23&&C.p23.done)C.p23.done[gap]=1;
       const pickKind=pick24(pool);
       persist();
