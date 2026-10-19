@@ -21,7 +21,7 @@ const FILM=(()=>{
  function build(){
   if(root)return root;
   root=document.createElement('div');root.id='film';root.hidden=true;root.setAttribute('role','dialog');root.setAttribute('aria-modal','true');root.setAttribute('aria-label','剧情演出');
-  root.innerHTML=`<div class="fm-stage"><div class="fm-bg" data-l="0"></div><div class="fm-bg" data-l="1"></div><div class="fm-actor left" data-pos="left"><img alt=""></div><div class="fm-actor right" data-pos="right"><img alt=""></div><div class="fm-grade"></div><div class="fm-grain"></div><div class="fm-alert"></div><div class="fm-static"></div><div class="fm-flash"></div></div><div class="fm-bar top"></div><div class="fm-bar bottom"></div><div class="fm-chapter"></div><div class="fm-stamp"></div><div class="fm-sub"><div class="fm-name"></div><div class="fm-line" aria-live="polite"></div></div><div class="fm-title"><div class="k"></div><div class="m"></div><div class="line"></div><div class="s"></div></div><div class="fm-obj"><small></small><h3></h3><div class="where"></div><ol></ol><div class="tip"></div><button class="fm-go" type="button">开始作战</button></div><div class="fm-choices"></div><div class="fm-ctl"><button type="button" data-a="auto" aria-pressed="${auto}">自动播放</button><button type="button" data-a="skip">跳过 ▸▸</button></div><div class="fm-hint">点击 / 空格 继续 ▸</div><div class="fm-progress"></div>`;
+  root.innerHTML=`<div class="fm-stage"><div class="fm-bg" data-l="0"></div><div class="fm-bg" data-l="1"></div><div class="fm-actor left" data-pos="left"><img alt=""></div><div class="fm-actor right" data-pos="right"><img alt=""></div><div class="fm-grade"></div><div class="fm-grain"></div><div class="fm-alert"></div><div class="fm-static"></div><div class="fm-flash"></div><div class="fm-streak"></div><div class="fm-lens"></div></div><div class="fm-bar top"></div><div class="fm-bar bottom"></div><div class="fm-chapter"></div><div class="fm-stamp"></div><div class="fm-sub"><div class="fm-name"></div><div class="fm-line" aria-live="polite"></div></div><div class="fm-title"><div class="k"></div><div class="m"></div><div class="line"></div><div class="s"></div></div><div class="fm-obj"><small></small><h3></h3><div class="where"></div><ol></ol><div class="tip"></div><button class="fm-go" type="button">开始作战</button></div><div class="fm-choices"></div><div class="fm-ctl"><button type="button" data-a="auto" aria-pressed="${auto}">自动播放</button><button type="button" data-a="skip">跳过 ▸▸</button></div><div class="fm-hint">点击 / 空格 继续 ▸</div><div class="fm-progress"></div>`;
   document.body.appendChild(root);
   root.addEventListener('click',e=>{
    if(!st)return;
@@ -54,9 +54,22 @@ const FILM=(()=>{
   if(shot.bg===st.bg&&!shot.recut){const cur=layers[st.layer];cur.className=cur.className.replace(/ t-\w+/g,'')+tint;return false;}
   const next=layers[1-st.layer],prev=layers[st.layer];
   next.style.backgroundImage=`url("${ART[shot.bg]||''}")`;
+  next.style.animation='';next.style.transition='';
   next.className=`fm-bg${tint}`;void next.offsetWidth;
   next.className=`fm-bg show kb-${shot.kb||'in'}${tint}`;
-  prev.classList.remove('show');st.layer=1-st.layer;st.bg=shot.bg;return true;
+  prev.classList.remove('show');st.layer=1-st.layer;
+  if(st.bg){ // M17: varied, motivated cuts instead of one flat crossfade
+   const CUTS=['push','zoom','wipe','pushl','iris'];st.cutN=(st.cutN||0)+1;
+   const c=shot.cut||(shot.fx&&/alert|shake|flash/.test(shot.fx)?'zoom':CUTS[st.cutN%CUTS.length]);
+   const KB={in:'kbIn 22s ease-out',out:'kbOut 22s ease-out',left:'kbLeft 24s linear',right:'kbRight 24s linear',up:'kbUp 24s ease-out',push:'kbPush 9s cubic-bezier(.2,.6,.2,1)'}[shot.kb||'in']||'kbIn 22s ease-out';
+   const IN={push:'c17PushIn 1s cubic-bezier(.2,.7,.1,1)',pushl:'c17PushInL 1s cubic-bezier(.2,.7,.1,1)',zoom:'c17ZoomIn .95s cubic-bezier(.2,.8,.2,1)',wipe:'c17Wipe 1.05s cubic-bezier(.7,0,.2,1)',iris:'c17Iris 1.1s cubic-bezier(.6,0,.2,1)'}[c];
+   const OUT={push:'c17PushOut 1s cubic-bezier(.5,0,.3,1)',pushl:'c17PushOutL 1s cubic-bezier(.5,0,.3,1)',zoom:'c17ZoomOut .8s cubic-bezier(.6,0,.8,.4)',wipe:'',iris:'c17IrisOut 1.1s ease'}[c];
+   if(IN){next.style.animation=`${IN} backwards, ${KB} forwards`;}
+   if(OUT)prev.style.animation=`${OUT} forwards`;
+   if(c==='wipe'||c==='iris'){next.style.transition='opacity .05s';prev.style.transition='opacity .35s ease .95s';}
+   const sk=q('.fm-streak');sk.className='fm-streak';void sk.offsetWidth;sk.className='fm-streak go s-'+c;
+  }
+  st.bg=shot.bg;return true;
  }
  function clearActors(){root.querySelectorAll('.fm-actor').forEach(a=>{a.className='fm-actor '+a.dataset.pos;a.dataset.id='';});st.last=null;}
  function setActor(shot){
@@ -176,8 +189,9 @@ const FILM=(()=>{
  }
  function finish(){
   if(!st)return;clearTimers();const done=st.onDone;st=null;
-  root.classList.remove('on','alert','static','ready');
-  setTimeout(()=>{if(!st){root.hidden=true;const cin=document.getElementById('cinema');if(cin){cin.hidden=true;cin.classList.remove('film-proxy');}}},600);
+  root.classList.add('exit17');root.classList.remove('on','alert','static','ready');
+  try{document.body.classList.remove('arrive17');void document.body.offsetWidth;document.body.classList.add('arrive17');setTimeout(()=>document.body.classList.remove('arrive17'),2200);}catch(e){}
+  setTimeout(()=>{if(!st){root.classList.remove('exit17');root.hidden=true;const cin=document.getElementById('cinema');if(cin){cin.hidden=true;cin.classList.remove('film-proxy');}}},1300);
   try{window.scrollTo(0,0);document.scrollingElement&&(document.scrollingElement.scrollTop=0);}catch(e){}
   try{done&&done();}catch(e){console.error(e);}
  }
@@ -187,12 +201,12 @@ const FILM=(()=>{
   const list=(shots||[]).filter(Boolean);
   if(!list.length){onDone&&onDone();return;}
   st={shots:list,i:0,onDone,layer:0,bg:null,last:null,typing:false};
-  root.querySelectorAll('.fm-bg').forEach(l=>{l.className='fm-bg';l.style.backgroundImage='';});
+  root.querySelectorAll('.fm-bg').forEach(l=>{l.className='fm-bg';l.style.backgroundImage='';l.style.animation='';l.style.transition='';});
   clearActors();q('.fm-stamp').classList.remove('show');q('.fm-title').classList.remove('show');q('.fm-obj').classList.remove('show');
   q('.fm-chapter').textContent=opts.chapter||'';
   const cin=document.getElementById('cinema');if(cin){cin.classList.add('film-proxy');cin.hidden=false;}
   ['toast','capture-event'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('show');});
-  root.hidden=false;void root.offsetWidth;root.classList.add('on');
+  root.classList.remove('exit17');root.hidden=false;void root.offsetWidth;root.classList.add('on');
   show();
  }
  return{play,skip,finish,get active(){return !!st;}};

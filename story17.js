@@ -52,4 +52,4 @@ function recap17(mid){
   return [...shots.slice(0,at),...extra,...shots.slice(at)];
  };
 })();
-if(location.hash==='#filmtest')Object.assign(window.__MV_FILM__,{recap:(mid,setup)=>{if(setup)setup(C);return JSON.stringify(filmIntro(mid).slice(0,12).map(s=>s&&(s.who||s.mode||'')+':'+(s.line||s.stamp||'')));},roster:()=>C.roster});
+if(location.hash==='#filmtest')Object.assign(window.__MV_FILM__,{recap:(mid,setup)=>{if(setup)setup(C);return JSON.stringify(filmIntro(mid).slice(0,12).map(s=>s&&(s.who||s.mode||'')+':'+(s.line||s.stamp||'')));},roster:()=>C.roster,play:(sh)=>FILM.play(sh,()=>{})});

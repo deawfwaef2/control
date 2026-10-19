@@ -374,3 +374,9 @@
   - 有人失联/阵亡（最近 2 人）→ 遗物旁白（MEM17：璃雀的歌、绛刃的马克杯…）+ 羁绊队友的悼念（CAST17.lost）+ 被感染者专属"遇见她怎么办"台词；有被感染者 → 指挥官下达"把她当成敌人"命令；阵亡≥2 → "谁都不许再冒险"。
   - 赤巢方 → 母巢炫耀收藏的孩子 + 被感染者自述 + 对被摧毁者的惋惜。
 - 注意：CHAR.origin='r' 的角色（璃雀/雾棘等）在守护方战役里被感染时，旧 filmLost() 不算"失去"。新增 C.flags.taken17（engine.js 感染事件里记录被感染的 char），recap17 与 TALK17 都会合并它。
+
+## M17-4 电影转场重做（追加）
+- film.js setBg：换背景不再是单一淡入淡出，轮换 5 种有方向的剪辑（push 右推 / pushl 左推 / zoom 穿越变焦 / wipe 光刃擦除 / iris 镜头光圈），带 fx alert/shake/flash 的镜头固定用 zoom；每次剪辑叠加一道光刃 .fm-streak。镜头可用 shot.cut 指定。剪辑动画用 CSS 独立属性 translate/scale/clip-path（与 Ken Burns 的 transform 不冲突），内联 animation 拼接对应 kb 动画，图层复用时清空。
+- film17.css：常驻镜头暗角+曝光呼吸；立绘对焦式入场（模糊→清晰、轻微推近）；字幕行上浮。
+- 电影 → 棋盘：finish() 时 #film.exit17 镜头冲入最后画面（放大 1.5、过曝模糊、遮幅收起、中心泛光），body.arrive17 让棋盘从过曝模糊落定、格子逐行点亮、左右栏滑入。
+- 测试钩子 __MV_FILM__.play(shots)。
