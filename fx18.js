@@ -172,6 +172,9 @@ const FX18=(()=>{
    const sur=document.querySelector('.board-surround');if(!sur)return;const keyBg=CHAPTER_BG[S.mid];if(!keyBg||sur.dataset.fx18bg===keyBg)return;
    const art=ART[keyBg];if(!art)return;sur.dataset.fx18bg=keyBg;
    sur.style.setProperty('background',`linear-gradient(160deg,rgba(7,13,20,.9),rgba(7,12,18,.78) 55%,rgba(5,8,12,.92)),url(${art}) center/cover no-repeat`,'important');
+   const boardEl=document.getElementById('board');
+   if(boardEl&&boardEl.dataset.fx18bg!==keyBg){boardEl.dataset.fx18bg=keyBg;
+    boardEl.style.setProperty('background',`linear-gradient(155deg,rgba(8,15,23,.86),rgba(7,12,19,.78) 55%,rgba(5,9,14,.9)),url(${art}) center/cover no-repeat`,'important');}
   }catch(e){}
  }
  function combatFX(target,mode){
