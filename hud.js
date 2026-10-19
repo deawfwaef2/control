@@ -8,7 +8,7 @@
  const workspace=document.querySelector('#game .workspace');
  if(workspace){workspace.prepend(left);}
  [brief,forces,log].forEach(p=>{if(p)left.appendChild(p);});
- const isDesk=()=>window.innerWidth>=1100&&window.innerHeight>=600;
+ const isDesk=()=>window.innerWidth>=860&&window.innerHeight>=520;
  function apply(){
   document.body.classList.toggle('hud15',isDesk());
   const h=document.querySelector('.site-header');

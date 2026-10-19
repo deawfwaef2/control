@@ -1,0 +1,114 @@
+/* ===== M17 UI — tactical table, medallion pieces, no-scroll rails =====
+   Loaded last. Board stays 0° flat orthogonal 8×8 (user rule). */
+:root{--u-cy:#6fd6ff;--u-cy2:#bdeeff;--u-red:#ff3b5c;--u-red2:#ff9aac;--u-gold:#e9c46a;--u-ink:#060a0f;--u-line:rgba(130,200,235,.16)}
+@media (min-width:860px) and (min-height:520px){html,body{overflow:hidden!important;height:100%}}
+
+/* ---------- board slab ---------- */
+html body .board-surround{background:linear-gradient(165deg,#111c26 0%,#0a1118 55%,#070b10 100%)!important;border:1px solid rgba(111,214,255,.2)!important;border-radius:12px!important;box-shadow:0 34px 90px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.06),inset 0 0 0 1px rgba(0,0,0,.5)!important;padding:30px 16px 16px 34px!important;min-width:0!important}
+html body .board-surround .axis-top span,html body .board-surround .axis-left span{font-size:12px!important;letter-spacing:.2em;color:rgba(170,215,235,.55)!important;font-weight:600}
+html body .board-surround .board-corner{width:18px!important;height:18px!important;border-color:var(--u-cy)!important;opacity:.75;filter:drop-shadow(0 0 6px rgba(111,214,255,.7))}
+body.side-r .board-surround .board-corner{border-color:var(--u-red)!important;filter:drop-shadow(0 0 6px rgba(255,59,92,.7))}
+html body #board{gap:0!important;padding:0!important;transform:none!important;background:#0b131a!important;border:1px solid rgba(111,214,255,.38)!important;border-radius:3px!important;box-shadow:0 0 0 5px #0a1219,0 0 0 6px rgba(111,214,255,.14),0 0 50px rgba(111,214,255,.07),0 18px 40px rgba(0,0,0,.6)!important;overflow:visible!important}
+body.side-r #board{border-color:rgba(255,59,92,.36)!important;box-shadow:0 0 0 5px #120a0e,0 0 0 6px rgba(255,59,92,.14),0 0 50px rgba(255,59,92,.06),0 18px 40px rgba(0,0,0,.6)!important}
+html body #board::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;background:radial-gradient(circle at 0 0,rgba(150,220,245,.55) 1.1px,transparent 1.8px) 0 0/12.5% 12.5%;opacity:.55}
+html body #board .cell{background:#121e28!important;border:0!important;border-radius:0!important;box-shadow:inset 0 0 0 .5px rgba(140,200,230,.09),inset 0 1px 0 rgba(255,255,255,.025)!important;transition:background .18s}
+html body #board .cell.dark{background:#0e1820!important}
+html body #board .cell:before{inset:0!important;border:0!important;background:linear-gradient(135deg,rgba(255,255,255,.028),transparent 45%)!important;opacity:1!important}
+html body #board .cell:hover{background:#182836!important}
+html body #board .cell.last-move{background:linear-gradient(0deg,rgba(233,196,106,.10),rgba(233,196,106,.10)),#121e28!important;box-shadow:inset 0 0 0 1px rgba(233,196,106,.28)!important}
+/* legal / capture / selected */
+html body #board .cell.legal{background:#10242c!important;box-shadow:inset 0 0 0 1px rgba(111,214,255,.22)!important;cursor:pointer}
+html body #board .cell.legal:hover{background:#163543!important}
+html body #board .cell.legal:after{left:50%!important;top:50%!important;width:24%!important;height:24%!important;transform:translate(-50%,-50%);border-radius:50%!important;background:radial-gradient(circle,#e6fbff 0 26%,rgba(111,214,255,.75) 34%,rgba(111,214,255,0) 72%)!important;box-shadow:0 0 16px rgba(111,214,255,.55)!important;animation:u17dot 1.6s ease-in-out infinite;z-index:3}
+body.side-r #board .cell.legal{background:#26121a!important;box-shadow:inset 0 0 0 1px rgba(255,59,92,.22)!important}
+body.side-r #board .cell.legal:after{background:radial-gradient(circle,#ffe6ea 0 26%,rgba(255,59,92,.75) 34%,rgba(255,59,92,0) 72%)!important;box-shadow:0 0 16px rgba(255,59,92,.55)!important}
+@keyframes u17dot{0%,100%{transform:translate(-50%,-50%) scale(.85);opacity:.8}50%{transform:translate(-50%,-50%) scale(1.1);opacity:1}}
+html body #board .cell.capture{background:#2b0f18!important;box-shadow:inset 0 0 0 1px rgba(255,59,92,.55),inset 0 0 22px rgba(255,59,92,.25)!important;cursor:crosshair}
+html body #board .cell.capture:after{inset:5%!important;border:2px solid var(--u-red)!important;animation:u17cap 1s ease-in-out infinite alternate;z-index:8!important}
+@keyframes u17cap{from{opacity:.55;transform:scale(1.04)}to{opacity:1;transform:scale(.97)}}
+html body #board .cell.selected{background:radial-gradient(circle,rgba(111,214,255,.22),rgba(111,214,255,.04) 70%),#13212b!important;box-shadow:inset 0 0 0 1px rgba(111,214,255,.6)!important}
+body.side-r #board .cell.selected{background:radial-gradient(circle,rgba(255,59,92,.22),rgba(255,59,92,.04) 70%),#1e1218!important;box-shadow:inset 0 0 0 1px rgba(255,59,92,.6)!important}
+html body #board .cell.danger{box-shadow:inset 0 0 0 1px rgba(255,59,92,.25),inset 0 0 18px rgba(255,59,92,.12)!important}
+/* terrain */
+html body #board .cell.wall{background:#0c141a!important}
+html body #board .cell.wall:after{width:74%!important;height:74%!important;border-radius:4px!important;border:1px solid rgba(160,190,205,.28)!important;background:linear-gradient(160deg,#3b4d59 0%,#22303a 45%,#141d24 100%)!important;box-shadow:0 6px 0 #070c10,0 10px 14px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.14),inset 0 -8px 0 repeating-linear-gradient(135deg,#e9c46a 0 4px,#141d24 4px 8px)!important;transform:translateY(-3px)!important}
+html body #board .cell.void{background:radial-gradient(circle,#020305 30%,#0a0f14 75%)!important;box-shadow:inset 0 0 0 1px rgba(255,59,92,.25),inset 0 0 20px rgba(0,0,0,.9)!important}
+html body #board .cell.relay:before{background:radial-gradient(circle,transparent 30%,rgba(233,196,106,.20) 31%,rgba(233,196,106,.20) 33%,transparent 34%,transparent 44%,rgba(233,196,106,.12) 45%,transparent 47%)!important}
+html body #board .cell.relay{box-shadow:inset 0 0 0 1px rgba(233,196,106,.38),inset 0 0 24px rgba(233,196,106,.08)!important}
+html body #board .cell.relay.g{box-shadow:inset 0 0 0 1px rgba(111,214,255,.55),inset 0 0 24px rgba(111,214,255,.12)!important}
+html body #board .cell.relay.r{box-shadow:inset 0 0 0 1px rgba(255,59,92,.55),inset 0 0 24px rgba(255,59,92,.12)!important}
+html body #board .tile-icon{width:36%!important;height:36%!important;color:var(--u-gold)!important;opacity:.85;filter:drop-shadow(0 0 6px rgba(233,196,106,.5))}
+html body #board .cell.exit .tile-icon{color:#7ef0b5!important;filter:drop-shadow(0 0 6px rgba(126,240,181,.5))}
+html body #board .cell.exit{box-shadow:inset 0 0 0 1px rgba(126,240,181,.38),inset 0 0 24px rgba(126,240,181,.08)!important}
+html body #board .tile-label{font-size:11px!important;letter-spacing:.18em!important;color:rgba(233,196,106,.85)!important;bottom:6%!important;right:auto!important;left:50%!important;transform:translateX(-50%);font-weight:700}
+html body #board .cell.exit .tile-label{color:rgba(126,240,181,.85)!important}
+html body #board .cell .token~.tile-label,html body #board .cell .tile-label:has(~.token){display:none!important}
+
+/* ---------- pieces: medallions ---------- */
+html body #board .token{width:84%!important;height:84%!important;border:0!important;border-radius:50%!important;background:none!important;box-shadow:none!important;transform:none;overflow:visible!important;isolation:isolate;filter:drop-shadow(0 6px 5px rgba(0,0,0,.7))!important;transition:transform .22s cubic-bezier(.2,.8,.2,1),filter .22s;z-index:4}
+html body #board .token::before{content:""!important;position:absolute!important;inset:0!important;border-radius:50%!important;background:conic-gradient(from 210deg,#f2fbff,#6fd6ff 25%,#1f5a73 50%,#6fd6ff 75%,#f2fbff)!important;box-shadow:0 0 0 1px rgba(0,0,0,.65),0 0 14px rgba(111,214,255,.32)!important;z-index:0!important;border:0!important;display:block!important;opacity:1!important}
+html body #board .token.r::before{background:conic-gradient(from 210deg,#ffe3e8,#ff3b5c 25%,#6b0f22 50%,#ff3b5c 75%,#ffe3e8)!important;box-shadow:0 0 0 1px rgba(0,0,0,.65),0 0 14px rgba(255,59,92,.4)!important}
+html body #board .token .piece-portrait,html body #board .token .piece-machine{position:absolute!important;inset:7%!important;width:86%!important;height:86%!important;border-radius:50%!important;object-fit:cover!important;object-position:50% 9%!important;z-index:1!important;background:#0b1620;transform:none!important;filter:none!important;animation:none!important;max-width:none!important;margin:0!important}
+html body #board .token::after{content:""!important;position:absolute!important;inset:7%!important;border-radius:50%!important;border:0!important;background:radial-gradient(ellipse at 32% 18%,rgba(255,255,255,.32),rgba(255,255,255,0) 42%),radial-gradient(circle,transparent 58%,rgba(0,0,0,.45))!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)!important;z-index:2!important;pointer-events:none}
+html body #board .token .unit-art{position:absolute!important;inset:22%!important;width:56%!important;height:56%!important;z-index:1!important;color:var(--u-cy)!important}
+html body #board .token.machine-token .unit-art{filter:drop-shadow(0 0 6px rgba(111,214,255,.6))}
+html body #board .token.machine-token:not(:has(img))::after{background:radial-gradient(circle,#13222d,#09121a)!important;z-index:0!important;inset:7%!important}
+html body #board .token.machine-token:not(:has(img))::before{z-index:-1!important}
+/* machines: octagon plate so they read differently from the girls */
+html body #board .token.machine-token::before{border-radius:0!important;clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%)}
+html body #board .token.machine-token .piece-machine,html body #board .token.machine-token::after{border-radius:0!important;clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%)}
+html body #board .token.machine-token .piece-machine{object-fit:cover!important;object-position:50% 50%!important;background:#12070b}
+html body #board .token-bevel,html body #board .token-signal{display:none!important}
+html body #board .token-name{position:absolute!important;left:50%!important;right:auto!important;top:auto!important;bottom:-9%!important;width:auto!important;height:auto!important;transform:translateX(-50%)!important;z-index:6!important;background:linear-gradient(180deg,#0b1a24,#050c12)!important;border:1px solid rgba(111,214,255,.55)!important;color:#eaf8ff!important;font-size:clamp(11px,1.35vh,13px)!important;line-height:1.3!important;padding:1px 8px 1px 9px!important;border-radius:999px!important;letter-spacing:.12em!important;white-space:nowrap!important;box-shadow:0 2px 6px rgba(0,0,0,.6)!important;text-shadow:none!important;max-width:118%!important;overflow:hidden!important;text-overflow:ellipsis!important}
+html body #board .token.r .token-name{border-color:rgba(255,59,92,.6)!important;background:linear-gradient(180deg,#24090f,#0e0406)!important;color:#ffe5ea!important}
+html body #board .token-name small{display:none!important}
+html body #board .token-role{position:absolute!important;left:-4%!important;top:-4%!important;right:auto!important;bottom:auto!important;width:clamp(18px,2.3vh,22px)!important;height:clamp(18px,2.3vh,22px)!important;display:grid!important;place-items:center;border-radius:50%!important;font-size:clamp(11px,1.3vh,12px)!important;font-weight:800;background:#06121a!important;color:var(--u-cy2)!important;border:1px solid rgba(111,214,255,.6)!important;z-index:7!important;padding:0!important;line-height:1!important}
+html body #board .token.r .token-role{background:#1a060b!important;color:var(--u-red2)!important;border-color:rgba(255,59,92,.6)!important}
+/* states */
+html body #board .cell.selected .token{transform:translateY(-6px) scale(1.07)!important;filter:drop-shadow(0 12px 8px rgba(0,0,0,.7)) drop-shadow(0 0 10px rgba(111,214,255,.45))!important}
+body.side-r #board .cell.selected .token{filter:drop-shadow(0 12px 8px rgba(0,0,0,.7)) drop-shadow(0 0 10px rgba(255,59,92,.5))!important}
+html body #board .cell.selected .token::before{animation:u17spin 4s linear infinite}
+@keyframes u17spin{to{transform:rotate(360deg)}}
+html body #board .token.moved{transform:none!important}
+html body #board .token.moved .piece-portrait,html body #board .token.moved .piece-machine,html body #board .token.moved .unit-art{filter:grayscale(.75) brightness(.55)!important}
+html body #board .token.moved::before{opacity:.45!important}
+/* infected girl: crimson pulse + chest light */
+html body #board .token.r.character-token::before{animation:u17inf 1.8s ease-in-out infinite}
+@keyframes u17inf{0%,100%{box-shadow:0 0 0 1px rgba(0,0,0,.65),0 0 10px rgba(255,59,92,.35)}50%{box-shadow:0 0 0 1px rgba(0,0,0,.65),0 0 22px rgba(255,59,92,.85)}}
+html body #board .token.r.character-token .piece-portrait{filter:saturate(1.1) contrast(1.05)!important}
+html body #board .token.r.character-token::after{background:radial-gradient(circle at 50% 88%,rgba(255,40,70,.75) 0 5%,rgba(255,40,70,0) 18%),radial-gradient(ellipse at 32% 18%,rgba(255,255,255,.28),rgba(255,255,255,0) 42%),linear-gradient(180deg,transparent 55%,rgba(150,0,25,.38))!important}
+html body #board .cell:hover .token:not(.moved){transform:translateY(-3px)}
+
+/* ---------- rails: no scrolling, tighter, cleaner ---------- */
+body.hud15 #hud-left,body.hud15 #game .right-rail{overflow:hidden!important;scrollbar-width:none}
+body.hud15 #hud-left::-webkit-scrollbar,body.hud15 #game .right-rail::-webkit-scrollbar{display:none}
+body.hud15 #hud-left .log-panel{min-height:0!important;overflow:hidden!important}
+body.hud15 #hud-left #combat-log{overflow:hidden!important}
+body.hud15 #game .right-rail{gap:8px!important}
+body.hud15 #game .dossier{flex:1 1 auto!important;min-height:0!important;overflow:hidden!important;display:flex!important;flex-direction:column;padding:0!important;border-radius:6px!important;background:linear-gradient(180deg,rgba(12,22,30,.92),rgba(7,12,18,.92))!important}
+body.hud15 #game .dossier .dossier-portrait{height:clamp(170px,29vh,300px)!important;max-height:none!important;flex:0 0 auto;border-radius:6px 6px 0 0;overflow:hidden}
+body.hud15 #game .dossier .dossier-content{padding:10px 14px 12px!important;display:flex!important;flex-direction:column;gap:8px;min-height:0;overflow:hidden}
+body.hud15 #game .dossier .capture-law:not(.infect){display:none!important}
+body.hud15 #game .dossier .capture-law.infect{font-size:13px!important;line-height:1.5!important;padding:8px 10px!important;margin:0!important}
+body.hud15 #game .dossier .dossier-persona-box{padding:8px 10px!important;margin:0!important}
+body.hud15 #game .dossier .dossier-persona-box p{font-size:13px!important;line-height:1.55!important;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin:4px 0 0!important}
+body.hud15 #game .dossier .dossier-persona-box small,body.hud15 #game .dossier .persona-tag-line b{display:none!important}
+body.hud15 #game .dossier .persona-tag-line span{font-size:13px!important;color:var(--u-cy2)}
+body.hud15 #game .dossier .upgrade-info,body.hud15 #game .dossier .unit-trait{font-size:13px!important;line-height:1.5!important;margin:0!important;padding:0!important}
+body.hud15 #game .dossier .movement-info{gap:10px!important;margin:0!important}
+body.hud15 #game .dossier .move-grid{width:72px!important;height:72px!important;flex:0 0 72px}
+body.hud15 #game .dossier .move-description p{font-size:13px!important;line-height:1.5!important;margin:2px 0 0!important}
+body.hud15 #game .dossier .dossier-controls{display:flex!important;gap:6px;margin-top:auto!important}
+body.hud15 #game .dossier .dossier-controls .button{flex:1;min-height:34px!important;font-size:13px!important;padding:0 8px!important}
+body.hud15 #game .roster-panel{flex:0 0 auto!important;padding:10px 12px!important;border-radius:6px!important}
+body.hud15 #game .roster-panel .panel-title{padding:0 0 6px!important}
+html body.hud15 #game #roster-list{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:6px!important;padding:0!important}
+html body.hud15 #game #roster-list .roster-item{display:flex!important;flex-direction:column;align-items:center;gap:3px;padding:0!important;background:none!important;border:0!important;min-height:0!important}
+body.hud15 #roster-list .roster-item img{width:100%!important;aspect-ratio:1;height:auto!important;border-radius:50%!important;object-fit:cover;object-position:50% 10%;border:2px solid rgba(111,214,255,.55)!important}
+body.hud15 #roster-list .roster-item.r img{border-color:rgba(255,59,92,.7)!important}
+body.hud15 #roster-list .roster-item span{font-size:12px!important;white-space:nowrap}
+body.hud15 #roster-list .roster-item small,body.hud15 #roster-list .roster-item i{display:none!important}
+@media (max-height:820px){body.hud15 #game .dossier .dossier-persona-box{display:none!important}}
+@media (max-height:700px){body.hud15 #game .dossier .unit-trait,body.hud15 #game .dossier .upgrade-info{display:none!important}body.hud15 #game .roster-panel .panel-title{display:none!important}}
+@media (max-width:1250px){body.hud15 #game:not([hidden]){grid-template-columns:minmax(200px,17vw) minmax(0,1fr) minmax(220px,19vw)!important}html body.hud15 #game #roster-list{grid-template-columns:repeat(4,minmax(0,1fr))!important}}
+html body.hud15 #toast{top:auto!important;bottom:10px!important;left:50%!important;right:auto!important;transform:translateX(-50%)!important;max-width:min(720px,60vw);font-size:14px!important;z-index:70!important}

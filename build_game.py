@@ -12,7 +12,7 @@ music = {p.stem: 'data:audio/mpeg;base64,' + base64.b64encode(p.read_bytes()).de
          for p in sorted((ROOT/'music').glob('*.mp3'))}
 voice = {p.stem: 'data:audio/mpeg;base64,' + base64.b64encode(p.read_bytes()).decode('ascii')
          for p in sorted((ROOT/'voice').glob('*.mp3'))}
-css = '\n'.join((ROOT/f).read_text(encoding='utf-8') for f in ('style.css','cinematic.css','screenplay.css','protocol.css','audio.css','film.css','hud.css','deploy.css') if (ROOT/f).exists())
+css = '\n'.join((ROOT/f).read_text(encoding='utf-8') for f in ('style.css','cinematic.css','screenplay.css','protocol.css','audio.css','film.css','hud.css','deploy.css','ui17.css') if (ROOT/f).exists())
 files = ['data.js','cast.js','engine.js','ui.js','presentation.js','campaign.js','ensemble.js','screenplay-data.js','screenplay.js','protocol.js','audio.js','film.js','film-script.js','film-chapters.js','hud.js','sound16.js','deploy.js','story16.js']
 js = '\n\n'.join((ROOT/f).read_text(encoding='utf-8') for f in files if (ROOT/f).exists())
 script = '(function(){\nconst VOICE_DATA=' + json.dumps(voice) + ';\n' + js + '\n})();'
